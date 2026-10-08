@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>빛나는 우리들 교회 · 소설 관리</title>
+<style>
+:root{--bg:#faf8f4;--card:#fff;--tx:#222;--sub:#777;--bd:#e4dfd6;--ac:#8a5a2b;--fs:#c0392b}
+@media(prefers-color-scheme:dark){:root{--bg:#161412;--card:#201d1a;--tx:#eee;--sub:#9a9288;--bd:#38332d;--ac:#d9a066;--fs:#ff7b6b}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 "Pretendard","Noto Sans KR",system-ui,sans-serif}
+header{padding:20px 16px 4px;max-width:1200px;margin:auto}h1{margin:0;font-size:21px}#stat{margin:2px 0;color:var(--sub);font-size:12px}
+.bar{position:sticky;top:0;background:var(--bg);z-index:5;max-width:1200px;margin:auto;padding:8px 16px;border-bottom:1px solid var(--bd)}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0;align-items:center}
+input,select,textarea,button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:5px 10px}
+button{cursor:pointer}button:hover{border-color:var(--ac)}button.p,button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+#q{flex:1;min-width:140px}.chip{border-radius:99px;padding:1px 10px;font-size:12px}
+.tab{font-weight:700;border:none;border-bottom:3px solid transparent;border-radius:0;background:none}.tab.on{color:var(--ac);background:none;border-bottom-color:var(--ac)}
+main{max-width:1200px;margin:auto;padding:12px 16px 60px}
+.act{margin:26px 0 6px;font-weight:700;color:var(--ac);border-bottom:2px solid var(--ac)}
+.ev{display:grid;grid-template-columns:90px 1fr;gap:12px;margin:10px 0}
+.when{text-align:right;font-weight:700;padding-top:12px}.when small{display:block;color:var(--sub);font-weight:400;font-size:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:10px;padding:10px 14px}
+.card.fs{border-left-color:var(--fs)}.card h3{margin:0;font-size:16px}.pl{color:var(--sub);font-size:13px}
+.card p{margin:6px 0;white-space:pre-wrap}.tags span{display:inline-block;background:var(--bd);border-radius:6px;padding:2px 8px;margin:2px 4px 2px 0;font-size:12px;font-weight:500}
+.tags .it{background:none;border:1px dashed var(--bd);color:var(--sub)}.tags .tg{background:none;color:var(--ac);cursor:pointer}.tags .nm{cursor:pointer}
+.memo{border-top:1px dashed var(--bd);margin-top:6px;padding-top:4px;color:var(--sub);font-size:13px}
+.btns{float:right;display:flex;gap:2px}.btns button{padding:0 7px;font-size:12px;border:none;background:none;color:var(--sub)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.kv{font-size:13px;margin:3px 0;white-space:pre-wrap}.kv b{color:var(--ac);margin-right:6px}
+table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid var(--bd);padding:6px;text-align:left;vertical-align:top}
+.tw{overflow-x:auto}
+.tl-horiz-container{display:flex;gap:16px;overflow-x:auto;padding:16px 4px 24px;scroll-snap-type:x mandatory;align-items:stretch}
+.tl-horiz-card{flex:0 0 320px;scroll-snap-align:start;background:var(--card);border:1px solid var(--bd);border-top:4px solid var(--ac);border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.tl-horiz-card.fs{border-top-color:var(--fs)}
+.tl-horiz-card .when-tag{font-weight:700;font-size:13px;color:var(--ac);margin-bottom:4px}
+.novel-box{margin-top:10px;border-top:1px dashed var(--bd);padding-top:8px}
+.novel-box summary{cursor:pointer;font-weight:600;font-size:12.5px;color:var(--ac)}
+.novel-text{margin-top:6px;font-size:13px;line-height:1.6;white-space:pre-wrap;background:rgba(0,0,0,0.03);padding:8px 10px;border-radius:6px;border-left:3px solid var(--ac)}
+dialog{border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx);width:min(640px,94vw);max-height:88vh;overflow-y:auto}
+dialog label{display:block;font-size:12px;color:var(--sub);margin-top:10px;font-weight:600}dialog input:not([type=checkbox]),dialog textarea,dialog select{width:100%}
+@media(max-width:560px){.ev{grid-template-columns:1fr}.when{text-align:left;padding:0}}
+</style>
+</head>
+<body>
+<header><h1>📖 빛나는 우리들 교회 · 소설 관리</h1><div id="stat"></div></header>
+<div class="bar">
+ <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button>
+ <span style="flex:1"></span><button class="p" id="add">+ 추가</button></div>
+ <div class="row"><input id="q" placeholder="검색 (제목·내용·인물·태그·메모·소설원문)">
+ <select id="view"><option value="horiz">수평 타임라인</option><option value="act">막별 수직보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
+ <select id="fa"><option value="">전체 막</option></select><button id="ffs">🚩 복선만</button></div>
+ <div class="row" id="tagbar"></div>
+ <div class="row"><button class="p" id="gsave">☁ GitHub에 저장</button><button id="gset">⚙ GitHub 설정</button><button id="exp">내보내기(JSON)</button><button id="imp">불러오기</button><button id="rst">초기화</button></div>
+</div>
+<main id="list"></main>
+<dialog id="dlg"><form method="dialog" id="f"></form></dialog>
+<dialog id="gdlg"><form method="dialog" id="gf">
+<h3 style="margin:0">GitHub 저장 설정</h3>
+<label>GitHub 아이디(owner)</label><input name="owner">
+<label>저장소 이름(repo)</label><input name="repo">
+<label>브랜치</label><input name="branch">
+<label>저장할 파일 경로</label><input name="path">
+<label>Personal Access Token</label><input name="token" type="password" placeholder="github_pat_...">
+<div class="row" style="margin-top:12px"><button class="p" value="ok">저장</button><button value="cancel" formnovalidate>취소</button></div>
+</form></dialog>
+<input type="file" id="file" accept=".json" hidden>
+<script>
+const ACTS=["프롤로그","1막 · 접근 (D-100~D-50)","2막 · 몰입 (입교·헌신)","3막 · 균열 (진실)","4막 · 파국 (폭로)"];
+const RAW=[
+["D-day","예배당 (기도회 20~22시)","통성 기도회, 방언",`저녁 8시부터 통성 기도회.\n한태양: 방언이 터지지 않자 좌절하며 욕설 섞인 기도를 뱉음.\n변대한: 계단 구석에서 방언 기도에 성공.\n방언 후 태양을 향한 은근한 질투, '태양이나 도현이보다 영적으로 낫다'는 우월감이 싹틈.`,"변대한,한태양","마이크",0,0],
+["D-100","동네 사거리 PC방 (20시)","PC방의 재회","대한과 태양이 전쟁 게임 중. 과제를 프린트하러 온 차도현과 우연히 조우. 도현의 냉소적이고 차가운('싸가지') 태도가 드러남.","변대한,한태양,차도현","마우스,모니터,프린터기",1,0],
+["D-95","집 → 초등학교 → 차도현의 방","도현의 집, 닫힌 2층 방","거실 가족사진(부모님, 누나 차하나, 도현). 2층의 닫힌 방을 보고 대한이 '누나 방이냐, 인사드려야 하는 것 아니냐'고 묻자 도현이 뜬금없이 화냄 → 곧 사과하며 '지금 안 계신다'고 얼버무림. 도현이 대한에게 전도서 구절을 전해줌.","변대한,차도현,차하나","검은 낡은 성경책,책갈피",1,1],
+["D-90","호프집","균열의 시작, 지방대 드립","도현이 먼저 도착. 깔끔하게 차려입은 도현 / 트레이닝복의 대한 / 형의 비싼 옷을 입은 태양. 고2 때 인서울 다짐하며 삭발한 추억(도현은 다 깎고 태양은 바리캉 배터리가 나가 반만 깎임). 취한 도현의 '지방대 드립'으로 분위기 급랭.","변대한,한태양,차도현","바리캉,맥주잔",1,0],
+["D-85","집 (전화통화)","화해, 이예솔의 존재","태양이 먼저 전화해 도현과 화해했다고 알림. 노방전도를 당하다 '이예솔'을 봤다고 함(도현의 첫사랑). 도현은 이미 '빛나는 우리들 교회'와 예솔이 다니는 것을 알고 있었음. 태양·도현이 먼저 교회를 나가기 시작.","변대한,한태양,차도현,이예솔","",1,1],
+["D-80","변대한의 집 (밤 10시)","밤 10시의 방문","태양·도현이 대한의 집에 찾아와 동창 추억팔이(\"걔 너 알잖아\")로 대한은 제집에서 소외감. 으르렁대다 같은 목적으로 다시 친해진 둘이 교회에 가자고 하자 대한도 오기로 따라나섬. 교회에서 새신자 담당 안경 누나 최유진을 처음 보고 호감.","변대한,한태양,차도현,최유진","",1,0],
+["D-73","집","최유진과의 식사, 태양의 배신","한밤중 태양이 '유진 누나가 같이 식사하자고 한다'고 연락. 정작 태양은 나오지 않아 대한은 단둘이 식사. 배신감 + 유진의 상냥함·귀여움에 매료. 교회 이야기 후 다시 오라는 권유. 대한은 '연상 여자한테 잘 보이는 법'을 검색.","변대한,한태양,최유진","",1,1],
+["D-60","교회","수요예배, 환대","유진의 권유로 첫 수요예배, 태양·도현 옆에 앉음. 새신자 소개 후 성도들의 반가운 환대. 어른은 없고 청년 위주. 유진이 토요 노방전도를 권유. 궁금해진 대한이 설명을 요구하자 도현은 '여기선 곤란하다'며 초등학교로 데려감.","변대한,차도현,한태양,최유진","",1,0],
+["D-50","초등학교","도현의 교리 강의","도현이 예수·성령·방언·말씀·사탄·이단·교회 차이점·목사 설교 스타일·주의 종 관계(큰사모, 작은사모, 전도사, 두 아들)를 지나치게 상세히 설명. 대한이 '뭘 이렇게까지 자세히 아냐'고 묻자 대충 둘러댐. 대한은 첫사랑 예솔 때문인가 오해. 예솔을 묻는 대한을 한심하게 보는 도현의 반응이 포인트.","변대한,차도현","차가운 캔커피,낡은 검은 성경책",1,1],
+["D-40","길거리","첫 노방전도","한태양과 함께 거리로 나가 노방전도.","변대한,한태양","",2,0],
+["D-day","예배당 (재조명)","방언과 영적 도취","방언을 받은 후 성령을 입었다는 기쁨에 도취. 도현·태양보다 영적으로 앞섰다는 우월감. 언행이 점차 고압적·교만하게 변함.","변대한","",2,0],
+["D+","교회","규칙과 교리의 체화","암묵적 룰과 교리를 이해. 성령을 받았으니 감사헌금, 시험에 들지 않으려면 십일조 필수(사탄은 물질로 먼저 시험). 교회 직책은 성령 받은 자만 가능, 방언은 구원의 필수 증거이자 '가장 기본적인 은사'. 성령을 받으면 광야의 예수처럼 시험이 온다고 교육.","변대한","",2,0],
+["D+","교회 예배당","헌금 강조와 가스라이팅","목사의 기복 설교: '주님의 것을 인정해야 물질 축복, 천국엔 헌금보다 더 큰 상급'. 헌금 많이 한 성도 실명 칭찬, 특히 '첫열매'를 높임 → 알바하는 중고등학생들까지 첫열매를 바침.","변대한,목사","헌금봉투,팀별 헌금 현황판,마이크",2,1],
+["D+","교회 예배당","인정욕구와 성격 변화","성령 후 새벽예배·말씀·전도·기도에 집착, 인정받으려 노력. 소심했던 과거에서 고압적으로 변함. 청년부 조장 박지원 형처럼 되면 자매들에게 인기 얻고 유진의 호감도 살 것이라 착각.","변대한,박지원,최유진","",2,0],
+["D+","청년부 예배","중고등부 합동예배, 송하연","중고등부와 청년부 합동 예배. 고3 송하연과 첫 대화.","변대한,송하연","",2,0],
+["D+","—","한태양의 가정사","태양이 부모님의 과거 칼부림 사건과 그로 인한 깊은 상처를 털어놓음.","한태양,변대한","",2,0],
+["D+","—","신년","시간이 흘러 신년을 맞이.","","",2,0],
+["D+","—","송하연의 고백","고3이던 송하연이 성인이 된 후 태양에게 고백.","송하연,한태양","",2,0],
+["D+","—","비밀 교제와 하연의 가정사","태양과 하연이 연인으로 발전. 대한은 태양을 통해 하연의 불우한 가정사를 듣게 됨.","한태양,송하연,변대한","",2,0],
+["D+","도로 → 병원","변대한의 교통사고","전도기록지를 집에 두고 와 자전거로 가지러 가던 중 트럭과 충돌. 뇌진탕으로 의식을 잃었다 병원에서 눈을 뜸. 골절로 입원.","변대한","전도기록지,자전거",3,0],
+["D+","병원","태양의 고백, 투 아웃","태양이 병문안 와서 진실을 고백: 하연과 사귀다 걸렸는데 '투 아웃'. 첫 번째 상대가 최유진 누나였음(주의 종 허락이 필요해 유진이 비밀로 하자고 함). 대한은 큰 배신감을 느끼나 억누르고 일단 넘어감. 태양은 몰래 연애하다 작은사모에게 적발됨.","변대한,한태양,최유진,송하연","",3,1],
+["D+","—","차도현에게 온 편지 ①","군 입대한 도현의 편지를 태양이 전달. 조준일이 도현의 누나 차하나와 비밀 교제 → 바람기로 금방 질리자 '믿음 부족한 여자와 사귈 수 없다'며 이별 통보. 하나는 믿음에 광적으로 집착(헌금·기도·예배), 혼잣말로 하나님 음성을 들음, 정신적으로 무너져 알바로 연명하다 큰 병을 얻어 사망. 큰사모는 알고도 조준일이 전도 핵심 팀장이라 덮음. 조준일은 여전히 여성 교인에게 나쁜 짓, 조원 헌금을 PC방·유흥비로 탕진. 도현은 방송현에게 확인하라 함. 예솔이 아닌 '증인'으로 삼으려 대한에게 접근했음을 밝힘.","변대한,차도현,조준일,차하나,한태양","편지",3,1],
+["D+","교회 → 먼 카페","방송현과의 만남, 교회의 역사","음향 담당 방송현을 예배 후 교인들 눈 닿지 않는 카페에서 만남. 본래 목사·큰사모·전도사 3인방의 작은 교회. 고교 동창 4인방(전도사, 방송현, 조준일, 김대순)이 노가다·알바로 헌금을 모아 집기와 의자를 사 세움. 외모와 언변이 좋은 조준일 덕에 여성 성도가 모여 성장, 재정팀장이 됨. 교회가 커지며 헌금이 주의 종들의 사적 용도로 유용됨. 방송현은 증거 수집 중이니 비밀 유지를 당부.","변대한,방송현,조준일,김대순","도현의 편지",3,0],
+["D+","—","동기 자매 그룹 '빈들'과 차하나의 다이어리","도현의 답장: 자매 그룹은 조준일이 전도한 여고생 10명으로 시작, 일부는 절망해 떠났고 남은 이들은 '사탄의 시험을 이겼다'고 착각. 큰사모는 대학 진학을 막고 조기 취업·헌금 강요('세상에 물들고 시험에 든다'). 도현의 서랍장에 있는 누나의 다이어리를 어머니께 말하고 가져가라 함: 신뢰 → 분노 → 광신적 집착 → 편집증 → 자살의 기록. 군대에서 못 움직이는 죄책감 때문에 대한을 선택했다고 털어놓고, 방송현에게도 편지를 전달해달라 부탁.","변대한,차도현,차하나,조준일","차하나의 다이어리,서랍장",3,1],
+["D+","—","달라진 시선과 신앙의 혼란","큰사모·작은사모의 '순종과 물질을 바치라'는 설교가 사적 탐욕으로 보이기 시작. 이것이 '사탄의 시험'인지 방송현의 말이 진실인지 혼란.","변대한","",3,0],
+["D+","목회자 휴게실·교회 곳곳","방송현의 폭로 준비","음향 담당 방송현이 휴게실과 교회 구석에 핀마이크·카메라를 숨겨 주의 종들의 비리 음성·영상을 확보.","방송현","핀마이크,카메라",3,0],
+["D+","—","폭로 시사회와 계획","폭로 영상을 대한에게 먼저 보여줌. Coming 주일 오후 4시 헌신예배 직후 상영 예정. 주의 종들이 제지하지 못하도록 식사 접대 일정을 잡아 자리를 비우게 함. 남은 성도들의 반발은 하늘의 뜻에 맡김.","변대한,방송현","폭로 영상,PPT",4,0],
+["D+","예배당","PPT 폭로와 교회의 파국","대형 스크린으로 PPT와 비리 영상 상영. 예배당은 충격 → '날조와 거짓말'이라 주장하는 파와 반대파가 충돌, 고성과 폭력. 뒤늦게 달려온 주의 종과 성도들로 극심한 소란. 방송현은 교회를 떠나고 대한도 교회를 완전히 떠남. 1년여에 걸친 '빛나는 우리들 교회' 이야기는 비극적 파국으로 끝.","변대한,방송현,목사","대형 스크린,PPT",4,0]
+];
+const TR=[["헌금",/헌금|십일조|첫열매/],["교리",/교리|방언|성령|은사/],["연애",/유진|하연|예솔|교제|고백|연애/],["가정사",/가정사|칼부림|차하나/],["폭로",/폭로|녹음|증거|비리/],["교통사고",/교통사고/]];
+const SEEDE=RAW.map((r,i)=>({id:i+1,when:r[0],place:r[1],title:r[2],summary:r[3],chars:r[4],items:r[5],act:r[6],fs:!!r[7],memo:"",novel:"",
+ tags:[...TR.filter(t=>t[1].test(r[2]+r[3])).map(t=>t[0]),...(r[7]?["복선"]:[])].join(",")}));
+
+const CH=[
+["변대한","#8a5a2b","주인공","소심하고 오기가 있음. 방언 후 교만·고압적으로 변함.","최유진을 좋아함. 교회에서 인정받으려 새벽예배·전도에 집착.","소심 → 우월감·교만 → 교통사고 → 혼란 → 폭로의 증인 → 교회 이탈","태양·도현의 친구, 유진을 짝사랑, 방송현·도현에게 진실을 듣는다","주인공,시점"],
+["한태양","#d35400","친구","충동적이고 감정 기복이 큼. 방언이 안 터지자 욕설 기도.","부모님의 과거 칼부림 사건 트라우마. 친형의 비싼 옷을 빌려 입음.","유진과 비밀 연애(1아웃) → 하연과 연애(2아웃) → 대한에게 고백·사과","대한의 친구, 도현과 화해, 유진·하연과 교제","친구,가정사"],
+["차도현","#2980b9","친구","냉소적·차가움('싸가지'). 깔끔하게 차려입음. 교리를 꿰고 있음.","누나 차하나를 잃음. 군 입대. 대한을 '증인'으로 삼으려 접근.","교리 지식으로 길잡이 → 군대에서 편지로 진실 전달","예솔의 첫사랑 상대, 누나 하나, 방송현과 연결","복선,가정사"],
+["최유진","#27ae60","교회","새신자 담당 안경 누나. 상냥하고 귀여움.","태양과 비밀 연애 후 작은사모에게 적발됨(주의 종 허락 규율).","대한의 호감 대상 → 태양과 얽혀 있던 사실 드러남","대한의 짝사랑, 태양의 첫 번째 아웃","연애"],
+["이예솔","#8e44ad","교회","도현의 첫사랑.","'빛나는 우리들 교회' 신자. 노방전도 중 태양이 목격.","도현이 교회에 들어가게 된 표면적 이유(실제는 아님)","도현의 첫사랑","미끼"],
+["송하연","#e84393","교회","고3 → 성인. 청년부와 중고등부 합동예배에서 대한과 첫 대화.","불우한 가정사.","성인이 된 후 태양에게 고백, 비밀 교제","태양의 연인(투 아웃)","연애,가정사"],
+["방송현","#16a085","교회","음향 담당. 치밀하고 침착함.","교회 창립 4인방 중 한 명(전도사, 방송현, 조준일, 김대순).","증거 수집 → 폭로 영상 제작 → 교회를 떠남","도현·대한과 공모, 조준일과 동기","폭로"],
+["조준일","#c0392b","교회","외모 출중·언변 좋은 전도 핵심 팀장. 바람기.","창립 4인방. 재정팀장. 헌금을 유흥비로 탕진.","차하나를 버림 → 계속 비리 → 폭로로 노출","차하나의 전 연인, 큰사모가 비호","악역,비리"],
+["차하나","#7f8c8d","가족","도현의 누나. 믿음에 광적으로 집착하다 무너짐.","조준일과 비밀 교제 후 이별 → 헌금·기도에 매달림, 혼잣말, 큰 병 끝에 사망(다이어리는 자살로 이어짐).","신뢰 → 분노 → 광신적 집착 → 편집증 → 죽음","도현의 누나, 조준일의 전 연인","복선,가정사"],
+["박지원","#f39c12","교회","청년부 조장. 자매들에게 인기.","대한이 닮고 싶어 하는 롤모델.","","청년부","교회"],
+["김대순","#34495e","교회","창립 4인방 중 한 명.","","","전도사·방송현·조준일과 동기","창립멤버"],
+["목사/큰사모/작은사모/전도사","#d63031","교회","주의 종. 기복 설교, 헌금 강조, 대학 진학 방해와 조기 취업 강요(큰사모).","큰사모는 하나 사건을 알고도 조준일을 비호. 작은사모는 태양의 연애를 적발.","","두 아들 포함","악역,권력"]
+];
+const SEEDC=CH.map((r,i)=>({id:i+1,name:r[0],color:r[1],role:r[2],age:"",look:"",personality:r[3],background:r[4],arc:r[5],relations:r[6],tags:r[7],memo:""}));
+const SCH={
+ e:[["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약 내용","ta"],["chars","등장인물 (쉼표)"],["items","주요 아이템 (쉼표)"],["tags","태그 (쉼표)"],["act","막","sel"],["fs","🚩 복선/중요","cb"],["memo","작가 메모","ta"],["novel","📖 소설 원문 (본문 내용)","ta"]],
+ c:[["name","이름"],["color","상징 색상","color"],["role","역할"],["age","나이/학년"],["look","외모","ta"],["personality","성격","ta"],["background","배경","ta"],["arc","변화(arc)","ta"],["relations","관계","ta"],["tags","태그 (쉼표)"],["memo","메모","ta"]]
+};
+const KEY="novel-mgr-v2",$=id=>document.getElementById(id);
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const split=s=>String(s||"").split(",").map(x=>x.trim()).filter(Boolean);
+const clone=x=>JSON.parse(JSON.stringify(x));
+
+let D;
+try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!D||!D.events){D={events:clone(SEEDE),chars:clone(SEEDC)}}
+
+function getCharColor(name){
+ const found=D.chars.find(c=>c.name===name.trim());
+ return found&&found.color?found.color:'#8a5a2b';
+}
+
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
+let tab="tl",ft=new Set(),onlyFs=false,editing=null;
+ACTS.forEach((a,i)=>$("fa").add(new Option(a,i)));
+const hit=(o,q,ks)=>!q||ks.map(k=>o[k]||"").join(" ").toLowerCase().includes(q);
+const tagOk=o=>[...ft].every(t=>split(o.tags).includes(t));
+
+function renderCharTags(charsStr){
+ return split(charsStr).map(c=>{
+  const col=getCharColor(c);
+  return `<span class="nm" data-ch="${esc(c)}" style="background:${col}1a; color:${col}; border:1px solid ${col}44;">👤 ${esc(c)}</span>`;
+ }).join("");
+}
+
+function novelHTML(e){
+ if(!e.novel)return "";
+ return `<details class="novel-box"><summary>📖 소설 본문 보기</summary><div class="novel-text">${esc(e.novel)}</div></details>`;
+}
+
+function evHTML(e,mini){
+ return `<div class="ev"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""}">
+ ${mini?"":`<div class="btns"><button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="ed" data-t="e" data-i="${e.id}">✎</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button></div>`}
+ <h3>${e.fs?"🚩 ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p>${esc(e.summary)}</p>
+ <div class="tags">${renderCharTags(e.chars)}${split(e.items).map(c=>`<span class="it">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
+ ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}
+ ${novelHTML(e)}</div></div>`}
+
+function evHorizHTML(e){
+ return `<div class="tl-horiz-card ${e.fs?"fs":""}">
+ <div class="btns"><button data-a="ed" data-t="e" data-i="${e.id}">✎</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button></div>
+ <div class="when-tag">${esc(e.when)} · ${esc((ACTS[e.act]||"").slice(0,3))}</div>
+ <h3 style="margin:2px 0 6px;font-size:15px">${e.fs?"🚩 ":""}${esc(e.title)}</h3>
+ <div class="pl" style="margin-bottom:6px">📍 ${esc(e.place)}</div>
+ <p style="font-size:13px;flex:1;margin:4px 0">${esc(e.summary)}</p>
+ <div class="tags">${renderCharTags(e.chars)}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
+ ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}
+ ${novelHTML(e)}
+ </div>`;
+}
+
+function chHTML(c){
+ const col=c.color||'#8a5a2b';
+ const n=D.events.filter(e=>split(e.chars).includes(c.name)).length;
+ const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
+ return `<div class="card" style="border-left:5px solid ${col}">
+ <div class="btns"><button data-a="ed" data-t="c" data-i="${c.id}">✎</button><button data-a="del" data-t="c" data-i="${c.id}">✕</button></div>
+ <h3><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${col};margin-right:4px"></span>${esc(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3>
+ ${kv("look","외모")}${kv("personality","성격")}${kv("background","배경")}${kv("arc","변화")}${kv("relations","관계")}
+ <div class="kv"><b>등장</b><a href="#" data-showch="${esc(c.name)}">타임라인 ${n}건 보기</a></div>
+ <div class="tags">${split(c.tags).map(t=>`<span class="tg" data-tag="${esc(t)}">#${esc(t)}</span>`).join("")}</div>
+ ${c.memo?`<div class="memo">📝 ${esc(c.memo)}</div>`:""}</div>`}
+
+function render(){
+ const q=$("q").value.toLowerCase(),fa=$("fa").value,v=$("view").value;
+ const tags=[...new Set([...D.events,...D.chars].flatMap(o=>split(o.tags)))].sort();
+ $("tagbar").innerHTML=tags.map(t=>`<button class="chip ${ft.has(t)?"on":""}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")||"<span class='pl'>태그 없음</span>";
+ $("view").hidden=$("fa").hidden=$("ffs").hidden=tab!="tl";
+ document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab==tab));
+ let h="";
+ if(tab=="ch"){
+  const L=D.chars.filter(c=>hit(c,q,["name","role","personality","background","arc","relations","tags","memo"])&&tagOk(c));
+  h=`<div class="grid">${L.map(chHTML).join("")}</div>`;
+  $("stat").textContent=`인물 ${D.chars.length}명 · 표시 ${L.length}`;
+ }else{
+  const L=D.events.filter(e=>hit(e,q,["title","summary","place","items","chars","tags","memo","novel"])&&tagOk(e)&&(fa===""||e.act==fa)&&(!onlyFs||e.fs));
+  if(v=="horiz"){
+   h=`<div class="tl-horiz-container">${L.map(evHorizHTML).join("")}</div>`;
+  }else if(v=="act"){
+   let last=-1;L.forEach(e=>{if(e.act!=last){h+=`<div class="act">${esc(ACTS[e.act])}</div>`;last=e.act}h+=evHTML(e)})
+  }else if(v=="char"){
+   const names=[...new Set([...D.chars.map(c=>c.name),...L.flatMap(e=>split(e.chars))])];
+   names.forEach(n=>{const l=L.filter(e=>split(e.chars).includes(n));if(l.length)h+=`<div class="act">👤 ${esc(n)} (${l.length})</div>`+l.map(e=>evHTML(e,1)).join("")})
+  }else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th><th>본문</th><th></th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]\vert{}\vert{}"").slice(0,2))}</td><td>${e.fs?"🚩 ":""}${esc(e.title)}</td><td>${renderCharTags(e.chars)}</td><td>${esc(e.tags)}</td><td>${e.novel?"📖 있음":"-"}</td><td><button data-a="ed" data-t="e" data-i="${e.id}">✎</button></td></tr>`).join("")}</table></div>`;
+  $("stat").textContent=`사건 ${D.events.length}개 · 복선 ${D.events.filter(e=>e.fs).length}개 · 표시 ${L.length}개`;
+ }
+ $("list").innerHTML=h||"<p class='pl'>해당하는 항목이 없습니다.</p>";
+}
+
+function openEd(t,id){
+ editing={t,id};const o=(id&&D[t=="e"?"events":"chars"].find(x=>x.id==id))||{act:2,when:"D+"};
+ $("f").innerHTML=`<h3 style="margin:0">${t=="e"?"사건":"인물"} ${id?"수정":"추가"}</h3>`+SCH[t].map(([k,l,ty])=>{
+  const val=o[k]??"";
+  if(ty=="ta")return `<label>${l}</label><textarea name="${k}" rows="${k==='novel'?6:3}" placeholder="${k==='novel'?'장면에 해당하는 소설 원문이나 대사 노트를 작성하세요...':''}">${esc(val)}</textarea>`;
+  if(ty=="cb")return `<label style="display:flex;align-items:center;gap:6px;margin-top:8px"><input type="checkbox" name="${k}" ${val?"checked":""}> ${l}</label>`;
+  if(ty=="sel")return `<label>${l}</label><select name="${k}">${ACTS.map((a,i)=>`<option value="${i}" ${i==val?"selected":""}>${a}</option>`).join("")}</select>`;
+  if(ty=="color")return `<label>${l}</label><div class="row"><input type="color" name="${k}" value="${val||'#8a5a2b'}" style="width:50px;height:36px;padding:2px;cursor:pointer"><input type="text" value="${val||'#8a5a2b'}" oninput="this.previousElementSibling.value=this.value" style="flex:1"></div>`;
+  return `<label>${l}</label><input name="${k}" value="${esc(val)}">`}).join("")+
+  `<div class="row" style="margin-top:16px"><button class="p" value="ok">저장</button><button value="cancel" formnovalidate>취소</button></div>`;
+ $("dlg").showModal();
+}
+
+$("f").addEventListener("submit",ev=>{
+ if(ev.submitter.value!="ok")return;const {t,id}=editing,f=$("f"),arr=D[t=="e"?"events":"chars"],d={};
+ SCH[t].forEach(([k,,ty])=>d[k]=ty=="cb"?f[k].checked:ty=="sel"?+f[k].value:f[k].value);
+ if(id)Object.assign(arr.find(x=>x.id==id),d);else arr.push({id:Math.max(0,...arr.map(x=>x.id))+1,...d});
+ save();render();
+});
+$("add").onclick=()=>openEd(tab=="tl"?"e":"c");
+document.addEventListener("click",ev=>{
+ const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-showch]");if(!el)return;
+ const d=el.dataset;
+ if(d.tab){tab=d.tab}
+ else if(d.tag){d.tag&&(ft.has(d.tag)?ft.delete(d.tag):ft.add(d.tag))}
+ else if(d.showch){ev.preventDefault();tab="tl";$("view").value="horiz";$("q").value=d.showch}
+ else if(d.ch){tab="ch";$("q").value=d.ch}
+ else if(d.a){
+  const arr=D[d.t=="e"?"events":"chars"],i=arr.findIndex(x=>x.id==d.i);
+  if(d.a=="ed"){openEd(d.t,d.i);return}
+  if(d.a=="del"){if(!confirm("삭제할까요?"))return;arr.splice(i,1)}
+  if(d.a=="up"&&i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];
+  if(d.a=="dn"&&i<arr.length-1)[arr[i+1],arr[i]]=[arr[i],arr[i+1]];
+  save();
+ }
+ render();
+});
+$("q").oninput=render;$("fa").onchange=render;$("view").onchange=render;
+$("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);render()};
+$("exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,2)],{type:"application/json"}));a.download="data.json";a.click()};
+const load=d=>{if(d&&Array.isArray(d.events)&&Array.isArray(d.chars)){D=d;save();render();return true}alert("올바른 data.json 형식이 아닙니다.")};
+$("imp").onclick=()=>$("file").click();
+$("file").onchange=async ev=>{try{load(JSON.parse(await ev.target.files[0].text()))}catch(e){alert("JSON 읽기 실패")}};
+$("rst").onclick=()=>{if(confirm("초기 데이터로 되돌릴까요? 저장된 수정이 사라집니다.")){D={events:clone(SEEDE),chars:clone(SEEDC)};save();render()}};
+
+const GK="novel-gh";
+const guess=()=>{const m=location.hostname.match(/^(.+)\.github\.io$/);return{owner:m?m[1]:"",repo:m?(location.pathname.split("/")[1]||""):"",branch:"main",path:"data.json",token:""}};
+let GH;try{GH={...guess(),...JSON.parse(localStorage.getItem(GK))}}catch(e){GH=guess()}
+$("gset").onclick=()=>{const f=$("gf");["owner","repo","branch","path","token"].forEach(k=>f[k].value=GH[k]\vert{}\vert{}"");$("gdlg").showModal()};
+$("gf").addEventListener("submit",ev=>{if(ev.submitter.value!="ok")return;const f=$("gf");
+ ["owner","repo","branch","path","token"].forEach(k=>GH[k]=f[k].value.trim());
+ try{localStorage.setItem(GK,JSON.stringify(GH))}catch(e){}});
+$("gsave").onclick=async()=>{
+ if(!GH.owner||!GH.repo||!GH.token){alert("먼저 ⚙ GitHub 설정에서 아이디·저장소·토큰을 입력하세요.");$("gset").click();return}
+ const b=$("gsave"),old=b.textContent;b.textContent="저장 중...";b.disabled=true;
+ const url=`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${GH.path.split("/").map(encodeURIComponent).join("/")}`;
+ const H={Authorization:"Bearer "+GH.token,Accept:"application/vnd.github+json"};
+ try{
+  let sha;const g=await fetch(`${url}?ref=${encodeURIComponent(GH.branch)}&t=${Date.now()}`,{headers:H});
+  if(g.ok)sha=(await g.json()).sha;else if(g.status!=404)throw new Error("조회 실패 "+g.status+" (토큰·저장소 이름·권한 확인)");
+  const body={message:"update novel data "+new Date().toLocaleString("ko-KR"),content:btoa(unescape(encodeURIComponent(JSON.stringify(D,null,2)))),branch:GH.branch};
+  if(sha)body.sha=sha;
+  const p=await fetch(url,{method:"PUT",headers:{...H,"Content-Type":"application/json"},body:JSON.stringify(body)});
+  if(!p.ok)throw new Error("저장 실패 "+p.status+": "+((await p.json()).message||""));
+  b.textContent="✅ 저장됨";setTimeout(()=>{b.textContent=old},2000);
+ }catch(e){alert(e.message);b.textContent=old}
+ b.disabled=false;
+};
+
+render();
+</script>
+</body>
+</html>
