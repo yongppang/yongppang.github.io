@@ -19,7 +19,7 @@ main{max-width:1200px;margin:auto;padding:12px 16px 60px}
 .ev{display:grid;grid-template-columns:90px 1fr;gap:12px;margin:10px 0}
 .when{text-align:right;font-weight:700;padding-top:12px}.when small{display:block;color:var(--sub);font-weight:400;font-size:12px}
 .card{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:10px;padding:10px 14px}
-.card.fs{border-left-color:var(--fs)}.card h3{margin:0;font-size:16px}.pl{color:var(--sub);font-size:13px}
+.card.fs{border-left-color:var(--fs)}.card.done{outline:2px solid #55c89a;outline-offset:1px}.card h3{margin:0;font-size:16px}.pl{color:var(--sub);font-size:13px}
 .card p{margin:6px 0;white-space:pre-wrap}.tags span{display:inline-block;background:var(--bd);border-radius:6px;padding:0 7px;margin:2px 4px 2px 0;font-size:12px}
 .tags .it{background:none;border:1px dashed var(--bd);color:var(--sub)}.tags .tg{background:none;color:var(--ac);cursor:pointer}.tags .nm{cursor:pointer}
 .memo{border-top:1px dashed var(--bd);margin-top:6px;padding-top:4px;color:var(--sub);font-size:13px}.memo p{white-space:pre-wrap;max-height:420px;overflow:auto}textarea.actual-field{min-height:260px;border:2px solid var(--ac);background:#171522}
@@ -29,9 +29,9 @@ main{max-width:1200px;margin:auto;padding:12px 16px 60px}
 .kv{font-size:13px;margin:3px 0;white-space:pre-wrap}.kv b{color:var(--ac);margin-right:6px}
 table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid var(--bd);padding:6px;text-align:left;vertical-align:top}
 .tw{overflow-x:auto}
-dialog{border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx);width:min(560px,94vw)}
-dialog label{display:block;font-size:12px;color:var(--sub);margin-top:8px}dialog input:not([type=checkbox]),dialog textarea,dialog select{width:100%}
-@media(max-width:560px){.ev{grid-template-columns:1fr}.when{text-align:left;padding:0}}
+dialog{border:1px solid var(--bd);border-radius:0;background:var(--bg);color:var(--tx);width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:20px 24px;overflow:auto}
+dialog::backdrop{background:rgba(0,0,0,.72)}dialog form{width:100%;max-width:none;min-height:100%;display:flex;flex-direction:column}dialog form h3{font-size:21px;margin-bottom:12px!important}dialog label{display:block;font-size:14px;color:var(--sub);margin-top:12px}dialog input:not([type=checkbox]),dialog textarea,dialog select{width:100%;padding:10px 12px;font-size:16px}dialog textarea{min-height:110px;resize:vertical}dialog textarea.actual-field{min-height:45vh}dialog .row{margin-top:auto;padding-top:18px;position:sticky;bottom:0;background:var(--bg)}#tagbar{display:none!important}
+@media(max-width:560px){header{padding:14px 12px 4px}h1{font-size:19px}.bar{padding:8px 10px}.bar .row{gap:5px}main{padding:10px 10px 40px}.ev{grid-template-columns:1fr;gap:4px}.when{text-align:left;padding:0}.grid{grid-template-columns:1fr}dialog{padding:14px 12px}.tree-act{width:270px;flex-basis:270px}}
 </style>
 </head>
 <body>
@@ -41,9 +41,9 @@ dialog label{display:block;font-size:12px;color:var(--sub);margin-top:8px}dialog
  <span style="flex:1"></span><button class="p" id="add">+ 추가</button></div>
  <div class="row"><input id="q" placeholder="검색 (제목·내용·인물·태그·메모)">
  <select id="view"><option value="act">막별 보기</option><option value="tree">좌우 라인트리</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
- <select id="fa"><option value="">전체 막</option></select><button id="ffs">🚩 복선만</button></div>
+ <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
  <div class="row" id="tagbar"></div>
- <div class="row"><button class="p" id="gsave">☁ GitHub에 저장</button><button id="gset">⚙ GitHub 설정</button><button id="exp">내보내기(JSON)</button><button id="imp">불러오기</button><button id="srv">저장소 data.json 불러오기</button><button id="rst">초기화</button></div>
+ <div class="row"><button class="p" id="gsave">☁ GitHub에 저장</button><button id="gload">☁ GitHub에서 불러오기</button><button id="gset">⚙ GitHub 설정</button><button id="exp">내보내기(JSON)</button><button id="imp">불러오기</button><button id="srv">저장소 data.json 불러오기</button><button id="rst">초기화</button></div>
 </div>
 <main id="list"></main>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
@@ -94,7 +94,7 @@ const RAW=[
 ["D+","—","폭로 시사회와 계획","폭로 영상을 대한에게 먼저 보여줌. Coming 주일 오후 4시 헌신예배 직후 상영 예정. 주의 종들이 제지하지 못하도록 식사 접대 일정을 잡아 자리를 비우게 함. 남은 성도들의 반발은 하늘의 뜻에 맡김.","변대한,방송현","폭로 영상,PPT",4,0],
 ["D+","예배당","PPT 폭로와 교회의 파국","대형 스크린으로 PPT와 비리 영상 상영. 예배당은 충격 → '날조와 거짓말'이라 주장하는 파와 반대파가 충돌, 고성과 폭력. 뒤늦게 달려온 주의 종과 성도들로 극심한 소란. 방송현은 교회를 떠나고 대한도 교회를 완전히 떠남. 1년여에 걸친 '빛나는 우리들 교회' 이야기는 비극적 파국으로 끝.","변대한,방송현,목사","대형 스크린,PPT",4,0]
 ];
-const TR=[["헌금",/헌금|십일조|첫열매/],["교리",/교리|방언|성령|은사/],["연애",/유진|하연|예솔|교제|고백|연애/],["가정사",/가정사|칼부림|차하나|부모님|불우한 가정/],["폭로",/폭로|녹음|증거|비리/],["교통사고",/교통사고|트럭과 충돌|뇌진탕/],["교회",/교회|예배|교인|성도|목사|사모|전도|헌신예배/],["권력",/권력|주의 종|목사|큰사모|작은사모|조준일|헌금 강요|대학 진학을 막|비호|사적 용도/]];
+const TR=[];
 const SEEDE=RAW.map((r,i)=>({id:i+1,when:r[0],place:r[1],title:r[2],summary:r[3],actual:"",chars:r[4],items:r[5],act:r[6],fs:!!r[7],memo:"",
  tags:[...TR.filter(t=>t[1].test(r[2]+r[3])).map(t=>t[0]),...(r[7]?["복선"]:[])].join(",")}));
 const CH=[
@@ -112,8 +112,8 @@ const CH=[
 ["목사/큰사모/작은사모/전도사","교회","주의 종. 기복 설교, 헌금 강조, 대학 진학 방해와 조기 취업 강요(큰사모).","큰사모는 하나 사건을 알고도 조준일을 비호. 작은사모는 태양의 연애를 적발.","","두 아들 포함","악역,권력"]
 ];
 const SEEDC=CH.map((r,i)=>({id:i+1,name:r[0],role:r[1],age:"",look:"",personality:r[2],background:r[3],arc:r[4],relations:r[5],tags:r[6],memo:""}));
-const SCH={e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (쉼표)"],["items","주요 아이템 (쉼표)"],["tags","태그 (쉼표)"],["fs","🚩 복선/중요","cb"],["memo","작가 메모","ta"]],
- c:[["name","이름"],["role","역할"],["age","나이/학년"],["look","외모","ta"],["personality","성격","ta"],["background","배경","ta"],["arc","변화(arc)","ta"],["relations","관계","ta"],["tags","태그 (쉼표)"],["memo","메모","ta"]]};
+const SCH={e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (쉼표)"],["items","주요 아이템 (쉼표)"],["fs","⭐ 중요 표시","cb"],["done","작성 완료","cb"],["memo","작가 메모","ta"]],
+ c:[["name","이름"],["role","역할"],["age","나이/학년"],["look","외모","ta"],["personality","성격","ta"],["background","배경","ta"],["arc","변화(arc)","ta"],["relations","관계","ta"],["memo","메모","ta"]]};
 const KEY="novel-mgr-v2",$=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const split=s=>String(s||"").split(",").map(x=>x.trim()).filter(Boolean);
@@ -123,20 +123,19 @@ if(!D||!D.events){let v1;try{v1=JSON.parse(localStorage.getItem("novel-timeline-
  D={events:Array.isArray(v1)?v1.map(e=>({tags:"",...e})):clone(SEEDE),chars:clone(SEEDC)}}
 const save=()=>{D.acts=clone(ACTS);try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
 let tab="tl",ft=new Set(),onlyFs=false,editing=null;
+// 이전 버전에서 저장된 자동 태그를 한 번 제거한다.
+if(!D._tagsRemoved){[...D.events,...D.chars].forEach(o=>o.tags="");D._tagsRemoved=true;try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
 if(!Array.isArray(D.acts)||!D.acts.length)D.acts=clone(ACTS);
 ACTS.splice(0,ACTS.length,...D.acts);fillActFilter();
 function fillActFilter(){const sel=$("fa"),v=sel.value;sel.innerHTML='<option value="">전체 막</option>'+ACTS.map((a,i)=>`<option value="${i}">${esc(a)}</option>`).join("");if([...sel.options].some(o=>o.value===v))sel.value=v}
 fillActFilter();
 const hit=(o,q,ks)=>!q||ks.map(k=>o[k]).join(" ").toLowerCase().includes(q);
-const tagText=o=>[o.name,o.title,o.summary,o.place,o.items,o.chars,o.background,o.personality,o.relations,o.arc,o.memo].join(" ");
-const tagsOf=o=>{const text=tagText(o);return [...new Set([...split(o.tags).filter(tag=>{const known=TR.find(t=>t[0]===tag);return !known||known[1].test(text)}),...TR.filter(t=>t[1].test(text)).map(t=>t[0])])];};
-function cleanTags(){[...D.events,...D.chars].forEach(o=>{const text=tagText(o);o.tags=split(o.tags).filter(tag=>{const known=TR.find(t=>t[0]===tag);return !known||known[1].test(text)}).join(",")})}
-const tagOk=o=>[...ft].every(t=>tagsOf(o).includes(t));
+const tagOk=o=>[...ft].every(t=>split(o.tags).includes(t));
 function evHTML(e,mini){
- return `<div class="ev"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""}">
+ return `<div class="ev"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
  ${mini?"":`<div class="btns"><button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="ed" data-t="e" data-i="${e.id}">✎</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button></div>`}
- <h3>${e.fs?"🚩 ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<details class="memo"><summary>실제 소설 내용 보기</summary><p>${esc(e.actual)}</p></details>`:""}
- <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it">◇ ${esc(c)}</span>`).join("")}${tagsOf(e).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
+ <h3>${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<details class="memo"><summary>실제 소설 내용 보기</summary><p>${esc(e.actual)}</p></details>`:""}
+ <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
 function chHTML(c){
  const n=D.events.filter(e=>split(e.chars).includes(c.name)).length;
@@ -145,12 +144,11 @@ function chHTML(c){
  <h3>${esc(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3>
  ${kv("look","외모")}${kv("personality","성격")}${kv("background","배경")}${kv("arc","변화")}${kv("relations","관계")}
  <div class="kv"><b>등장</b><a href="#" data-showch="${esc(c.name)}">타임라인 ${n}건 보기</a></div>
- <div class="tags">${tagsOf(c).map(t=>`<span class="tg" data-tag="${esc(t)}">#${esc(t)}</span>`).join("")}</div>
+ <div class="tags">${split(c.tags).map(t=>`<span class="tg" data-tag="${esc(t)}">#${esc(t)}</span>`).join("")}</div>
  ${c.memo?`<div class="memo">📝 ${esc(c.memo)}</div>`:""}</div>`}
 function render(){
- cleanTags();
  const q=$("q").value.toLowerCase(),fa=$("fa").value,v=$("view").value;
- const tags=[...new Set([...D.events,...D.chars].flatMap(o=>tagsOf(o)))].sort();
+ const tags=[...new Set([...D.events,...D.chars].flatMap(o=>split(o.tags)))].sort();
  $("tagbar").innerHTML=tags.map(t=>`<button class="chip ${ft.has(t)?"on":""}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")||"<span class='pl'>태그 없음</span>";
  $("view").hidden=$("fa").hidden=$("ffs").hidden=tab!="tl";
  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab==tab));
@@ -172,7 +170,7 @@ function render(){
   else if(v=="char"){
    const names=[...new Set([...D.chars.map(c=>c.name),...L.flatMap(e=>split(e.chars))])];
    names.forEach(n=>{const l=L.filter(e=>split(e.chars).includes(n));if(l.length)h+=`<div class="act">👤 ${esc(n)} (${l.length})</div>`+l.map(e=>evHTML(e,1)).join("")})}
-  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th><th></th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td>${e.fs?"🚩 ":""}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td><td><button data-a="ed" data-t="e" data-i="${e.id}">✎</button></td></tr>`).join("")}</table></div>`;
+  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th><th></th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td>${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td><td><button data-a="ed" data-t="e" data-i="${e.id}">✎</button></td></tr>`).join("")}</table></div>`;
   $("stat").textContent=`사건 ${D.events.length}개 · 복선 ${D.events.filter(e=>e.fs).length}개 · 표시 ${L.length}개`;
  }
  $("list").innerHTML=h||"<p class='pl'>해당하는 항목이 없습니다.</p>";
@@ -238,11 +236,29 @@ $("gset").onclick=()=>{const f=$("gf");["owner","repo","branch","path","token"].
 $("gf").addEventListener("submit",ev=>{if(ev.submitter.value!="ok")return;const f=$("gf");
  ["owner","repo","branch","path","token"].forEach(k=>GH[k]=f[k].value.trim());
  try{localStorage.setItem(GK,JSON.stringify(GH))}catch(e){}});
+function ghConfigReady(){if(!GH.owner||!GH.repo||!GH.token){alert("먼저 ⚙ GitHub 설정에서 아이디·저장소·토큰을 입력하세요.");$("gset").click();return false}return true}
+function ghUrl(){return `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${GH.path.split("/").map(encodeURIComponent).join("/")}`}
+function ghHeaders(){return{Authorization:"Bearer "+GH.token,Accept:"application/vnd.github+json"}}
+$("gload").onclick=async()=>{
+ if(!ghConfigReady())return;
+ if(!confirm("GitHub의 data 파일로 현재 브라우저 데이터를 덮어쓸까요? 저장하지 않은 변경 사항은 사라집니다."))return;
+ const b=$("gload"),old=b.textContent;b.textContent="불러오는 중...";b.disabled=true;
+ try{
+  const r=await fetch(`${ghUrl()}?ref=${encodeURIComponent(GH.branch)}&t=${Date.now()}`,{headers:ghHeaders()});
+  if(!r.ok)throw new Error("불러오기 실패 "+r.status+": "+((await r.json()).message||"토큰·저장소·파일 경로를 확인하세요."));
+  const file=await r.json();
+  const bytes=Uint8Array.from(atob(file.content.replace(/\s/g,"")),c=>c.charCodeAt(0));
+  const data=JSON.parse(new TextDecoder("utf-8").decode(bytes));
+  if(!data||!Array.isArray(data.events)||!Array.isArray(data.chars))throw new Error("GitHub 파일이 올바른 소설 데이터 형식이 아닙니다.");
+  D=data;save();render();b.textContent="✅ 불러옴";setTimeout(()=>{b.textContent=old},2000);
+ }catch(e){alert(e.message);b.textContent=old}
+ b.disabled=false;
+};
 $("gsave").onclick=async()=>{
  if(!GH.owner||!GH.repo||!GH.token){alert("먼저 ⚙ GitHub 설정에서 아이디·저장소·토큰을 입력하세요.");$("gset").click();return}
  const b=$("gsave"),old=b.textContent;b.textContent="저장 중...";b.disabled=true;
- const url=`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${GH.path.split("/").map(encodeURIComponent).join("/")}`;
- const H={Authorization:"Bearer "+GH.token,Accept:"application/vnd.github+json"};
+ const url=ghUrl();
+ const H=ghHeaders();
  try{
   let sha;const g=await fetch(`${url}?ref=${encodeURIComponent(GH.branch)}&t=${Date.now()}`,{headers:H});
   if(g.ok)sha=(await g.json()).sha;else if(g.status!=404)throw new Error("조회 실패 "+g.status+" (토큰·저장소 이름·권한 확인)");
