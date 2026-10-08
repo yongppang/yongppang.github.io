@@ -7,14 +7,14 @@
 <style>
 :root{color-scheme:dark;--bg:#111318;--card:#1b1f27;--tx:#e8eaf0;--sub:#a0a6b5;--bd:#343a46;--ac:#9b8cff;--fs:#ff7b80}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 "Pretendard","Noto Sans KR",system-ui,sans-serif}
-header{padding:20px 16px 4px;max-width:1200px;margin:auto}h1{margin:0;font-size:21px}#stat{margin:2px 0;color:var(--sub);font-size:12px}
-.bar{position:sticky;top:0;background:var(--bg);z-index:5;max-width:1200px;margin:auto;padding:8px 16px;border-bottom:1px solid var(--bd)}
+header{padding:20px 16px 4px;width:100%;max-width:none;margin:0}h1{margin:0;font-size:21px}#stat{margin:2px 0;color:var(--sub);font-size:12px}
+.bar{position:sticky;top:0;background:var(--bg);z-index:5;width:100%;max-width:none;margin:0;padding:8px 16px;border-bottom:1px solid var(--bd)}
 .row{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0;align-items:center}
 input,select,textarea,button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:5px 10px}
 button{cursor:pointer}button:hover{border-color:var(--ac)}button.p,button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 #q{flex:1;min-width:140px}.chip{border-radius:99px;padding:1px 10px;font-size:12px}
 .tab{font-weight:700;border:none;border-bottom:3px solid transparent;border-radius:0;background:none}.tab.on{color:var(--ac);background:none;border-bottom-color:var(--ac)}
-main{max-width:1200px;margin:auto;padding:12px 16px 60px}
+main{width:100%;max-width:none;margin:0;padding:12px 16px 60px}
 .act{margin:26px 0 6px;font-weight:700;color:var(--ac);border-bottom:2px solid var(--ac)}
 .ev{display:grid;grid-template-columns:90px 1fr;gap:12px;margin:10px 0}
 .when{text-align:right;font-weight:700;padding-top:12px}.when small{display:block;color:var(--sub);font-weight:400;font-size:12px}
