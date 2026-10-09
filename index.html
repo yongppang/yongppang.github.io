@@ -8,7 +8,7 @@
 :root{color-scheme:dark;--bg:#111318;--card:#1b1f27;--tx:#e8eaf0;--sub:#a0a6b5;--bd:#343a46;--ac:#9b8cff;--fs:#ff7b80}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 "Pretendard","Noto Sans KR",system-ui,sans-serif}
 header{padding:20px 16px 4px;width:100%;max-width:none;margin:0}h1{margin:0;font-size:21px}#stat{margin:2px 0;color:var(--sub);font-size:12px}
-.bar{position:sticky;top:0;background:var(--bg);z-index:5;width:100%;max-width:none;margin:0;padding:8px 16px;border-bottom:1px solid var(--bd)}
+.bar{position:sticky;top:0;background:var(--bg);z-index:20;width:100%;max-width:none;margin:0;padding:8px 16px;border-bottom:1px solid var(--bd);box-shadow:0 4px 12px #0003}.bar.collapsed .row:not(:first-child){display:none}.bar.collapsed{padding-bottom:6px}.menu-toggle{white-space:nowrap}.tree-wrap{height:calc(100dvh - 170px);min-height:240px;overflow:auto;padding:8px 0 24px;scrollbar-width:thin;overscroll-behavior:contain}.tree{align-items:flex-start}.tree-act{align-self:flex-start}
 .row{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0;align-items:center}
 input,select,textarea,button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:5px 10px}
 button{cursor:pointer}button:hover{border-color:var(--ac)}button.p,button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
@@ -25,20 +25,20 @@ main{width:100%;max-width:none;margin:0;padding:12px 16px 60px}
 .memo{border-top:1px dashed var(--bd);margin-top:6px;padding-top:4px;color:var(--sub);font-size:13px}.memo p{white-space:pre-wrap;max-height:420px;overflow:auto}textarea.actual-field{min-height:260px;border:2px solid var(--ac);background:#171522}
 .btns{float:right;display:flex;gap:2px}.btns button{padding:0 7px;font-size:12px;border:none;background:none;color:var(--sub)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-.tree-wrap{overflow-x:auto;padding:8px 0 24px;scrollbar-width:thin}.tree{display:flex;align-items:stretch;gap:18px;min-width:max-content;padding:18px 8px 24px;position:relative}.tree-act{width:300px;flex:0 0 300px;position:relative;padding-top:28px}.tree-act:before{content:"";position:absolute;top:12px;left:-18px;right:-18px;height:2px;background:var(--ac);opacity:.55}.tree-act:first-child:before{left:0}.tree-act h2{position:absolute;top:-2px;left:0;margin:0;padding:2px 10px;background:var(--ac);color:#fff;border-radius:7px;font-size:13px;max-width:290px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tree-node{position:relative;margin:12px 0;padding-left:15px}.tree-node:before{content:"";position:absolute;left:0;top:-12px;bottom:-12px;width:2px;background:var(--bd)}.tree-node:after{content:"";position:absolute;left:0;top:18px;width:12px;height:2px;background:var(--ac)}.tree-node:last-child:before{bottom:calc(100% - 20px)}.tree-node .card{padding:9px 10px}.tree-node .card p{font-size:13px;max-height:150px;overflow:auto}.act-tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.act-tools button{font-size:12px}.btns button{font-size:13px;padding:2px 6px}.danger{color:var(--fs)!important}
+.tree-wrap{overflow-x:auto;padding:8px 0 24px;scrollbar-width:thin}.tree{display:flex;align-items:stretch;gap:18px;min-width:max-content;padding:18px 8px 24px;position:relative}.tree-act{width:300px;flex:0 0 300px;position:relative;padding-top:28px}.tree-act:before{content:"";position:absolute;top:12px;left:-18px;right:-18px;height:2px;background:var(--ac);opacity:.55}.tree-act:first-child:before{left:0}.tree-act h2{position:absolute;top:-2px;left:0;margin:0;padding:2px 10px;background:var(--ac);color:#fff;border-radius:7px;font-size:13px;max-width:290px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tree-node{position:relative;margin:12px 0;padding-left:15px}.tree-node:before{content:"";position:absolute;left:0;top:-12px;bottom:-12px;width:2px;background:var(--bd)}.tree-node:after{content:"";position:absolute;left:0;top:18px;width:12px;height:2px;background:var(--ac)}.tree-node:last-child:before{bottom:calc(100% - 20px)}.tree-node .card{padding:9px 10px}.tree-node .card p{font-size:13px;max-height:150px;overflow:auto}.insert-slot{display:flex;align-items:center;gap:8px;margin:0 0 8px 102px;color:var(--sub);font-size:12px}.insert-slot:before,.insert-slot:after{content:"";height:1px;background:var(--bd);flex:1}.tree-insert{display:flex;align-items:center;gap:6px;margin:0 0 10px 15px;color:var(--sub);font-size:12px}.tree-insert:before,.tree-insert:after{content:"";height:1px;background:var(--bd);flex:1}.insert-slot button,.tree-insert button{font-size:12px;padding:3px 9px;border-style:dashed;color:var(--ac);white-space:nowrap}.act-tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.act-tools button{font-size:12px}.btns button{font-size:13px;padding:2px 6px}.danger{color:var(--fs)!important}
 .kv{font-size:13px;margin:3px 0;white-space:pre-wrap}.kv b{color:var(--ac);margin-right:6px}
 table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid var(--bd);padding:6px;text-align:left;vertical-align:top}
 .tw{overflow-x:auto}
 dialog{border:1px solid var(--bd);border-radius:0;background:var(--bg);color:var(--tx);width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:20px 24px;overflow:auto}
 dialog::backdrop{background:rgba(0,0,0,.72)}dialog form{width:100%;max-width:none;min-height:100%;display:flex;flex-direction:column}dialog form h3{font-size:21px;margin-bottom:12px!important}dialog label{display:block;font-size:14px;color:var(--sub);margin-top:12px}dialog input:not([type=checkbox]),dialog textarea,dialog select{width:100%;padding:10px 12px;font-size:16px}dialog textarea{min-height:110px;resize:vertical}dialog textarea.actual-field{min-height:45vh}dialog .row{margin-top:auto;padding-top:18px;position:sticky;bottom:0;background:var(--bg)}#tagbar{display:none!important}
-@media(max-width:560px){header{padding:14px 12px 4px}h1{font-size:19px}.bar{padding:8px 10px}.bar .row{gap:5px}main{padding:10px 10px 40px}.ev{grid-template-columns:1fr;gap:4px}.when{text-align:left;padding:0}.grid{grid-template-columns:1fr}dialog{padding:14px 12px}.tree-act{width:270px;flex-basis:270px}}
+@media(max-width:560px){.tree-wrap{height:calc(100dvh - 145px)}header{padding:14px 12px 4px}h1{font-size:19px}.bar{padding:8px 10px}.bar .row{gap:5px}main{padding:10px 10px 40px}.ev{grid-template-columns:1fr;gap:4px}.when{text-align:left;padding:0}.grid{grid-template-columns:1fr}dialog{padding:14px 12px}.tree-act{width:270px;flex-basis:270px}}
 </style>
 </head>
 <body>
 <header><h1>📖 빛나는 우리들 교회 · 소설 관리</h1><div class="pl">수정본 · 사건 편집창에 ‘실제 내용 (소설 원문)’ 입력란 포함</div><div id="stat"></div></header>
 <div class="bar">
  <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button><button id="actsEdit">막/프롤로그 편집</button>
- <span style="flex:1"></span><button class="p" id="add">+ 추가</button></div>
+ <span style="flex:1"></span><button class="menu-toggle" id="menuToggle" aria-expanded="true">⌃ 메뉴 접기</button><button class="p" id="add">+ 추가</button></div>
  <div class="row"><input id="q" placeholder="검색 (제목·내용·인물·태그·메모)">
  <select id="view"><option value="act">막별 보기</option><option value="tree">좌우 라인트리</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
@@ -159,11 +159,11 @@ function render(){
   $("stat").textContent=`인물 ${D.chars.length}명 · 표시 ${L.length}`;
  }else{
   const L=D.events.filter(e=>hit(e,q,["title","summary","actual","place","items","chars","tags","memo"])&&tagOk(e)&&(fa===""||e.act==fa)&&(!onlyFs||e.fs));
-  if(v=="act"){let last=-1;L.forEach(e=>{if(e.act!=last){h+=`<div class="act">${esc(ACTS[e.act])}</div>`;last=e.act}h+=evHTML(e)})}
+  if(v=="act"){let last=-1;L.forEach(e=>{if(e.act!=last){h+=`<div class="act">${esc(ACTS[e.act])}</div>`;last=e.act}h+=evHTML(e)+`<div class="insert-slot"><button data-a="ins" data-t="e" data-i="${e.id}">＋ 이 사건 다음에 삽입</button></div>`})}
   else if(v=="tree"){
    h='<div class="tree-wrap"><div class="tree">';
    ACTS.forEach((a,ai)=>{const group=L.filter(e=>+e.act===ai);h+=`<section class="tree-act"><h2>${esc(a)} · ${group.length}개</h2>`;
-    group.forEach(e=>{h+=`<div class="tree-node">${evHTML(e)}</div>`});
+    group.forEach(e=>{h+=`<div class="tree-node">${evHTML(e)}</div><div class="tree-insert"><button data-a="ins" data-t="e" data-i="${e.id}">＋ 여기 다음에 삽입</button></div>`});
     h+='</section>';
    });h+='</div></div>';
   }
@@ -175,8 +175,8 @@ function render(){
  }
  $("list").innerHTML=h||"<p class='pl'>해당하는 항목이 없습니다.</p>";
 }
-function openEd(t,id){
- editing={t,id};const o=(id&&D[t=="e"?"events":"chars"].find(x=>x.id==id))||{act:2,when:"D+"};
+function openEd(t,id,insertAfterId=null){
+ editing={t,id,insertAfterId};const anchor=insertAfterId!=null?D.events.find(x=>x.id===insertAfterId):null;const o=(id&&D[t=="e"?"events":"chars"].find(x=>x.id==id))||(anchor?{act:+anchor.act,when:anchor.when,place:anchor.place}:{act:2,when:"D+"});
  $("f").innerHTML=`<h3 style="margin:0">${t=="e"?"사건":"인물"} ${id?"수정":"추가"}</h3>`+SCH[t].map(([k,l,ty])=>{
   const val=o[k]??"";
   if(ty=="ta")return `<label>${l}</label><textarea class="${k==="actual"?"actual-field":""}" name="${k}" rows="${k==="actual"?12:3}" placeholder="${k==="summary"?"사건의 핵심을 간단히 요약해 주세요.":k==="actual"?"이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.":""}">${esc(val)}</textarea>`;
@@ -189,7 +189,7 @@ function openEd(t,id){
 $("f").addEventListener("submit",ev=>{
  if(ev.submitter.value!="ok")return;const {t,id}=editing,f=$("f"),arr=D[t=="e"?"events":"chars"],d={};
  SCH[t].forEach(([k,,ty])=>d[k]=ty=="cb"?f[k].checked:ty=="sel"?+f[k].value:f[k].value);
- if(id)Object.assign(arr.find(x=>x.id==id),d);else arr.push({id:Math.max(0,...arr.map(x=>x.id))+1,...d});
+ if(id)Object.assign(arr.find(x=>x.id==id),d);else {const fresh={id:Math.max(0,...arr.map(x=>x.id))+1,...d};if(t==="e"&&editing.insertAfterId!=null){const at=arr.findIndex(x=>x.id===editing.insertAfterId);arr.splice(at<0?arr.length:at+1,0,fresh)}else arr.push(fresh)}
  save();render();
 });
 function drawActRows(){
@@ -213,6 +213,7 @@ document.addEventListener("click",ev=>{
  else if(d.a){
   const arr=D[d.t=="e"?"events":"chars"],i=arr.findIndex(x=>x.id==d.i);
   if(d.a=="ed"){openEd(d.t,d.i);return}
+  if(d.a=="ins"){openEd("e",null,+d.i);return}
   if(d.a=="del"){if(!confirm(`「${arr[i].title||arr[i].name}」을(를) 삭제할까요? 삭제 후에는 복구할 수 없습니다.`))return;arr.splice(i,1)}
   if(d.a=="up"&&i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];
   if(d.a=="dn"&&i<arr.length-1)[arr[i+1],arr[i]]=[arr[i],arr[i+1]];
@@ -272,7 +273,8 @@ $("gsave").onclick=async()=>{
 };
 (async()=>{ // 저장된 로컬 데이터가 없으면 저장소의 data.json을 자동 로드
  if(!localStorage.getItem(KEY)){try{const r=await fetch("data.json");if(r.ok){const d=await r.json();if(d&&d.events&&d.chars)D=d}}catch(e){}}
- render();
+ document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄ 메뉴 펼치기":"⌃ 메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
+render();
 })();
 </script>
 </body>
