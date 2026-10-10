@@ -99,22 +99,22 @@ dialog::backdrop{background:rgba(0,0,0,.72)}dialog form{width:100%;max-width:non
  <select id="view"><option value="tree" selected>좌우 라인트리</option><option value="act">막별 보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
  <div class="row" id="tagbar"></div>
- <div class="row"><button class="p" id="gsave">☁ GitHub에 저장</button><button id="gload" class="warn">⚠️ ☁ GitHub에서 불러오기</button><button id="gset">⚙ GitHub 설정</button><button id="exp">내보내기(JSON)</button><button id="imp" class="warn">⚠️ 불러오기</button><button id="srv" class="warn">⚠️ 저장소 data.json 불러오기</button><button id="rst">초기화</button></div>
+ <div class="row"><button class="p" id="gsave">☁ GitHub에 저장</button><!-- 불러오기 비활성화 <button id="gload" class="warn">⚠️ ☁ GitHub에서 불러오기</button> --><button id="gset">⚙ GitHub 설정</button><button id="exp">내보내기(JSON)</button><!-- 불러오기 비활성화 <button id="imp" class="warn">⚠️ 불러오기</button><button id="srv" class="warn">⚠️ 저장소 data.json 불러오기</button> --><button id="rst">초기화</button></div>
 </div>
 <main id="list"></main>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
 <dialog id="gdlg"><form method="dialog" id="gf">
 <h3 style="margin:0">GitHub 저장 설정</h3>
-<label>GitHub 아이디(owner)</label><input name="owner">
-<label>저장소 이름(repo)</label><input name="repo">
-<label>브랜치</label><input name="branch">
+<label>GitHub 아이디(owner) · 고정</label><input name="owner" value="yongppang" readonly>
+<label>저장소 이름(repo) · 고정</label><input name="repo" value="yongppang.github.io" readonly>
+<label>브랜치 · 고정</label><input name="branch" value="main" readonly>
 <label>저장할 파일 경로</label><input name="path">
 <label>Personal Access Token (이 브라우저에만 저장됩니다)</label><input name="token" type="password" placeholder="github_pat_...">
 <p class="pl">GitHub → Settings → Developer settings → Fine-grained tokens에서 <b>이 저장소만</b> 선택하고 Contents 권한을 Read and write로 발급하세요.</p>
 <div class="row"><button class="p" value="ok">저장</button><button value="cancel" formnovalidate>취소</button></div>
 </form></dialog>
-<input type="file" id="file" accept=".json" hidden>
+<!-- 불러오기 비활성화 <input type="file" id="file" accept=".json" hidden> -->
 <script>
 const ACTS=["프롤로그","1막","2막","3막","4막"];
 const DEFTITLE="📖 소설 관리";
@@ -447,21 +447,26 @@ $("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);rend
 $("exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,2)],{type:"application/json"}));a.download="data.json";a.click()};
 const WARN="⚠️ *주의* ⚠️\n\n";
 const load=d=>{if(d&&Array.isArray(d.events)&&Array.isArray(d.chars)){D=d;normalizeData();fillActFilter();save();render();return true}alert(WARN+"올바른 data.json 형식이 아닙니다.\n기존 데이터는 변경되지 않았습니다.")};
+/* 불러오기 비활성화 (필요하면 이 주석을 풀고 위 HTML 버튼 주석도 해제)
 $("imp").onclick=()=>{if(!confirm(WARN+"불러온 JSON 파일의 내용으로 현재 데이터를 덮어씁니다.\n저장하지 않은 변경 사항은 모두 사라지며 복구할 수 없습니다.\n\n파일을 선택할까요?"))return;$("file").click()};
 $("file").onchange=async ev=>{const fl=ev.target.files[0];if(!fl)return;try{load(JSON.parse(await fl.text()))}catch(e){alert(WARN+"JSON 읽기에 실패했습니다.\n기존 데이터는 변경되지 않았습니다.")}ev.target.value=""};
 $("srv").onclick=async()=>{try{const r=await fetch("data.json?"+Date.now());if(!r.ok)throw 0;if(confirm(WARN+"저장소의 data.json으로 현재 데이터를 덮어씁니다.\n저장하지 않은 변경 사항은 모두 사라지며 복구할 수 없습니다.\n\n계속할까요?"))load(await r.json())}catch(e){alert(WARN+"data.json을 찾을 수 없습니다. (GitHub Pages 등 웹에서 열어야 합니다)")}};
+*/
 $("rst").onclick=()=>{if(confirm("초기 데이터로 되돌릴까요? 저장된 수정이 사라집니다.")){D={events:clone(SEEDE),chars:clone(SEEDC),items:clone(SEEDI)};save();render()}};
 
 const GK="novel-gh";
-const guess=()=>{const m=location.hostname.match(/^(.+)\.github\.io$/);return{owner:m?m[1]:"",repo:m?(location.pathname.split("/")[1]||""):"",branch:"main",path:"data.json",token:""}};
+const FIXED={owner:"yongppang",repo:"yongppang.github.io",branch:"main"}; // 아이디·저장소·브랜치 고정
+const guess=()=>({...FIXED,path:"data.json",token:""});
 let GH;try{GH={...guess(),...JSON.parse(localStorage.getItem(GK))}}catch(e){GH=guess()}
-$("gset").onclick=()=>{const f=$("gf");["owner","repo","branch","path","token"].forEach(k=>f[k].value=GH[k]||"");$("gdlg").showModal()};
+Object.assign(GH,FIXED);
+$("gset").onclick=()=>{const f=$("gf");["owner","repo","branch","path","token"].forEach(k=>f[k].value=GH[k]||"");["owner","repo","branch"].forEach(k=>{f[k].value=FIXED[k];f[k].readOnly=true});$("gdlg").showModal()};
 $("gf").addEventListener("submit",ev=>{if(ev.submitter.value!="ok")return;const f=$("gf");
- ["owner","repo","branch","path","token"].forEach(k=>GH[k]=f[k].value.trim());
+ ["owner","repo","branch","path","token"].forEach(k=>GH[k]=f[k].value.trim());Object.assign(GH,FIXED);
  try{localStorage.setItem(GK,JSON.stringify(GH))}catch(e){}});
 function ghConfigReady(){if(!GH.owner||!GH.repo||!GH.token){alert("먼저 ⚙ GitHub 설정에서 아이디·저장소·토큰을 입력하세요.");$("gset").click();return false}return true}
 function ghUrl(){return `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${GH.path.split("/").map(encodeURIComponent).join("/")}`}
 function ghHeaders(){return{Authorization:"Bearer "+GH.token,Accept:"application/vnd.github+json"}}
+/* 불러오기 비활성화
 $("gload").onclick=async()=>{
  if(!ghConfigReady())return;
  if(!confirm(WARN+"GitHub의 data 파일로 현재 브라우저 데이터를 덮어씁니다.\n저장하지 않은 변경 사항은 모두 사라지며 복구할 수 없습니다.\n\n계속할까요?"))return;
@@ -477,6 +482,7 @@ $("gload").onclick=async()=>{
  }catch(e){alert(WARN+e.message);b.textContent=old}
  b.disabled=false;
 };
+*/
 $("gsave").onclick=async()=>{
  if(!GH.owner||!GH.repo||!GH.token){alert("먼저 ⚙ GitHub 설정에서 아이디·저장소·토큰을 입력하세요.");$("gset").click();return}
  const b=$("gsave"),old=b.textContent;b.textContent="저장 중...";b.disabled=true;
@@ -495,7 +501,7 @@ $("gsave").onclick=async()=>{
  b.disabled=false;
 };
 (async()=>{ // 저장된 로컬 데이터가 없으면 저장소의 data.json을 자동 로드
- if(!localStorage.getItem(KEY)){try{const r=await fetch("data.json");if(r.ok){const d=await r.json();if(d&&d.events&&d.chars){load(d)}}}catch(e){}}
+ // 불러오기 비활성화: if(!localStorage.getItem(KEY)){try{const r=await fetch("data.json");if(r.ok){const d=await r.json();if(d&&d.events&&d.chars){load(d)}}}catch(e){}}
  document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄ 메뉴 펼치기":"⌃ 메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
 render();
 })();
