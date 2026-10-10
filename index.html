@@ -59,6 +59,11 @@ main{width:100%;padding:12px 16px 60px}
 .clk{cursor:pointer}h3.clk:hover{color:var(--ac)}p.clk:hover{background:#9b8cff12;border-radius:6px}
 /* 소설 내용 보기 */
 .nv-h{margin:22px 0 4px;font-size:18px;font-weight:700;color:var(--ac)}.nv-b{white-space:pre-wrap;line-height:1.9;font-size:16px}.nv-empty{color:var(--sub)}
+.nv-code{margin-top:8px;border:1px solid var(--bd);border-radius:8px;background:#0e1014;padding:8px 0;font-size:15px;line-height:1.8}
+.nl{display:flex;align-items:flex-start}.nl:hover{background:#ffffff08}
+.nl .ln{flex:none;width:var(--w);box-sizing:content-box;text-align:right;padding:0 12px 0 10px;margin-right:12px;border-right:1px solid var(--bd);color:#6c7388;font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none}
+.nl .lt{flex:1;min-width:0;white-space:pre-wrap;word-break:break-word;padding-right:12px}
+.nl.nh .lt{font-weight:700;color:var(--ac)}
 /* 실제 내용 입력창 도구 */
 .acthead{display:flex;align-items:center;justify-content:space-between}
 .fsoff{display:none}
@@ -426,13 +431,23 @@ $("af").addEventListener("submit",ev=>{if(ev.submitter.value!=="ok")return;const
 $("add").onclick=()=>openEd(tab=="tl"?"e":tab=="it"?"i":"c");
 // ===== 소설 내용 보기: [제목] 내용 형식으로 이어서 표시 =====
 const novelList=()=>D.events.filter(e=>String(e.actual||"").trim());
+// 전체를 하나의 문서처럼 줄 단위로 만든다. (줄 번호 = 전체 복사 텍스트의 줄 번호와 동일)
+function novelLines(){
+ const out=[];
+ novelList().forEach((e,i)=>{
+  if(i)out.push({t:""}); // 사건 사이 빈 줄
+  out.push({t:`[${e.title}]`,h:true});
+  String(e.actual).replace(/\r\n?/g,"\n").replace(/\n+$/,"").split("\n").forEach(t=>out.push({t}));
+ });
+ return out;
+}
 $("viewNovel").onclick=()=>{
- const L=novelList();
- $("nsum").textContent=`내용이 작성된 사건 ${L.length}개 / 전체 ${D.events.length}개`;
- $("nbody").innerHTML=L.length?L.map(e=>`<div class="nv-h">[${esc(e.title)}]</div><div class="nv-b">${esc(e.actual)}</div>`).join(""):'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
+ const L=novelList(),lines=novelLines();
+ $("nsum").textContent=`내용이 작성된 사건 ${L.length}개 / 전체 ${D.events.length}개 · 총 ${lines.length}줄`;
+ $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
  $("ndlg").showModal();
 };
-$("ncopy").onclick=async()=>{const t=novelList().map(e=>`[${e.title}]\n${e.actual}`).join("\n\n");const b=$("ncopy"),old=b.textContent;try{await navigator.clipboard.writeText(t);b.textContent="✅ 복사됨"}catch(e){b.textContent="복사 실패"}setTimeout(()=>{b.textContent=old},1500)};
+$("ncopy").onclick=async()=>{const t=novelLines().map(l=>l.t).join("\n");const b=$("ncopy"),old=b.textContent;try{await navigator.clipboard.writeText(t);b.textContent="✅ 복사됨"}catch(e){b.textContent="복사 실패"}setTimeout(()=>{b.textContent=old},1500)};
 document.addEventListener("click",ev=>{
  const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit]");if(!el)return;
  const d=el.dataset;
