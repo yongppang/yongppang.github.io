@@ -226,21 +226,6 @@
       "done": false
     },
     {
-      "id": 16,
-      "when": "D+",
-      "place": "—",
-      "title": "한태양의 가정사",
-      "summary": "태양이 부모님의 과거 칼부림 사건과 그로 인한 깊은 상처를 털어놓음.",
-      "actual": "",
-      "chars": "한태양,변대한",
-      "items": "",
-      "act": 3,
-      "fs": false,
-      "memo": "",
-      "tags": "",
-      "done": false
-    },
-    {
       "id": 17,
       "when": "D+",
       "place": "—",
@@ -299,6 +284,21 @@
       "done": false,
       "memo": "",
       "tags": ""
+    },
+    {
+      "id": 16,
+      "when": "D+",
+      "place": "—",
+      "title": "한태양의 가정사",
+      "summary": "태양이 부모님의 과거 칼부림 사건과 그로 인한 깊은 상처를 털어놓음.",
+      "actual": "",
+      "chars": "한태양,변대한",
+      "items": "",
+      "act": 4,
+      "fs": false,
+      "memo": "",
+      "tags": "",
+      "done": false
     },
     {
       "id": 20,
