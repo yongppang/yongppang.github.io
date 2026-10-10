@@ -147,7 +147,8 @@
       "items": "",
       "fs": false,
       "done": false,
-      "memo": ""
+      "memo": "",
+      "tags": ""
     },
     {
       "id": 11,
@@ -461,7 +462,8 @@
       "items": "",
       "fs": false,
       "done": false,
-      "memo": ""
+      "memo": "",
+      "tags": ""
     }
   ],
   "chars": [
