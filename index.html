@@ -56,6 +56,9 @@ main{width:100%;padding:12px 16px 60px}
 .insert-slot:before,.insert-slot:after{content:"";height:1px;background:var(--bd);flex:1}
 .insert-slot button{font-size:12px;padding:3px 9px;border-style:dashed;color:var(--ac);white-space:nowrap}
 .danger{color:var(--fs)!important}
+.clk{cursor:pointer}h3.clk:hover{color:var(--ac)}p.clk:hover{background:#9b8cff12;border-radius:6px}
+/* 소설 내용 보기 */
+.nv-h{margin:22px 0 4px;font-size:18px;font-weight:700;color:var(--ac)}.nv-b{white-space:pre-wrap;line-height:1.9;font-size:16px}.nv-empty{color:var(--sub)}
 /* 실제 내용 입력창 도구 */
 .acthead{display:flex;align-items:center;justify-content:space-between}
 .fsoff{display:none}
@@ -94,7 +97,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}dialog form{width:100%;max-width:non
 <header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span class="pl" id="sub">수정본 · 사건 편집창에 ‘실제 내용 (소설 원문)’ 입력란 포함</span><span id="stat"></span></header>
 <div class="bar">
  <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button><button class="tab" data-tab="it">아이템설정</button><button id="actsEdit">막 설정</button>
- <span style="flex:1"></span><button class="menu-toggle" id="menuToggle" aria-expanded="true">⌃ 메뉴 접기</button><button class="p" id="add">+ 추가</button></div>
+ <span style="flex:1"></span><button class="menu-toggle" id="menuToggle" aria-expanded="true">⌃ 메뉴 접기</button><button id="viewNovel">📖 소설내용보기</button><button class="p" id="add">+ 추가</button></div>
  <div class="row"><input id="q" placeholder="검색 (제목·내용·인물·태그·메모)">
  <select id="view"><option value="tree" selected>좌우 라인트리</option><option value="act">막별 보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
@@ -104,6 +107,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}dialog form{width:100%;max-width:non
 <main id="list"></main>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
+<dialog id="ndlg"><form method="dialog" id="nf"><h3 style="margin:0">📖 소설 내용 보기</h3><p class="pl" id="nsum"></p><div id="nbody"></div><div class="row"><button type="button" id="ncopy">전체 복사</button><span style="flex:1"></span><button class="p" value="close" formnovalidate>닫기</button></div></form></dialog>
 <dialog id="gdlg"><form method="dialog" id="gf">
 <h3 style="margin:0">GitHub 저장 설정</h3>
 <label>GitHub 아이디(owner) · 고정</label><input name="owner" value="yongppang" readonly>
@@ -206,15 +210,15 @@ $("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand(
 
 function evHTML(e,mini,drag){
  return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
- ${mini?"":`<div class="btns"><button data-a="ed" data-t="e" data-i="${e.id}">✎</button>${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button></div>`}
- <h3>${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<details class="memo"><summary>실제 소설 내용 보기</summary><p>${esc(e.actual)}</p></details>`:""}
+ ${mini?"":`<div class="btns">${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button></div>`}
+ <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정"><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<details class="memo"><summary>실제 소설 내용 보기</summary><p>${esc(e.actual)}</p></details>`:""}
  <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
 function chHTML(c){
  const n=D.events.filter(e=>split(e.chars).includes(c.name)).length;
  const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
- return `<div class="card"><div class="btns"><button data-a="ed" data-t="c" data-i="${c.id}">✎</button><button data-a="del" data-t="c" data-i="${c.id}">✕</button></div>
- <h3>${esc(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3>
+ return `<div class="card"><div class="btns"><button data-a="del" data-t="c" data-i="${c.id}">✕</button></div>
+ <h3 class="clk" data-a="ed" data-t="c" data-i="${c.id}" title="클릭하면 수정">${esc(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3>
  ${kv("look","외모")}${kv("personality","성격")}${kv("background","배경")}${kv("arc","변화")}${kv("relations","관계")}
  <div class="kv"><b>등장</b><a href="#" data-showch="${esc(c.name)}">타임라인 ${n}건 보기</a></div>
  <div class="tags">${split(c.tags).map(t=>`<span class="tg" data-tag="${esc(t)}">#${esc(t)}</span>`).join("")}</div>
@@ -223,8 +227,8 @@ function itHTML(c){
  const n=D.events.filter(e=>split(e.items).includes(c.name)).length;
  const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
  const own=split(c.owner).map(nm=>D.chars.some(x=>x.name===nm)?`<a href="#" data-ch="${esc(nm)}">${esc(nm)}</a>`:esc(nm)).join(", ");
- return `<div class="card"><div class="btns"><button data-a="ed" data-t="i" data-i="${c.id}">✎</button><button data-a="del" data-t="i" data-i="${c.id}">✕</button></div>
- <h3>◇ ${esc(c.name)}</h3>${kv("desc","설명")}${c.owner?`<div class="kv"><b>관련 인물</b>${own}</div>`:""}
+ return `<div class="card"><div class="btns"><button data-a="del" data-t="i" data-i="${c.id}">✕</button></div>
+ <h3 class="clk" data-a="ed" data-t="i" data-i="${c.id}" title="클릭하면 수정">◇ ${esc(c.name)}</h3>${kv("desc","설명")}${c.owner?`<div class="kv"><b>관련 인물</b>${own}</div>`:""}
  <div class="kv"><b>등장</b><a href="#" data-showit="${esc(c.name)}">타임라인 ${n}건 보기</a></div>
  ${c.memo?`<div class="memo">📝 ${esc(c.memo)}</div>`:""}</div>`}
 function render(){
@@ -259,7 +263,7 @@ function render(){
   else if(v=="char"){
    const names=[...new Set([...D.chars.map(c=>c.name),...L.flatMap(e=>split(e.chars))])];
    names.forEach(n=>{const l=L.filter(e=>split(e.chars).includes(n));if(l.length)h+=`<div class="act">👤 ${esc(n)} (${l.length})</div>`+l.map(e=>evHTML(e,1)).join("")})}
-  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th><th></th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td>${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td><td><button data-a="ed" data-t="e" data-i="${e.id}">✎</button></td></tr>`).join("")}</table></div>`;
+  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td></tr>`).join("")}</table></div>`;
   $("stat").textContent=`사건 ${D.events.length}개 · 복선 ${D.events.filter(e=>e.fs).length}개 · 표시 ${L.length}개`;
  }
  $("list").innerHTML=h||"<p class='pl'>해당하는 항목이 없습니다.</p>";
@@ -420,6 +424,15 @@ $("actRows").addEventListener("click",ev=>{const b=ev.target.closest("button");i
 });
 $("af").addEventListener("submit",ev=>{if(ev.submitter.value!=="ok")return;const inputs=[...document.querySelectorAll("[data-actname]")];const names=inputs.map(el=>el.value.trim()).filter(Boolean);if(!names.length){ev.preventDefault();alert("막 이름을 하나 이상 입력하세요.");return}ACTS.splice(0,ACTS.length,...names);D.events.forEach(e=>{e.act=Math.min(Math.max(0,+e.act||0),ACTS.length-1)});save();fillActFilter();render()});
 $("add").onclick=()=>openEd(tab=="tl"?"e":tab=="it"?"i":"c");
+// ===== 소설 내용 보기: [제목] 내용 형식으로 이어서 표시 =====
+const novelList=()=>D.events.filter(e=>String(e.actual||"").trim());
+$("viewNovel").onclick=()=>{
+ const L=novelList();
+ $("nsum").textContent=`내용이 작성된 사건 ${L.length}개 / 전체 ${D.events.length}개`;
+ $("nbody").innerHTML=L.length?L.map(e=>`<div class="nv-h">[${esc(e.title)}]</div><div class="nv-b">${esc(e.actual)}</div>`).join(""):'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
+ $("ndlg").showModal();
+};
+$("ncopy").onclick=async()=>{const t=novelList().map(e=>`[${e.title}]\n${e.actual}`).join("\n\n");const b=$("ncopy"),old=b.textContent;try{await navigator.clipboard.writeText(t);b.textContent="✅ 복사됨"}catch(e){b.textContent="복사 실패"}setTimeout(()=>{b.textContent=old},1500)};
 document.addEventListener("click",ev=>{
  const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit]");if(!el)return;
  const d=el.dataset;
