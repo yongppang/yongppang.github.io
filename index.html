@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>소설 관리</title>
 <style>
-:root{color-scheme:dark;--bg:#111318;--card:#1b1f27;--tx:#e8eaf0;--sub:#a0a6b5;--bd:#343a46;--ac:#9b8cff;--fs:#ff7b80}
+:root{color-scheme:light;--bg:#ffffff;--card:#ffffff;--blk:#ece8ff;--blkbd:#c9c0f7;--tx:#1f2330;--sub:#6a7083;--bd:#d5d9e3;--ac:#6c5ce7;--fs:#e5484d}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 "Pretendard","Noto Sans KR",system-ui,sans-serif}
 header{display:flex;flex-wrap:nowrap;align-items:baseline;gap:12px;padding:10px 16px 2px;width:100%;overflow:hidden}
 h1{margin:0;font-size:20px;border-bottom:1px dashed transparent;cursor:text;outline:none;min-width:40px;white-space:nowrap;flex:none}
@@ -16,11 +16,11 @@ h1:hover{border-bottom-color:var(--bd)}h1:focus{border-bottom-color:var(--ac)}
 .tree-act.dabefore{box-shadow:-4px 0 0 0 var(--ac)}
 .tree-act.daafter{box-shadow:4px 0 0 0 var(--ac)}
 .tree-act.dragact{opacity:.35}
-.bar{position:sticky;top:0;background:var(--bg);z-index:20;width:100%;padding:8px 16px;border-bottom:1px solid var(--bd);box-shadow:0 4px 12px #0003}.bar.collapsed .row:not(:first-child){display:none}.bar.collapsed{padding-bottom:6px}.menu-toggle{white-space:nowrap}
+.bar{position:sticky;top:0;background:var(--bg);z-index:20;width:100%;padding:8px 16px;border-bottom:1px solid var(--bd);box-shadow:0 4px 12px #0001}.bar.collapsed .row:not(:first-child){display:none}.bar.collapsed{padding-bottom:6px}.menu-toggle{white-space:nowrap}
 .row{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0;align-items:center}
 input,select,textarea,button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:5px 10px}
 button{cursor:pointer}button:hover{border-color:var(--ac)}button.p,button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
-button.warn{border-color:var(--fs);color:var(--fs);background:#ff7b8018}button.warn:hover{background:var(--fs);color:#fff;border-color:var(--fs)}
+button.warn{border-color:var(--fs);color:var(--fs);background:#e5484d14}button.warn:hover{background:var(--fs);color:#fff;border-color:var(--fs)}
 #q{flex:1;min-width:140px}.chip{border-radius:99px;padding:1px 10px;font-size:12px}
 .tab{font-weight:700;border:none;border-bottom:3px solid transparent;border-radius:0;background:none}.tab.on{color:var(--ac);background:none;border-bottom-color:var(--ac)}
 main{width:100%;padding:12px 16px 60px}
@@ -28,14 +28,20 @@ main{width:100%;padding:12px 16px 60px}
 .act{margin:26px 0 6px;font-weight:700;color:var(--ac);border-bottom:2px solid var(--ac)}
 .ev{display:grid;grid-template-columns:90px 1fr;gap:12px;margin:10px 0}
 .when{text-align:right;font-weight:700;padding-top:12px}.when small{display:block;color:var(--sub);font-weight:400;font-size:12px}
-.card{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:10px;padding:10px 14px}
-.card.fs{border-left-color:var(--fs)}.card.done{outline:2px solid #55c89a;outline-offset:1px}.card h3{margin:0;font-size:16px}
-.card p{margin:6px 0;white-space:pre-wrap}.tags span{display:inline-block;background:var(--bd);border-radius:6px;padding:0 7px;margin:2px 4px 2px 0;font-size:12px}
-.tags .it{background:none;border:1px dashed var(--bd);color:var(--sub);cursor:pointer}.tags .it:hover{color:var(--ac);border-color:var(--ac)}.tags .tg{background:none;color:var(--ac);cursor:pointer}.tags .nm{cursor:pointer}
-.memo{border-top:1px dashed var(--bd);margin-top:6px;padding-top:4px;color:var(--sub);font-size:13px}.memo p{white-space:pre-wrap;max-height:420px;overflow:auto}textarea.actual-field{min-height:260px;border:2px solid var(--ac);background:#171522}
+.card{background:var(--blk);border:1px solid var(--blkbd);border-left:4px solid var(--ac);border-radius:10px;padding:10px 14px}
+.card.fs{background:#ffeceb;border-color:#f6c3c5;border-left-color:var(--fs)}.card.done{background:#e4f7ec;border-color:#b5e3c9;outline:2px solid #55c89a;outline-offset:1px}.card h3{margin:0;font-size:16px}
+.card p{margin:6px 0;white-space:pre-wrap}.tags span{display:inline-block;background:#ffffffb0;border-radius:6px;padding:0 7px;margin:2px 4px 2px 0;font-size:12px}
+.tags .it{background:none;border:1px dashed #a79ef0;color:var(--sub);cursor:pointer}.tags .it:hover{color:var(--ac);border-color:var(--ac)}.tags .tg{background:none;color:var(--ac);cursor:pointer}.tags .nm{cursor:pointer}
+.memo{border-top:1px dashed var(--blkbd);margin-top:6px;padding-top:4px;color:var(--sub);font-size:13px}.memo p{white-space:pre-wrap;max-height:420px;overflow:auto}textarea.actual-field{min-height:260px;border:2px solid var(--ac);background:#faf9ff}
 .btns{display:flex;gap:2px;margin:-2px 0 4px -4px}.btns button{padding:2px 6px;font-size:13px;border:none;background:none;color:var(--sub)}
 .dh{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ac)!important;font-size:16px!important;padding:0 8px!important}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+
+/* 최초 로딩 프로그래스바 */
+#ld{position:fixed;left:0;right:0;top:0;z-index:300;display:none}
+#ld .t{height:4px;background:#0002}
+#ld .b{height:100%;width:0;background:var(--ac);transition:width .25s}
+#ld .m{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:3px 14px;font-size:12px;color:var(--sub);white-space:nowrap}
 
 /* 라인트리 */
 .tree-wrap{overflow:auto;scrollbar-width:thin;overscroll-behavior:contain}
@@ -56,14 +62,15 @@ main{width:100%;padding:12px 16px 60px}
 .insert-slot:before,.insert-slot:after{content:"";height:1px;background:var(--bd);flex:1}
 .insert-slot button{font-size:12px;padding:3px 9px;border-style:dashed;color:var(--ac);white-space:nowrap}
 .danger{color:var(--fs)!important}
-.clk{cursor:pointer}h3.clk:hover{color:var(--ac)}p.clk:hover{background:#9b8cff12;border-radius:6px}
+.clk{cursor:pointer}h3.clk:hover{color:var(--ac)}p.clk:hover{background:#6c5ce712;border-radius:6px}
 /* 소설 내용 보기 */
 .nv-h{margin:22px 0 4px;font-size:18px;font-weight:700;color:var(--ac)}.nv-b{white-space:pre-wrap;line-height:1.9;font-size:16px}.nv-empty{color:var(--sub)}
 .nvbtn{margin:6px 0;font-size:13px;padding:3px 10px;color:var(--ac);border-style:dashed}
-.nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#9b8cff40}100%{background:transparent}}
-.nv-code{margin-top:8px;border:1px solid var(--bd);border-radius:8px;background:#0e1014;padding:8px 0;font-size:15px;line-height:1.8}
-.nl{display:flex;align-items:flex-start}.nl:hover{background:#ffffff08}
-.nl .ln{flex:none;width:var(--w);box-sizing:content-box;text-align:right;padding:0 12px 0 10px;margin-right:12px;border-right:1px solid var(--bd);color:#6c7388;font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none}
+.nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
+.nv-code{margin-top:8px;border:1px solid var(--bd);border-radius:8px;background:#f6f4ff;padding:8px 0;font-size:15px;line-height:1.8}
+.nl{display:flex;align-items:flex-start}.nl:hover{background:#6c5ce70d}
+.nacts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.nacts button{font-size:13px;padding:4px 12px;font-weight:700}.nacts button small{font-weight:400;opacity:.8;margin-left:3px}
+.nl .ln{flex:none;width:var(--w);box-sizing:content-box;text-align:right;padding:0 12px 0 10px;margin-right:12px;border-right:1px solid var(--bd);color:#9aa0b3;font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none}
 .nl .lt{flex:1;min-width:0;white-space:pre-wrap;word-break:break-word;padding-right:12px}
 .nl.nh .lt{font-weight:700;color:var(--ac)}
 /* 실제 내용 입력창 도구 */
@@ -87,20 +94,21 @@ body.treeview .tree-wrap{height:100%}
 
 /* 드래그 */
 .ev.dragging{opacity:.3}
-.ghost{box-shadow:0 10px 30px #000a}
+.ghost{box-shadow:0 10px 30px #0004}
 .tree-node.dbefore{box-shadow:0 -3px 0 0 var(--ac)}
 .tree-node.dafter{box-shadow:0 3px 0 0 var(--ac)}
-.tree-act.dcol{background:#9b8cff18;outline:2px dashed var(--ac);outline-offset:2px}
+.tree-act.dcol{background:#6c5ce718;outline:2px dashed var(--ac);outline-offset:2px}
 
 .kv{font-size:13px;margin:3px 0;white-space:pre-wrap}.kv b{color:var(--ac);margin-right:6px}
 table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid var(--bd);padding:6px;text-align:left;vertical-align:top}
 .tw{overflow-x:auto}
 dialog{border:1px solid var(--bd);border-radius:0;background:var(--bg);color:var(--tx);width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:20px 24px;overflow:auto}
-dialog::backdrop{background:rgba(0,0,0,.72)}dialog form{width:100%;max-width:none;min-height:100%;display:flex;flex-direction:column}dialog form h3{font-size:21px;margin-bottom:12px!important}dialog label{display:block;font-size:14px;color:var(--sub);margin-top:12px}dialog input:not([type=checkbox]),dialog textarea,dialog select{width:100%;padding:10px 12px;font-size:16px}dialog textarea{min-height:110px;resize:vertical}dialog textarea.actual-field{min-height:45vh}dialog .row{margin-top:auto;padding-top:18px;position:sticky;bottom:0;background:var(--bg)}#tagbar{display:none!important}
+dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:none;min-height:100%;display:flex;flex-direction:column}dialog form h3{font-size:21px;margin-bottom:12px!important}dialog label{display:block;font-size:14px;color:var(--sub);margin-top:12px}dialog input:not([type=checkbox]),dialog textarea,dialog select{width:100%;padding:10px 12px;font-size:16px}dialog textarea{min-height:110px;resize:vertical}dialog textarea.actual-field{min-height:45vh}dialog .row{margin-top:auto;padding-top:18px;position:sticky;bottom:0;background:var(--bg)}#tagbar{display:none!important}
 @media(max-width:560px){header{padding:8px 12px 2px}h1{font-size:18px}.bar{padding:8px 10px}.bar .row{gap:5px}main{padding:10px 10px 40px}.ev{grid-template-columns:1fr;gap:4px}.when{text-align:left;padding:0}.grid{grid-template-columns:1fr}dialog{padding:14px 12px}.tree-act{width:270px;flex-basis:270px}.tree-node .ev{grid-template-columns:1fr}.tree-node .when{text-align:left;padding:0}body.treeview main{padding:0}}
 </style>
 </head>
 <body>
+<div id="ld"><div class="t"><div class="b" id="ldb"></div></div><div class="m" id="ldm">data.json 불러오는 중…</div></div>
 <header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span class="pl" id="sub">수정본 · 사건 편집창에 ‘실제 내용 (소설 원문)’ 입력란 포함</span><span id="stat"></span></header>
 <div class="bar">
  <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button><button class="tab" data-tab="it">아이템설정</button><button id="actsEdit">막 설정</button>
@@ -114,7 +122,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}dialog form{width:100%;max-width:non
 <main id="list"></main>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
-<dialog id="ndlg"><form method="dialog" id="nf"><h3 style="margin:0">📖 소설 내용 보기</h3><p class="pl" id="nsum"></p><div id="nbody"></div><div class="row"><button type="button" id="ncopy">전체 복사</button><span style="flex:1"></span><button class="p" value="close" formnovalidate>닫기</button></div></form></dialog>
+<dialog id="ndlg"><form method="dialog" id="nf"><h3 style="margin:0">📖 소설 내용 보기</h3><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div class="row"><button type="button" id="ncopy">복사</button><span style="flex:1"></span><button class="p" value="close" formnovalidate>닫기</button></div></form></dialog>
 <dialog id="gdlg"><form method="dialog" id="gf">
 <h3 style="margin:0">GitHub 저장 설정</h3>
 <label>GitHub 아이디(owner) · 고정</label><input name="owner" value="yongppang" readonly>
@@ -152,6 +160,8 @@ const KEY="novel-mgr-v2",$=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const split=s=>String(s||"").split(",").map(x=>x.trim()).filter(Boolean);
 const clone=x=>JSON.parse(JSON.stringify(x));
+// 이 브라우저에 이미 저장된 데이터가 있었는지 (자동 불러오기 시 덮어쓰기 확인용)
+let HAD=false;try{HAD=!!localStorage.getItem(KEY)}catch(e){}
 let D;try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!D||!D.events){let v1;try{v1=JSON.parse(localStorage.getItem("novel-timeline-v1"))}catch(e){}
  D={events:Array.isArray(v1)?v1.map(e=>({tags:"",...e})):clone(SEEDE),chars:clone(SEEDC)}}
@@ -346,7 +356,7 @@ document.addEventListener("pointerdown",ev=>{
  ev.preventDefault();
  const col=h.closest(".tree-act"),h2=col.querySelector("h2"),r=h2.getBoundingClientRect();
  const ghost=h2.cloneNode(true);
- ghost.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;margin:0;pointer-events:none;opacity:.9;z-index:200;box-shadow:0 8px 24px #000a`;
+ ghost.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;margin:0;pointer-events:none;opacity:.9;z-index:200;box-shadow:0 8px 24px #0004`;
  document.body.appendChild(ghost);col.classList.add("dragact");
  adrag={from:+h.dataset.act,ghost,col,dx:ev.clientX-r.left,dy:ev.clientY-r.top,target:null,pid:ev.pointerId,el:h};
  try{h.setPointerCapture(ev.pointerId)}catch(e){}
@@ -432,7 +442,9 @@ $("actRows").addEventListener("click",ev=>{const b=ev.target.closest("button");i
 $("af").addEventListener("submit",ev=>{if(ev.submitter.value!=="ok")return;const inputs=[...document.querySelectorAll("[data-actname]")];const names=inputs.map(el=>el.value.trim()).filter(Boolean);if(!names.length){ev.preventDefault();alert("막 이름을 하나 이상 입력하세요.");return}ACTS.splice(0,ACTS.length,...names);D.events.forEach(e=>{e.act=Math.min(Math.max(0,+e.act||0),ACTS.length-1)});save();fillActFilter();render()});
 $("add").onclick=()=>openEd(tab=="tl"?"e":tab=="it"?"i":"c");
 // ===== 소설 내용 보기: [제목] 내용 형식으로 이어서 표시 =====
-const novelList=()=>D.events.filter(e=>String(e.actual||"").trim());
+let novAct=-1; // -1 = 전체, 0 이상 = 해당 막만
+const novelAll=()=>D.events.filter(e=>String(e.actual||"").trim());
+const novelList=()=>novelAll().filter(e=>novAct<0||+e.act===novAct);
 // 전체를 하나의 문서처럼 줄 단위로 만든다. (줄 번호 = 전체 복사 텍스트의 줄 번호와 동일)
 function novelLines(){
  const out=[];
@@ -444,11 +456,18 @@ function novelLines(){
  return out;
 }
 function openNovel(focusId){
- const L=novelList(),lines=novelLines();
- $("nsum").textContent=`내용이 작성된 사건 ${L.length}개 / 전체 ${D.events.length}개 · 총 ${lines.length}줄`;
- $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
+ if(focusId!=null){const fe=D.events.find(x=>x.id===focusId);if(fe&&novAct>=0)novAct=+fe.act}
+ if(novAct>=ACTS.length)novAct=-1;
+ renderNovel(focusId);
  $("ndlg").showModal();
  if(focusId!=null){const t=$("nbody").querySelector(`.nl[data-e="${focusId}"]`);if(t){t.scrollIntoView({block:"start"});t.classList.add("flash")}}else $("ndlg").scrollTop=0;
+}
+$("nacts").addEventListener("click",ev=>{const b=ev.target.closest("[data-nact]");if(!b)return;novAct=+b.dataset.nact;renderNovel();$("ndlg").scrollTop=0});
+function renderNovel(){
+ const all=novelAll(),L=novelList(),lines=novelLines();
+ $("nacts").innerHTML=`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${all.length}</small></button>`+ACTS.map((a,i)=>`<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${all.filter(e=>+e.act===i).length}</small></button>`).join("");
+ $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · 내용이 작성된 사건 ${L.length}개 / 해당 사건 ${novAct<0?D.events.length:D.events.filter(e=>+e.act===novAct).length}개 · 총 ${lines.length}줄`;
+ $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
 }
 $("viewNovel").onclick=()=>openNovel();
 $("ncopy").onclick=async()=>{const t=novelLines().map(l=>l.t).join("\n");const b=$("ncopy"),old=b.textContent;try{await navigator.clipboard.writeText(t);b.textContent="✅ 복사됨"}catch(e){b.textContent="복사 실패"}setTimeout(()=>{b.textContent=old},1500)};
@@ -498,6 +517,11 @@ $("gf").addEventListener("submit",ev=>{if(ev.submitter.value!="ok")return;const 
 function ghConfigReady(){if(!GH.owner||!GH.repo||!GH.token){alert("먼저 ⚙ GitHub 설정에서 아이디·저장소·토큰을 입력하세요.");$("gset").click();return false}return true}
 function ghUrl(){return `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${GH.path.split("/").map(encodeURIComponent).join("/")}`}
 function ghHeaders(){return{Authorization:"Bearer "+GH.token,Accept:"application/vnd.github+json"}}
+
+// ===== 마지막으로 GitHub와 동기화된 시점의 데이터 (로컬 미저장 수정 감지용) =====
+const SNK="novel-synced",SSK="novel-loaded";
+const markSynced=()=>{try{localStorage.setItem(SNK,JSON.stringify(D))}catch(e){}};
+
 /* 불러오기 비활성화
 $("gload").onclick=async()=>{
  if(!ghConfigReady())return;
@@ -528,15 +552,60 @@ $("gsave").onclick=async()=>{
   if(sha)body.sha=sha;
   const p=await fetch(url,{method:"PUT",headers:{...H,"Content-Type":"application/json"},body:JSON.stringify(body)});
   if(!p.ok)throw new Error("저장 실패 "+p.status+": "+((await p.json()).message||""));
+  markSynced(); // 저장 성공 = 이 PC 데이터가 GitHub와 동일
   b.textContent="✅ 저장됨";setTimeout(()=>{b.textContent=old},2000);
  }catch(e){alert(e.message);b.textContent=old}
  b.disabled=false;
 };
-(async()=>{ // 저장된 로컬 데이터가 없으면 저장소의 data.json을 자동 로드
- // 불러오기 비활성화: if(!localStorage.getItem(KEY)){try{const r=await fetch("data.json");if(r.ok){const d=await r.json();if(d&&d.events&&d.chars){load(d)}}}catch(e){}}
- document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄ 메뉴 펼치기":"⌃ 메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
+
+// ===== 최초 접속 시 data.json 자동 불러오기 (프로그래스바 표시) =====
+// 탭을 새로 열 때 한 번만 실행하고, 새로고침(F5)에서는 다시 불러오지 않는다.
+let ldTimer=null;
+function ldShow(msg){$("ldm").textContent=msg||"data.json 불러오는 중…";$("ldb").style.width="0%";$("ld").style.display="block";
+ let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);
+ ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
+function ldSet(p){const cur=parseFloat($("ldb").style.width)||0;if(p>cur)$("ldb").style.width=p+"%"}
+function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100%";setTimeout(()=>{$("ld").style.display="none"},delay)}
+async function fetchText(url,headers){
+ const r=await fetch(url,{cache:"no-store",headers});
+ if(!r.ok)throw new Error("HTTP "+r.status);
+ const total=+r.headers.get("content-length")||0;
+ if(!r.body||!r.body.getReader)return r.text();
+ const rd=r.body.getReader(),chunks=[];let got=0;
+ for(;;){const {done,value}=await rd.read();if(done)break;chunks.push(value);got+=value.length;if(total)ldSet(Math.min(95,got/total*95))}
+ const buf=new Uint8Array(got);let o=0;chunks.forEach(c=>{buf.set(c,o);o+=c.length});
+ return new TextDecoder("utf-8").decode(buf);
+}
+async function autoLoad(){
+ try{if(sessionStorage.getItem(SSK))return}catch(e){}   // 새로고침이면 건너뜀
+ if(location.protocol==="file:")return;                 // 파일로 직접 열면 fetch 불가
+ ldShow();
+ let remote=null;
+ try{
+  const text=GH.token
+   ?await fetchText(`${ghUrl()}?ref=${encodeURIComponent(GH.branch)}&t=${Date.now()}`,{...ghHeaders(),Accept:"application/vnd.github.raw+json"})
+   :await fetchText("data.json?"+Date.now());
+  const d=JSON.parse(text);
+  if(!d||!Array.isArray(d.events)||!Array.isArray(d.chars))throw new Error("형식 오류");
+  remote=d;ldHide();
+ }catch(e){
+  $("ldm").textContent="data.json을 불러오지 못했습니다. 이 PC에 저장된 데이터를 사용합니다.";
+  clearInterval(ldTimer);$("ldb").style.width="100%";setTimeout(()=>{$("ld").style.display="none"},2500);
+  return; // 실패하면 새로고침 때 다시 시도
+ }
+ try{sessionStorage.setItem(SSK,"1")}catch(e){}
+ // 이 PC에 GitHub에 저장하지 않은 수정이 있으면 덮어쓰기 전에 확인한다.
+ let snap=null;try{snap=localStorage.getItem(SNK)}catch(e){}
+ const changed=snap!==null?JSON.stringify(D)!==snap:HAD;
+ if(changed){
+  await new Promise(r=>setTimeout(r,350)); // 프로그래스바가 사라진 뒤에 확인창 표시
+  if(!confirm(WARN+(snap!==null?"이 PC에 GitHub에 저장하지 않은 수정 내용이 있습니다.":"이 PC에 저장된 데이터가 GitHub와 동기화된 적이 없습니다.")+"\n\nGitHub의 data.json으로 덮어쓸까요?\n\n[확인] GitHub 데이터로 덮어쓰기\n[취소] 이 PC 데이터 유지"))return;
+ }
+ load(remote);markSynced();
+}
+document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄ 메뉴 펼치기":"⌃ 메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
 render();
-})();
+autoLoad();
 </script>
 </body>
 </html>
