@@ -20,6 +20,7 @@ h1:hover{border-bottom-color:var(--bd)}h1:focus{border-bottom-color:var(--ac)}
 .row{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0;align-items:center}
 input,select,textarea,button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:5px 10px}
 button{cursor:pointer}button:hover{border-color:var(--ac)}button.p,button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+button.warn{border-color:var(--fs);color:var(--fs);background:#ff7b8018}button.warn:hover{background:var(--fs);color:#fff;border-color:var(--fs)}
 #q{flex:1;min-width:140px}.chip{border-radius:99px;padding:1px 10px;font-size:12px}
 .tab{font-weight:700;border:none;border-bottom:3px solid transparent;border-radius:0;background:none}.tab.on{color:var(--ac);background:none;border-bottom-color:var(--ac)}
 main{width:100%;padding:12px 16px 60px}
@@ -30,7 +31,7 @@ main{width:100%;padding:12px 16px 60px}
 .card{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:10px;padding:10px 14px}
 .card.fs{border-left-color:var(--fs)}.card.done{outline:2px solid #55c89a;outline-offset:1px}.card h3{margin:0;font-size:16px}
 .card p{margin:6px 0;white-space:pre-wrap}.tags span{display:inline-block;background:var(--bd);border-radius:6px;padding:0 7px;margin:2px 4px 2px 0;font-size:12px}
-.tags .it{background:none;border:1px dashed var(--bd);color:var(--sub)}.tags .tg{background:none;color:var(--ac);cursor:pointer}.tags .nm{cursor:pointer}
+.tags .it{background:none;border:1px dashed var(--bd);color:var(--sub);cursor:pointer}.tags .it:hover{color:var(--ac);border-color:var(--ac)}.tags .tg{background:none;color:var(--ac);cursor:pointer}.tags .nm{cursor:pointer}
 .memo{border-top:1px dashed var(--bd);margin-top:6px;padding-top:4px;color:var(--sub);font-size:13px}.memo p{white-space:pre-wrap;max-height:420px;overflow:auto}textarea.actual-field{min-height:260px;border:2px solid var(--ac);background:#171522}
 .btns{display:flex;gap:2px;margin:-2px 0 4px -4px}.btns button{padding:2px 6px;font-size:13px;border:none;background:none;color:var(--sub)}
 .dh{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ac)!important;font-size:16px!important;padding:0 8px!important}
@@ -98,7 +99,7 @@ dialog::backdrop{background:rgba(0,0,0,.72)}dialog form{width:100%;max-width:non
  <select id="view"><option value="tree" selected>좌우 라인트리</option><option value="act">막별 보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
  <div class="row" id="tagbar"></div>
- <div class="row"><button class="p" id="gsave">☁ GitHub에 저장</button><button id="gload">☁ GitHub에서 불러오기</button><button id="gset">⚙ GitHub 설정</button><button id="exp">내보내기(JSON)</button><button id="imp">불러오기</button><button id="srv">저장소 data.json 불러오기</button><button id="rst">초기화</button></div>
+ <div class="row"><button class="p" id="gsave">☁ GitHub에 저장</button><button id="gload" class="warn">⚠️ ☁ GitHub에서 불러오기</button><button id="gset">⚙ GitHub 설정</button><button id="exp">내보내기(JSON)</button><button id="imp" class="warn">⚠️ 불러오기</button><button id="srv" class="warn">⚠️ 저장소 data.json 불러오기</button><button id="rst">초기화</button></div>
 </div>
 <main id="list"></main>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
@@ -207,7 +208,7 @@ function evHTML(e,mini,drag){
  return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
  ${mini?"":`<div class="btns"><button data-a="ed" data-t="e" data-i="${e.id}">✎</button>${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button></div>`}
  <h3>${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<details class="memo"><summary>실제 소설 내용 보기</summary><p>${esc(e.actual)}</p></details>`:""}
- <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
+ <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
 function chHTML(c){
  const n=D.events.filter(e=>split(e.chars).includes(c.name)).length;
@@ -221,8 +222,9 @@ function chHTML(c){
 function itHTML(c){
  const n=D.events.filter(e=>split(e.items).includes(c.name)).length;
  const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
+ const own=split(c.owner).map(nm=>D.chars.some(x=>x.name===nm)?`<a href="#" data-ch="${esc(nm)}">${esc(nm)}</a>`:esc(nm)).join(", ");
  return `<div class="card"><div class="btns"><button data-a="ed" data-t="i" data-i="${c.id}">✎</button><button data-a="del" data-t="i" data-i="${c.id}">✕</button></div>
- <h3>◇ ${esc(c.name)}</h3>${kv("desc","설명")}${kv("owner","관련 인물")}
+ <h3>◇ ${esc(c.name)}</h3>${kv("desc","설명")}${c.owner?`<div class="kv"><b>관련 인물</b>${own}</div>`:""}
  <div class="kv"><b>등장</b><a href="#" data-showit="${esc(c.name)}">타임라인 ${n}건 보기</a></div>
  ${c.memo?`<div class="memo">📝 ${esc(c.memo)}</div>`:""}</div>`}
 function render(){
@@ -381,7 +383,7 @@ $("f").addEventListener("click",ev=>{
  if(ev.target.closest("#fsOn")){$("actwrap").classList.add("fs");$("f").actual.focus();return}
  if(ev.target.closest("#fsOff")){$("actwrap").classList.remove("fs");return}
  const go=ev.target.closest("#goChars,#goItems");
- if(go){if(!confirm("설정 화면으로 이동합니다. 저장하지 않은 편집 내용은 사라집니다. 이동할까요?"))return;$("dlg").close();tab=go.id==="goItems"?"it":"ch";render();return}
+ if(go){if(!confirm("설정 화면으로 이동합니다. 저장하지 않은 편집 내용은 사라집니다. 이동할까요?"))return;$("dlg").close();tab=go.id==="goItems"?"it":"ch";$("q").value="";render();return}
 });
 $("f").addEventListener("change",ev=>{
  const s=ev.target.closest(".pick");if(!s)return;let v=s.value;const isC=s.id==="pickc";
@@ -419,13 +421,14 @@ $("actRows").addEventListener("click",ev=>{const b=ev.target.closest("button");i
 $("af").addEventListener("submit",ev=>{if(ev.submitter.value!=="ok")return;const inputs=[...document.querySelectorAll("[data-actname]")];const names=inputs.map(el=>el.value.trim()).filter(Boolean);if(!names.length){ev.preventDefault();alert("막 이름을 하나 이상 입력하세요.");return}ACTS.splice(0,ACTS.length,...names);D.events.forEach(e=>{e.act=Math.min(Math.max(0,+e.act||0),ACTS.length-1)});save();fillActFilter();render()});
 $("add").onclick=()=>openEd(tab=="tl"?"e":tab=="it"?"i":"c");
 document.addEventListener("click",ev=>{
- const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-showch],[data-showit]");if(!el)return;
+ const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit]");if(!el)return;
  const d=el.dataset;
- if(d.tab){tab=d.tab}
+ if(d.tab){tab=d.tab;$("q").value=""} // 메뉴(탭)를 고를 때마다 검색 필드 초기화
  else if(d.tag){d.tag&&(ft.has(d.tag)?ft.delete(d.tag):ft.add(d.tag))}
  else if(d.showit){ev.preventDefault();tab="tl";$("view").value="act";$("q").value=d.showit}
  else if(d.showch){ev.preventDefault();tab="tl";$("view").value="char";$("q").value=d.showch}
- else if(d.ch){tab="ch";$("q").value=d.ch}
+ else if(d.ch){ev.preventDefault();tab="ch";$("q").value=d.ch}
+ else if(d.it){tab="it";$("q").value=d.it}
  else if(d.a){
   const arr=arrOf(d.t),i=arr.findIndex(x=>x.id==d.i);
   if(d.a=="ed"){openEd(d.t,d.i);return}
@@ -438,13 +441,15 @@ document.addEventListener("click",ev=>{
  }
  render();
 });
-$("q").oninput=render;$("fa").onchange=render;$("view").onchange=render;
+$("q").oninput=render;$("fa").onchange=render;
+$("view").onchange=()=>{$("q").value="";render()}; // 보기 메뉴를 바꿀 때도 검색 필드 초기화
 $("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);render()};
 $("exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,2)],{type:"application/json"}));a.download="data.json";a.click()};
-const load=d=>{if(d&&Array.isArray(d.events)&&Array.isArray(d.chars)){D=d;normalizeData();fillActFilter();save();render();return true}alert("올바른 data.json 형식이 아닙니다.")};
-$("imp").onclick=()=>$("file").click();
-$("file").onchange=async ev=>{try{load(JSON.parse(await ev.target.files[0].text()))}catch(e){alert("JSON 읽기 실패")}};
-$("srv").onclick=async()=>{try{const r=await fetch("data.json?"+Date.now());if(!r.ok)throw 0;if(confirm("저장소의 data.json으로 덮어쓸까요?"))load(await r.json())}catch(e){alert("data.json을 찾을 수 없습니다. (GitHub Pages 등 웹에서 열어야 합니다)")}};
+const WARN="⚠️ *주의* ⚠️\n\n";
+const load=d=>{if(d&&Array.isArray(d.events)&&Array.isArray(d.chars)){D=d;normalizeData();fillActFilter();save();render();return true}alert(WARN+"올바른 data.json 형식이 아닙니다.\n기존 데이터는 변경되지 않았습니다.")};
+$("imp").onclick=()=>{if(!confirm(WARN+"불러온 JSON 파일의 내용으로 현재 데이터를 덮어씁니다.\n저장하지 않은 변경 사항은 모두 사라지며 복구할 수 없습니다.\n\n파일을 선택할까요?"))return;$("file").click()};
+$("file").onchange=async ev=>{const fl=ev.target.files[0];if(!fl)return;try{load(JSON.parse(await fl.text()))}catch(e){alert(WARN+"JSON 읽기에 실패했습니다.\n기존 데이터는 변경되지 않았습니다.")}ev.target.value=""};
+$("srv").onclick=async()=>{try{const r=await fetch("data.json?"+Date.now());if(!r.ok)throw 0;if(confirm(WARN+"저장소의 data.json으로 현재 데이터를 덮어씁니다.\n저장하지 않은 변경 사항은 모두 사라지며 복구할 수 없습니다.\n\n계속할까요?"))load(await r.json())}catch(e){alert(WARN+"data.json을 찾을 수 없습니다. (GitHub Pages 등 웹에서 열어야 합니다)")}};
 $("rst").onclick=()=>{if(confirm("초기 데이터로 되돌릴까요? 저장된 수정이 사라집니다.")){D={events:clone(SEEDE),chars:clone(SEEDC),items:clone(SEEDI)};save();render()}};
 
 const GK="novel-gh";
@@ -459,7 +464,7 @@ function ghUrl(){return `https://api.github.com/repos/${GH.owner}/${GH.repo}/con
 function ghHeaders(){return{Authorization:"Bearer "+GH.token,Accept:"application/vnd.github+json"}}
 $("gload").onclick=async()=>{
  if(!ghConfigReady())return;
- if(!confirm("GitHub의 data 파일로 현재 브라우저 데이터를 덮어쓸까요? 저장하지 않은 변경 사항은 사라집니다."))return;
+ if(!confirm(WARN+"GitHub의 data 파일로 현재 브라우저 데이터를 덮어씁니다.\n저장하지 않은 변경 사항은 모두 사라지며 복구할 수 없습니다.\n\n계속할까요?"))return;
  const b=$("gload"),old=b.textContent;b.textContent="불러오는 중...";b.disabled=true;
  try{
   const r=await fetch(`${ghUrl()}?ref=${encodeURIComponent(GH.branch)}&t=${Date.now()}`,{headers:ghHeaders()});
@@ -469,7 +474,7 @@ $("gload").onclick=async()=>{
   const data=JSON.parse(new TextDecoder("utf-8").decode(bytes));
   if(!data||!Array.isArray(data.events)||!Array.isArray(data.chars))throw new Error("GitHub 파일이 올바른 소설 데이터 형식이 아닙니다.");
   load(data);b.textContent="✅ 불러옴";setTimeout(()=>{b.textContent=old},2000);
- }catch(e){alert(e.message);b.textContent=old}
+ }catch(e){alert(WARN+e.message);b.textContent=old}
  b.disabled=false;
 };
 $("gsave").onclick=async()=>{
