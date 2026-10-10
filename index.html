@@ -69,6 +69,7 @@ main{width:100%;padding:12px 16px 60px}
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
 .nv-code{margin-top:8px;border:1px solid var(--bd);border-radius:8px;background:#f6f4ff;padding:8px 0;font-size:15px;line-height:1.8}
 .nl{display:flex;align-items:flex-start}.nl:hover{background:#6c5ce70d}
+body.share header,body.share .bar,body.share main,body.share #nclose{display:none}
 .nacts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.nacts button{font-size:13px;padding:4px 12px;font-weight:700}.nacts button small{font-weight:400;opacity:.8;margin-left:3px}
 .nl .ln{flex:none;width:var(--w);box-sizing:content-box;text-align:right;padding:0 12px 0 10px;margin-right:12px;border-right:1px solid var(--bd);color:#9aa0b3;font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none}
 .nl .lt{flex:1;min-width:0;white-space:pre-wrap;word-break:break-word;padding-right:12px}
@@ -122,7 +123,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
 <main id="list"></main>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
-<dialog id="ndlg"><form method="dialog" id="nf"><h3 style="margin:0">📖 소설 내용 보기</h3><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div class="row"><button type="button" id="ncopy">복사</button><span style="flex:1"></span><button class="p" value="close" formnovalidate>닫기</button></div></form></dialog>
+<dialog id="ndlg"><form method="dialog" id="nf"><h3 style="margin:0">📖 소설 내용 보기</h3><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div class="row"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><span style="flex:1"></span><button class="p" id="nclose" value="close" formnovalidate>닫기</button></div></form></dialog>
 <dialog id="gdlg"><form method="dialog" id="gf">
 <h3 style="margin:0">GitHub 저장 설정</h3>
 <label>GitHub 아이디(owner) · 고정</label><input name="owner" value="yongppang" readonly>
@@ -161,11 +162,14 @@ const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&g
 const split=s=>String(s||"").split(",").map(x=>x.trim()).filter(Boolean);
 const clone=x=>JSON.parse(JSON.stringify(x));
 // 이 브라우저에 이미 저장된 데이터가 있었는지 (자동 불러오기 시 덮어쓰기 확인용)
+// 공유 링크(?novel=1)로 열면 읽기 전용: 이 브라우저의 저장 데이터를 건드리지 않는다.
+const SHARE=new URLSearchParams(location.search).has("novel");
+if(SHARE)document.body.classList.add("share");
 let HAD=false;try{HAD=!!localStorage.getItem(KEY)}catch(e){}
 let D;try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!D||!D.events){let v1;try{v1=JSON.parse(localStorage.getItem("novel-timeline-v1"))}catch(e){}
  D={events:Array.isArray(v1)?v1.map(e=>({tags:"",...e})):clone(SEEDE),chars:clone(SEEDC)}}
-const save=()=>{D.acts=clone(ACTS);try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
+const save=()=>{if(SHARE)return;D.acts=clone(ACTS);try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
 let tab="tl",ft=new Set(),onlyFs=false,editing=null;
 // 이전 버전에서 저장된 자동 태그를 한 번 제거한다.
 if(!D._tagsRemoved){[...D.events,...D.chars].forEach(o=>o.tags="");D._tagsRemoved=true;try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
@@ -470,6 +474,15 @@ function renderNovel(){
  $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
 }
 $("viewNovel").onclick=()=>openNovel();
+$("ndlg").addEventListener("cancel",ev=>{if(SHARE)ev.preventDefault()});
+// 공유 링크 복사: 지금 보고 있는 막(전체/특정 막)이 그대로 링크에 들어간다.
+$("nlink").onclick=async()=>{
+ if(location.protocol==="file:"){alert("파일로 직접 연 상태에서는 공유 링크를 만들 수 없습니다.\nGitHub Pages 주소로 접속한 뒤 눌러 주세요.");return}
+ const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("novel","1");if(novAct>=0)u.searchParams.set("act",novAct);
+ const url=u.toString(),b=$("nlink"),old=b.textContent;
+ try{await navigator.clipboard.writeText(url);b.textContent="✅ 링크 복사됨"}catch(e){prompt("아래 링크를 복사하세요",url);return}
+ setTimeout(()=>{b.textContent=old},1800);
+};
 $("ncopy").onclick=async()=>{const t=novelLines().map(l=>l.t).join("\n");const b=$("ncopy"),old=b.textContent;try{await navigator.clipboard.writeText(t);b.textContent="✅ 복사됨"}catch(e){b.textContent="복사 실패"}setTimeout(()=>{b.textContent=old},1500)};
 document.addEventListener("click",ev=>{
  const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit],[data-nv]");if(!el)return;if(el.dataset.nv){openNovel(+el.dataset.nv);return}
@@ -604,8 +617,27 @@ async function autoLoad(){
  load(remote);markSynced();
 }
 document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄ 메뉴 펼치기":"⌃ 메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
+// 공유 링크로 열었을 때: data.json을 읽어 소설 내용 보기만 표시 (저장·수정 불가)
+async function shareLoad(){
+ ldShow("소설 불러오는 중…");
+ try{
+  const r=await fetch("data.json?"+Date.now(),{cache:"no-store"});
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  const d=await r.json();
+  if(!d||!Array.isArray(d.events)||!Array.isArray(d.chars))throw new Error("형식 오류");
+  D=d;normalizeData();fillActFilter();ldHide();
+ }catch(e){
+  ldHide();$("nsum").textContent="";$("nacts").innerHTML="";
+  $("nbody").innerHTML='<p class="nv-empty">소설 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>';
+  $("ndlg").showModal();return;
+ }
+ const a=parseInt(new URLSearchParams(location.search).get("act"),10);
+ novAct=Number.isInteger(a)&&a>=0&&a<ACTS.length?a:-1;
+ $("ndlg").querySelector("h3").textContent="📖 "+(D.title||DEFTITLE).replace(/^📖\s*/,"");
+ openNovel();
+}
 render();
-autoLoad();
+SHARE?shareLoad():autoLoad();
 </script>
 </body>
 </html>
