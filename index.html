@@ -59,6 +59,8 @@ main{width:100%;padding:12px 16px 60px}
 .clk{cursor:pointer}h3.clk:hover{color:var(--ac)}p.clk:hover{background:#9b8cff12;border-radius:6px}
 /* 소설 내용 보기 */
 .nv-h{margin:22px 0 4px;font-size:18px;font-weight:700;color:var(--ac)}.nv-b{white-space:pre-wrap;line-height:1.9;font-size:16px}.nv-empty{color:var(--sub)}
+.nvbtn{margin:6px 0;font-size:13px;padding:3px 10px;color:var(--ac);border-style:dashed}
+.nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#9b8cff40}100%{background:transparent}}
 .nv-code{margin-top:8px;border:1px solid var(--bd);border-radius:8px;background:#0e1014;padding:8px 0;font-size:15px;line-height:1.8}
 .nl{display:flex;align-items:flex-start}.nl:hover{background:#ffffff08}
 .nl .ln{flex:none;width:var(--w);box-sizing:content-box;text-align:right;padding:0 12px 0 10px;margin-right:12px;border-right:1px solid var(--bd);color:#6c7388;font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none}
@@ -216,7 +218,7 @@ $("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand(
 function evHTML(e,mini,drag){
  return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
  ${mini?"":`<div class="btns">${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button></div>`}
- <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정"><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<details class="memo"><summary>실제 소설 내용 보기</summary><p>${esc(e.actual)}</p></details>`:""}
+ <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정"><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
  <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
 function chHTML(c){
@@ -436,20 +438,22 @@ function novelLines(){
  const out=[];
  novelList().forEach((e,i)=>{
   if(i)out.push({t:""}); // 사건 사이 빈 줄
-  out.push({t:`[${e.title}]`,h:true});
+  out.push({t:`[${e.title}]`,h:true,id:e.id});
   String(e.actual).replace(/\r\n?/g,"\n").replace(/\n+$/,"").split("\n").forEach(t=>out.push({t}));
  });
  return out;
 }
-$("viewNovel").onclick=()=>{
+function openNovel(focusId){
  const L=novelList(),lines=novelLines();
  $("nsum").textContent=`내용이 작성된 사건 ${L.length}개 / 전체 ${D.events.length}개 · 총 ${lines.length}줄`;
- $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
+ $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
  $("ndlg").showModal();
-};
+ if(focusId!=null){const t=$("nbody").querySelector(`.nl[data-e="${focusId}"]`);if(t){t.scrollIntoView({block:"start"});t.classList.add("flash")}}else $("ndlg").scrollTop=0;
+}
+$("viewNovel").onclick=()=>openNovel();
 $("ncopy").onclick=async()=>{const t=novelLines().map(l=>l.t).join("\n");const b=$("ncopy"),old=b.textContent;try{await navigator.clipboard.writeText(t);b.textContent="✅ 복사됨"}catch(e){b.textContent="복사 실패"}setTimeout(()=>{b.textContent=old},1500)};
 document.addEventListener("click",ev=>{
- const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit]");if(!el)return;
+ const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit],[data-nv]");if(!el)return;if(el.dataset.nv){openNovel(+el.dataset.nv);return}
  const d=el.dataset;
  if(d.tab){tab=d.tab;$("q").value=""} // 메뉴(탭)를 고를 때마다 검색 필드 초기화
  else if(d.tag){d.tag&&(ft.has(d.tag)?ft.delete(d.tag):ft.add(d.tag))}
