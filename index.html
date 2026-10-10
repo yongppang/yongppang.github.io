@@ -250,6 +250,7 @@ function render(){
    h='<div class="tree-wrap"><div class="tree">';
    ACTS.forEach((a,ai)=>{const group=L.filter(e=>+e.act===ai);h+=`<section class="tree-act" data-act="${ai}"><div class="acthd"><h2><span class="ah" data-act="${ai}" title="드래그해서 막 순서 이동">⠿</span>${esc(a)} · ${group.length}개</h2></div>`;
     group.forEach(e=>{h+=`<div class="tree-node" data-id="${e.id}">${evHTML(e,0,1)}</div><div class="tree-insert"><button data-a="ins" data-t="e" data-i="${e.id}">＋ 여기 다음에 삽입</button></div>`});
+    if(!group.length)h+=`<div class="tree-insert"><button data-a="insact" data-act="${ai}">＋ 이 막에 이벤트 추가</button></div>`;
     h+='</section>';
    });h+='</div></div>';
   }
@@ -388,8 +389,8 @@ $("f").addEventListener("change",ev=>{
  s.value="";if(v)addToField(isC?"chars":"items",v);
 });
 $("dlg").addEventListener("cancel",ev=>{const w=$("actwrap");if(w&&w.classList.contains("fs")){ev.preventDefault();w.classList.remove("fs")}});
-function openEd(t,id,insertAfterId=null){
- editing={t,id,insertAfterId};const anchor=insertAfterId!=null?D.events.find(x=>x.id===insertAfterId):null;const o=(id&&arrOf(t).find(x=>x.id==id))||(anchor?{act:+anchor.act,when:anchor.when,place:anchor.place}:{act:2,when:"D+"});
+function openEd(t,id,insertAfterId=null,actIdx=null){
+ editing={t,id,insertAfterId};const anchor=insertAfterId!=null?D.events.find(x=>x.id===insertAfterId):null;const o=(id&&arrOf(t).find(x=>x.id==id))||(anchor?{act:+anchor.act,when:anchor.when,place:anchor.place}:{act:actIdx!=null?actIdx:2,when:"D+"});
  $("f").innerHTML=`<h3 style="margin:0">${t=="e"?"이벤트":t=="i"?"아이템":"인물"} ${id?"수정":"추가"}</h3>`+SCH[t].map(([k,l,ty])=>{
   const val=o[k]??"";
   if(t=="e"&&k==="actual")return actualBlock(l,val);
@@ -429,6 +430,7 @@ document.addEventListener("click",ev=>{
   const arr=arrOf(d.t),i=arr.findIndex(x=>x.id==d.i);
   if(d.a=="ed"){openEd(d.t,d.i);return}
   if(d.a=="ins"){openEd("e",null,+d.i);return}
+  if(d.a=="insact"){openEd("e",null,null,+d.act);return}
   if(d.a=="del"){if(!confirm(`「${arr[i].title||arr[i].name}」을(를) 삭제할까요? 삭제 후에는 복구할 수 없습니다.`))return;arr.splice(i,1)}
   if(d.a=="up"&&i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];
   if(d.a=="dn"&&i<arr.length-1)[arr[i+1],arr[i]]=[arr[i],arr[i+1]];
