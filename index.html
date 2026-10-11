@@ -17,6 +17,7 @@ h1:hover{border-bottom-color:var(--bd)}h1:focus{border-bottom-color:var(--ac)}
 .tree-act.daafter{box-shadow:4px 0 0 0 var(--ac)}
 .tree-act.dragact{opacity:.35}
 .bar{position:sticky;top:0;background:var(--bg);z-index:20;width:100%;padding:8px 16px;border-bottom:1px solid var(--bd);box-shadow:0 4px 12px #0001}.bar.collapsed .row:not(:first-child){display:none}.bar.collapsed{padding-bottom:6px}.menu-toggle{white-space:nowrap}
+/* 소설 내용 보기 버튼은 레이아웃 공간을 차지하지 않고 화면 우측 하단에 떠 있도록 배치 */
 #viewNovel.novel-fab{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:40;margin:0;padding:9px 14px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(108,92,231,.72);color:#fff;box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.82;transition:opacity .15s,background .15s}
 #viewNovel.novel-fab:hover,#viewNovel.novel-fab:focus-visible{opacity:1;background:rgba(108,92,231,.96)}
 body.share #viewNovel{display:none}
@@ -40,11 +41,13 @@ main{width:100%;padding:12px 16px 60px}
 .dh{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ac)!important;font-size:16px!important;padding:0 8px!important}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
 
+/* 최초 로딩 프로그래스바 */
 #ld{position:fixed;left:0;right:0;top:0;z-index:300;display:none}
 #ld .t{height:4px;background:#0002}
 #ld .b{height:100%;width:0;background:var(--ac);transition:width .25s}
 #ld .m{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:3px 14px;font-size:12px;color:var(--sub);white-space:nowrap}
 
+/* 라인트리 */
 .tree-wrap{overflow:auto;scrollbar-width:thin;overscroll-behavior:contain}
 .tree{display:flex;align-items:stretch;gap:18px;min-width:max-content;min-height:100%;padding:16px 12px 24px}
 .tree-act{width:300px;flex:0 0 300px;position:relative;padding-top:0;border-radius:10px}
@@ -64,24 +67,24 @@ main{width:100%;padding:12px 16px 60px}
 .insert-slot button{font-size:12px;padding:3px 9px;border-style:dashed;color:var(--ac);white-space:nowrap}
 .danger{color:var(--fs)!important}
 .clk{cursor:pointer}h3.clk:hover{color:var(--ac)}p.clk:hover{background:#6c5ce712;border-radius:6px}
-
+/* 소설 내용 보기 */
 .nv-h{margin:22px 0 4px;font-size:18px;font-weight:700;color:var(--ac)}.nv-b{white-space:pre-wrap;line-height:1.9;font-size:16px}.nv-empty{color:var(--sub)}
 .nvbtn{margin:6px 0;font-size:13px;padding:3px 10px;color:var(--ac);border-style:dashed}
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
 .nv-code{margin-top:8px;border:1px solid var(--bd);border-radius:8px;background:#f6f4ff;padding:8px 0;font-size:15px;line-height:1.8}
 .nl{display:flex;align-items:flex-start}.nl:hover{background:#6c5ce70d}
-
-#novelFloatActions{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:6px;max-width:calc(100vw - 28px);pointer-events:none}
-#novelFloatActions button{pointer-events:auto;font-size:13px;padding:8px 11px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.92);color:var(--ac);box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.9;transition:opacity .15s,background .15s}
+/* 소설 내용 보기 안의 복사/공유 버튼: 레이아웃 공간을 차지하지 않고 우측 하단에 고정 */
+#novelFloatActions{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:100;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:calc(100vw - 28px);pointer-events:none}
+#novelFloatActions button{pointer-events:auto;font-size:13px;padding:8px 11px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.78);color:var(--ac);box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.84;transition:opacity .15s,background .15s}
 #novelFloatActions button:hover,#novelFloatActions button:focus-visible{opacity:1;background:rgba(255,255,255,.97)}
 #ndlg #nhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
 #ndlg #nbody{padding-bottom:62px}
-body.share header,body.share .bar,body.share main{display:none}
+body.share header,body.share .bar,body.share main,body.share #nclose{display:none}
 .nacts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.nacts button{font-size:13px;padding:4px 12px;font-weight:700}.nacts button small{font-weight:400;opacity:.8;margin-left:3px}
 .nl .ln{flex:none;width:var(--w);box-sizing:content-box;text-align:right;padding:0 12px 0 10px;margin-right:12px;border-right:1px solid var(--bd);color:#9aa0b3;font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none}
 .nl .lt{flex:1;min-width:0;white-space:pre-wrap;word-break:break-word;padding-right:12px}
 .nl.nh .lt{font-weight:700;color:var(--ac)}
-
+/* 실제 내용 입력창 도구 */
 .acthead{display:flex;align-items:center;justify-content:space-between}
 .fsoff{display:none}
 .insbar{margin:4px 0}.insdet{margin:4px 0}.insdet summary{cursor:pointer;font-size:14px;color:var(--sub);padding:2px 0;user-select:none}.insdet summary:hover{color:var(--ac)}.insrow{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
@@ -94,11 +97,13 @@ body.share header,body.share .bar,body.share main{display:none}
 .actwrap.fs textarea.actual-field{flex:1;min-height:0!important;resize:none;margin-top:6px}
 .actwrap.fs .actbar{display:none}
 
+/* 트리 보기: 화면 전체 채우기 */
 body.treeview{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 body.treeview header,body.treeview .bar{flex:none}
 body.treeview main{flex:1;min-height:0;padding:0}
 body.treeview .tree-wrap{height:100%}
 
+/* 드래그 */
 .ev.dragging{opacity:.3}
 .ghost{box-shadow:0 10px 30px #0004}
 .tree-node.dbefore{box-shadow:0 -3px 0 0 var(--ac)}
@@ -109,4 +114,625 @@ body.treeview .tree-wrap{height:100%}
 table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px solid var(--bd);padding:6px;text-align:left;vertical-align:top}
 .tw{overflow-x:auto}
 dialog{border:1px solid var(--bd);border-radius:0;background:var(--bg);color:var(--tx);width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:20px 24px;overflow:auto}
-dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:none;min-height:100%;display:flex;flex-direction:column}dialog form h3{font-size:21px;margin-bottom:12px!important}dialog label{display:block;font-size:1
+dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:none;min-height:100%;display:flex;flex-direction:column}dialog form h3{font-size:21px;margin-bottom:12px!important}dialog label{display:block;font-size:14px;color:var(--sub);margin-top:12px}dialog input:not([type=checkbox]),dialog textarea,dialog select{width:100%;padding:10px 12px;font-size:16px}dialog textarea{min-height:110px;resize:vertical}dialog textarea.actual-field{min-height:45vh}dialog .row{margin-top:auto;padding-top:18px;position:sticky;bottom:0;background:var(--bg)}#tagbar{display:none!important}
+@media(max-width:560px){header{padding:8px 12px 2px}h1{font-size:18px}.bar{padding:8px 10px}.bar .row{gap:5px}main{padding:10px 10px 40px}.ev{grid-template-columns:1fr;gap:4px}.when{text-align:left;padding:0}.grid{grid-template-columns:1fr}dialog{padding:14px 12px}.tree-act{width:270px;flex-basis:270px}.tree-node .ev{grid-template-columns:1fr}.tree-node .when{text-align:left;padding:0}body.treeview main{padding:0}}
+</style>
+</head>
+<body>
+<div id="ld"><div class="t"><div class="b" id="ldb"></div></div><div class="m" id="ldm">data.json 불러오는 중…</div></div>
+<header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span class="pl" id="sub">수정본 · 사건 편집창에 ‘실제 내용 (소설 원문)’ 입력란 포함</span><span id="stat"></span><button id="fbst" hidden style="flex:none;font-size:12px;padding:2px 10px;white-space:nowrap"></button></header>
+<div class="bar">
+ <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button><button class="tab" data-tab="it">아이템설정</button><button id="actsEdit">막 설정</button>
+ <span style="flex:1"></span><button class="menu-toggle" id="menuToggle" aria-expanded="true">⌃ 메뉴 접기</button><button class="p" id="add">+ 추가</button></div>
+ <div class="row"><input id="q" placeholder="검색 (제목·내용·인물·태그·메모)">
+ <select id="view"><option value="tree" selected>좌우 라인트리</option><option value="act">막별 보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
+ <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
+ <div class="row" id="tagbar"></div>
+ <!-- 초기화 버튼 비활성화: <div class="row"><button id="rst">초기화</button></div> -->
+</div>
+<main id="list"></main>
+<!-- 화면 하단에 고정된 소설 읽기 버튼: 문서 흐름을 차지하지 않음 -->
+<button id="viewNovel" class="novel-fab" type="button">📖 소설내용보기</button>
+<dialog id="dlg"><form method="dialog" id="f"></form></dialog>
+<dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
+<dialog id="ndlg"><form method="dialog" id="nf"><div id="nhead"><h3 style="margin:0">📖 소설 내용 보기</h3><button class="p" id="nclose" value="close" formnovalidate>닫기 ✕</button></div><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div id="novelFloatActions"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button type="button" id="fbpub" hidden title="공유 링크로 보이는 내용을 지금 작성한 내용으로 갱신">🌐 공유 내용 업데이트</button></div></form></dialog>
+
+<script>
+const ACTS=["프롤로그","1막","2막","3막","4막"];
+const DEFTITLE="📖 소설 관리";
+const RAW=[
+["D-day","장소 A","프롤로그 이벤트","홍길동 이벤트 1의 요약을 입력하세요.","홍길동","",0,0],
+["D-10","장소 B","첫 만남","홍길동과 임꺽정이 처음 만나는 이벤트입니다.","홍길동,임꺽정","검",1,1],
+["D-5","장소 C","갈등","두 사람 사이에 갈등이 생깁니다.","홍길동,임꺽정","",2,0],
+["D+1","장소 D","전환점","이야기의 전환점이 되는 이벤트입니다.","홍길동","",3,0],
+["D+10","장소 E","결말","이야기가 마무리됩니다.","홍길동,임꺽정","",4,0]
+];
+const TR=[];
+const SEEDE=RAW.map((r,i)=>({id:i+1,when:r[0],place:r[1],title:r[2],summary:r[3],actual:"",chars:r[4],items:r[5],act:r[6],fs:!!r[7],memo:"",
+ tags:[...TR.filter(t=>t[1].test(r[2]+r[3])).map(t=>t[0]),...(r[7]?["복선"]:[])].join(",")}));
+const CH=[
+["홍길동","주인공","성격을 입력하세요.","배경을 입력하세요.","변화(arc)를 입력하세요.","임꺽정의 친구","주인공"],
+["임꺽정","조연","성격을 입력하세요.","배경을 입력하세요.","","홍길동의 친구","조연"]
+];
+const SEEDC=CH.map((r,i)=>({id:i+1,name:r[0],role:r[1],age:"",look:"",personality:r[2],background:r[3],arc:r[4],relations:r[5],tags:r[6],memo:""}));
+const SEEDI=[{id:1,name:"검",desc:"설명을 입력하세요.",owner:"임꺽정",memo:""}];
+const arrOf=t=>t=="e"?D.events:t=="i"?D.items:D.chars;
+const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (쉼표)"],["items","주요 아이템 (쉼표)"],["fs","⭐ 중요 표시","cb"],["done","작성 완료","cb"],["memo","작가 메모","ta"]],
+ c:[["name","이름"],["role","역할"],["age","나이/학년"],["look","외모","ta"],["personality","성격","ta"],["background","배경","ta"],["arc","변화(arc)","ta"],["relations","관계","ta"],["memo","메모","ta"]]};
+const KEY="novel-mgr-v2",$=id=>document.getElementById(id);
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const split=s=>String(s||"").split(",").map(x=>x.trim()).filter(Boolean);
+const clone=x=>JSON.parse(JSON.stringify(x));
+// 이 브라우저에 이미 저장된 데이터가 있었는지 (자동 불러오기 시 덮어쓰기 확인용)
+// 공유 링크(?novel=1)로 열면 읽기 전용: 이 브라우저의 저장 데이터를 건드리지 않는다.
+const SHARE=new URLSearchParams(location.search).has("novel");
+if(SHARE)document.body.classList.add("share");
+let HAD=false;try{HAD=!!localStorage.getItem(KEY)}catch(e){}
+let D;try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!D||!D.events){let v1;try{v1=JSON.parse(localStorage.getItem("novel-timeline-v1"))}catch(e){}
+ D={events:Array.isArray(v1)?v1.map(e=>({tags:"",...e})):clone(SEEDE),chars:clone(SEEDC)}}
+const save=()=>{if(SHARE)return;D.acts=clone(ACTS);try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}if(window.fbHook)window.fbHook()};
+let tab="tl",ft=new Set(),onlyFs=false,editing=null;
+// 이전 버전에서 저장된 자동 태그를 한 번 제거한다.
+if(!D._tagsRemoved){[...D.events,...D.chars].forEach(o=>o.tags="");D._tagsRemoved=true;try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
+// 막 이름 정규화: 객체 형태로 저장된 데이터도 문자열로 바꾼다. ([object Object] 방지)
+// 객체가 문자열로 강제 변환되어 "[object Object]"로 표시되는 현상을 방지한다.
+const safeText=(v,fallback="")=>{
+ if(v==null)return fallback;
+ if(typeof v==="string")return v;
+ if(typeof v==="number"||typeof v==="boolean")return String(v);
+ if(Array.isArray(v))return v.map(x=>safeText(x)).filter(Boolean).join(", ");
+ if(typeof v==="object"){
+  for(const k of ["name","title","label","text","value","displayName"]) {
+   if(v[k]!=null && (typeof v[k]!=="object")) return String(v[k]);
+  }
+  try{return JSON.stringify(v)}catch(e){return fallback}
+ }
+ return fallback;
+};
+const actName=(a,i)=>safeText(a && typeof a==="object" ? (a.name??a.title??a.label??a.text) : a,`${i+1}막`)||`${i+1}막`;
+const setActs=arr=>{ACTS.splice(0,ACTS.length,...arr.map((a,i)=>actName(a,i)))};
+const normalizeData=()=>{
+ if(!D||typeof D!=="object")D={events:[],chars:[]};
+ if(!Array.isArray(D.events))D.events=[];
+ if(!Array.isArray(D.chars))D.chars=[];
+ if(!Array.isArray(D.items)){const seen=new Set();D.items=[];(D.events||[]).forEach(e=>String(e&&e.items||"").split(",").map(x=>x.trim()).filter(Boolean).forEach(n=>{if(!seen.has(n)){seen.add(n);D.items.push({id:D.items.length+1,name:n,desc:"",owner:"",memo:""})}}))}
+ D.items=D.items.map((c,i)=>{if(!c||typeof c!=="object")c={name:safeText(c)};["name","desc","owner","memo"].forEach(k=>{c[k]=safeText(c[k],"")});c.id=Number(c.id)||i+1;return c});
+ if(Array.isArray(D.acts)&&D.acts.length)setActs(D.acts);
+ D.acts=clone(ACTS);
+ if(typeof D.title!=="string")D.title=safeText(D.title,"");
+ const eventFields=["when","place","title","summary","actual","chars","items","tags","memo"];
+ D.events=D.events.map((e,i)=>{
+  if(!e||typeof e!=="object")e={title:safeText(e)};
+  eventFields.forEach(k=>{e[k]=safeText(e[k],"")});
+  e.id=Number(e.id)||i+1;
+  e.act=Math.min(Math.max(0,Number(e.act)||0),ACTS.length-1);
+  e.fs=!!e.fs;e.done=!!e.done;
+  return e;
+ });
+ const charFields=["name","role","age","look","personality","background","arc","relations","tags","memo"];
+ D.chars=D.chars.map((c,i)=>{
+  if(!c||typeof c!=="object")c={name:safeText(c)};
+  charFields.forEach(k=>{c[k]=safeText(c[k],"")});
+  c.id=Number(c.id)||i+1;
+  return c;
+ });
+};
+normalizeData();
+save();
+function fillActFilter(){const sel=$("fa"),v=sel.value;sel.innerHTML='<option value="">전체 막</option>'+ACTS.map((a,i)=>`<option value="${i}">${esc(a)}</option>`).join("");if([...sel.options].some(o=>o.value===v))sel.value=v}
+fillActFilter();
+const hit=(o,q,ks)=>!q||ks.map(k=>o[k]).join(" ").toLowerCase().includes(q);
+const tagOk=o=>[...ft].every(t=>split(o.tags).includes(t));
+
+// 제목 편집
+function applyTitle(){const t=$("ttl");if(document.activeElement!==t)t.textContent=D.title||DEFTITLE;document.title=(D.title||DEFTITLE).replace(/^📖\s*/,"")}
+$("ttl").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();ev.target.blur()}});
+$("ttl").addEventListener("blur",()=>{const v=$("ttl").textContent.replace(/\s+/g," ").trim();D.title=v||DEFTITLE;$("ttl").textContent=D.title;save();document.title=D.title.replace(/^📖\s*/,"")});
+$("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand("insertText",false,(ev.clipboardData.getData("text/plain")||"").replace(/\s+/g," "))});
+
+function evHTML(e,mini,drag){
+ return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
+ ${mini?"":`<div class="btns">${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button></div>`}
+ <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정"><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
+ <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
+ ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
+function chHTML(c){
+ const n=D.events.filter(e=>split(e.chars).includes(c.name)).length;
+ const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
+ return `<div class="card"><div class="btns"><button data-a="del" data-t="c" data-i="${c.id}">✕</button></div>
+ <h3 class="clk" data-a="ed" data-t="c" data-i="${c.id}" title="클릭하면 수정">${esc(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3>
+ ${kv("look","외모")}${kv("personality","성격")}${kv("background","배경")}${kv("arc","변화")}${kv("relations","관계")}
+ <div class="kv"><b>등장</b><a href="#" data-showch="${esc(c.name)}">타임라인 ${n}건 보기</a></div>
+ <div class="tags">${split(c.tags).map(t=>`<span class="tg" data-tag="${esc(t)}">#${esc(t)}</span>`).join("")}</div>
+ ${c.memo?`<div class="memo">📝 ${esc(c.memo)}</div>`:""}</div>`}
+function itHTML(c){
+ const n=D.events.filter(e=>split(e.items).includes(c.name)).length;
+ const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
+ const own=split(c.owner).map(nm=>D.chars.some(x=>x.name===nm)?`<a href="#" data-ch="${esc(nm)}">${esc(nm)}</a>`:esc(nm)).join(", ");
+ return `<div class="card"><div class="btns"><button data-a="del" data-t="i" data-i="${c.id}">✕</button></div>
+ <h3 class="clk" data-a="ed" data-t="i" data-i="${c.id}" title="클릭하면 수정">◇ ${esc(c.name)}</h3>${kv("desc","설명")}${c.owner?`<div class="kv"><b>관련 인물</b>${own}</div>`:""}
+ <div class="kv"><b>등장</b><a href="#" data-showit="${esc(c.name)}">타임라인 ${n}건 보기</a></div>
+ ${c.memo?`<div class="memo">📝 ${esc(c.memo)}</div>`:""}</div>`}
+function render(){
+ const q=$("q").value.toLowerCase(),fa=$("fa").value,v=$("view").value;
+ const tags=[...new Set([...D.events,...D.chars].flatMap(o=>split(o.tags)))].sort();
+ $("tagbar").innerHTML=tags.map(t=>`<button class="chip ${ft.has(t)?"on":""}" data-tag="${esc(t)}">#${esc(t)}</button>`).join("")||"<span class='pl'>태그 없음</span>";
+ $("view").hidden=$("fa").hidden=$("ffs").hidden=tab!="tl";
+ document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab==tab));
+ document.body.classList.toggle("treeview",tab=="tl"&&v=="tree");
+ applyTitle();
+ const oldWrap=document.querySelector(".tree-wrap"),sl=oldWrap?oldWrap.scrollLeft:0,st=oldWrap?oldWrap.scrollTop:0;
+ let h="";
+ if(tab=="it"){
+  const L=D.items.filter(c=>hit(c,q,["name","desc","owner","memo"]));
+  h=`<div class="grid">${L.map(itHTML).join("")}</div>`;
+  $("stat").textContent=`아이템 ${D.items.length}개 · 표시 ${L.length}`;
+ }else if(tab=="ch"){
+  const L=D.chars.filter(c=>hit(c,q,["name","role","personality","background","arc","relations","tags","memo"])&&tagOk(c));
+  h=`<div class="grid">${L.map(chHTML).join("")}</div>`;
+  $("stat").textContent=`인물 ${D.chars.length}명 · 표시 ${L.length}`;
+ }else{
+  const L=D.events.filter(e=>hit(e,q,["title","summary","actual","place","items","chars","tags","memo"])&&tagOk(e)&&(fa===""||e.act==fa)&&(!onlyFs||e.fs));
+  if(v=="act"){let last=-1;L.forEach(e=>{if(e.act!=last){h+=`<div class="act">${esc(ACTS[e.act])}</div>`;last=e.act}h+=evHTML(e)+`<div class="insert-slot"><button data-a="ins" data-t="e" data-i="${e.id}">＋ 이 사건 다음에 삽입</button></div>`})}
+  else if(v=="tree"){
+   h='<div class="tree-wrap"><div class="tree">';
+   ACTS.forEach((a,ai)=>{const group=L.filter(e=>+e.act===ai);h+=`<section class="tree-act" data-act="${ai}"><div class="acthd"><h2><span class="ah" data-act="${ai}" title="드래그해서 막 순서 이동">⠿</span>${esc(a)} · ${group.length}개</h2></div>`;
+    group.forEach(e=>{h+=`<div class="tree-node" data-id="${e.id}">${evHTML(e,0,1)}</div><div class="tree-insert"><button data-a="ins" data-t="e" data-i="${e.id}">＋ 여기 다음에 삽입</button></div>`});
+    if(!group.length)h+=`<div class="tree-insert"><button data-a="insact" data-act="${ai}">＋ 이 막에 이벤트 추가</button></div>`;
+    h+='</section>';
+   });h+='</div></div>';
+  }
+  else if(v=="char"){
+   const names=[...new Set([...D.chars.map(c=>c.name),...L.flatMap(e=>split(e.chars))])];
+   names.forEach(n=>{const l=L.filter(e=>split(e.chars).includes(n));if(l.length)h+=`<div class="act">👤 ${esc(n)} (${l.length})</div>`+l.map(e=>evHTML(e,1)).join("")})}
+  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td></tr>`).join("")}</table></div>`;
+  $("stat").textContent=`사건 ${D.events.length}개 · 복선 ${D.events.filter(e=>e.fs).length}개 · 표시 ${L.length}개`;
+ }
+ $("list").innerHTML=h||"<p class='pl'>해당하는 항목이 없습니다.</p>";
+ const nw=document.querySelector(".tree-wrap");if(nw){nw.scrollLeft=sl;nw.scrollTop=st}
+}
+
+// ===== 드래그로 막/위치 이동 (마우스·터치 공용) =====
+let drag=null;
+function clearMarks(){document.querySelectorAll(".dbefore,.dafter,.dcol").forEach(el=>el.classList.remove("dbefore","dafter","dcol"))}
+function moveEvent(id,t){
+ const arr=D.events,i=arr.findIndex(x=>x.id===id);if(i<0)return;
+ const [e]=arr.splice(i,1);e.act=t.act;let at;
+ if(t.ref!=null){const j=arr.findIndex(x=>x.id===t.ref);at=j<0?arr.length:(t.before?j:j+1)}
+ else{let last=-1;arr.forEach((x,k)=>{if(+x.act<=t.act)last=k});at=last+1}
+ arr.splice(at,0,e);
+}
+document.addEventListener("pointerdown",ev=>{
+ const h=ev.target.closest(".dh");if(!h||drag)return;
+ ev.preventDefault();
+ const evEl=h.closest(".ev"),card=evEl.querySelector(".card"),r=card.getBoundingClientRect();
+ const ghost=card.cloneNode(true);ghost.classList.add("ghost");
+ ghost.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;max-height:240px;overflow:hidden;pointer-events:none;opacity:.88;z-index:200;transform:rotate(1.5deg)`;
+ document.body.appendChild(ghost);evEl.classList.add("dragging");
+ drag={id:+h.dataset.i,ghost,evEl,dx:ev.clientX-r.left,dy:ev.clientY-r.top,target:null,pid:ev.pointerId,el:h};
+ try{h.setPointerCapture(ev.pointerId)}catch(e){}
+});
+document.addEventListener("pointermove",ev=>{
+ if(!drag||ev.pointerId!==drag.pid)return;
+ ev.preventDefault();
+ drag.ghost.style.left=(ev.clientX-drag.dx)+"px";drag.ghost.style.top=(ev.clientY-drag.dy)+"px";
+ const wrap=document.querySelector(".tree-wrap");
+ if(wrap){const wr=wrap.getBoundingClientRect(),m=60;
+  if(ev.clientX>wr.right-m)wrap.scrollLeft+=18;else if(ev.clientX<wr.left+m)wrap.scrollLeft-=18;
+  if(ev.clientY>wr.bottom-m)wrap.scrollTop+=18;else if(ev.clientY<wr.top+m)wrap.scrollTop-=18;}
+ clearMarks();drag.target=null;
+ const el=document.elementFromPoint(ev.clientX,ev.clientY);if(!el)return;
+ const col=el.closest(".tree-act");if(!col)return;
+ const act=+col.dataset.act;
+ let node=el.closest(".tree-node"),after=false;
+ const ins=el.closest(".tree-insert");
+ if(!node&&ins){node=ins.previousElementSibling;after=true}
+ if(node&&+node.dataset.id!==drag.id){
+  if(!after){const nr=node.getBoundingClientRect();after=ev.clientY>nr.top+nr.height/2}
+  drag.target={act,ref:+node.dataset.id,before:!after};
+  node.classList.add(after?"dafter":"dbefore");
+ }else if(!node){drag.target={act,ref:null};col.classList.add("dcol")}
+});
+function endDrag(ev,cancel){
+ if(!drag||(ev&&ev.pointerId!==drag.pid))return;
+ const d=drag;drag=null;
+ d.ghost.remove();d.evEl.classList.remove("dragging");clearMarks();
+ try{d.el.releasePointerCapture(d.pid)}catch(e){}
+ if(!cancel&&d.target){moveEvent(d.id,d.target);save();render()}
+}
+document.addEventListener("pointerup",ev=>endDrag(ev,false));
+document.addEventListener("pointercancel",ev=>endDrag(ev,true));
+
+// ===== 막(열) 순서 드래그 =====
+let adrag=null;
+const clearAMarks=()=>document.querySelectorAll(".dabefore,.daafter").forEach(el=>el.classList.remove("dabefore","daafter"));
+function moveAct(from,p){ // p: 원래 인덱스 기준 삽입 위치(0~ACTS.length)
+ const to=p>from?p-1:p;if(to===from)return false;
+ const order=ACTS.map((_,i)=>i),[m]=order.splice(from,1);order.splice(to,0,m);
+ const map={};order.forEach((old,ni)=>map[old]=ni);
+ const names=order.map(i=>ACTS[i]);ACTS.splice(0,ACTS.length,...names);
+ D.events.forEach(e=>{e.act=map[+e.act]??0});
+ D.events.sort((a,b)=>a.act-b.act);
+ fillActFilter();$("fa").value="";
+ return true;
+}
+document.addEventListener("pointerdown",ev=>{
+ const h=ev.target.closest(".ah");if(!h||adrag||drag)return;
+ ev.preventDefault();
+ const col=h.closest(".tree-act"),h2=col.querySelector("h2"),r=h2.getBoundingClientRect();
+ const ghost=h2.cloneNode(true);
+ ghost.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;margin:0;pointer-events:none;opacity:.9;z-index:200;box-shadow:0 8px 24px #0004`;
+ document.body.appendChild(ghost);col.classList.add("dragact");
+ adrag={from:+h.dataset.act,ghost,col,dx:ev.clientX-r.left,dy:ev.clientY-r.top,target:null,pid:ev.pointerId,el:h};
+ try{h.setPointerCapture(ev.pointerId)}catch(e){}
+});
+document.addEventListener("pointermove",ev=>{
+ if(!adrag||ev.pointerId!==adrag.pid)return;
+ ev.preventDefault();
+ adrag.ghost.style.left=(ev.clientX-adrag.dx)+"px";adrag.ghost.style.top=(ev.clientY-adrag.dy)+"px";
+ const wrap=document.querySelector(".tree-wrap");
+ if(wrap){const wr=wrap.getBoundingClientRect(),m=60;
+  if(ev.clientX>wr.right-m)wrap.scrollLeft+=20;else if(ev.clientX<wr.left+m)wrap.scrollLeft-=20;}
+ clearAMarks();adrag.target=null;
+ const el=document.elementFromPoint(ev.clientX,ev.clientY),col=el&&el.closest(".tree-act");
+ if(!col||col===adrag.col)return;
+ const idx=+col.dataset.act,cr=col.getBoundingClientRect(),after=ev.clientX>cr.left+cr.width/2;
+ adrag.target=after?idx+1:idx;col.classList.add(after?"daafter":"dabefore");
+});
+function endAct(ev,cancel){
+ if(!adrag||(ev&&ev.pointerId!==adrag.pid))return;
+ const d=adrag;adrag=null;
+ d.ghost.remove();d.col.classList.remove("dragact");clearAMarks();
+ try{d.el.releasePointerCapture(d.pid)}catch(e){}
+ if(!cancel&&d.target!=null&&moveAct(d.from,d.target)){save();render()}
+}
+document.addEventListener("pointerup",ev=>endAct(ev,false));
+document.addEventListener("pointercancel",ev=>endAct(ev,true));
+
+// ===== 실제 내용 입력창: 등장인물/아이템 삽입 버튼 + 화면 가득 편집 =====
+function actualBlock(l,val){
+ const cn=[...new Set([...D.chars.map(c=>c.name),...D.events.flatMap(e=>split(e.chars))])].filter(Boolean);
+ const it=[...new Set([...D.items.map(i=>i.name),...D.events.flatMap(e=>split(e.items))])].filter(Boolean);
+ const btn=(t,n)=>`<button type="button" class="ins" data-ins="${t}" data-v="${esc(n)}">${esc(n)}</button>`;
+ const opts=(ph,arr)=>`<option value="">${ph}</option>`+arr.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("")+`<option value="__new">✎ 직접 입력…</option>`;
+ return `<div class="actwrap" id="actwrap"><div class="acthead"><label>${l}</label><button type="button" id="fsOff" class="fsoff">[원래대로 보기]</button></div>
+ <div class="insbar"><details class="insdet"><summary>👤 등장인물 버튼 <span class="pl">(본문에 삽입 + 등장인물 칸에 추가)</span></summary><div class="insrow">${cn.map(n=>btn("c",n)).join("")||'<span class="pl">등록된 인물 없음</span>'}</div></details>
+ <details class="insdet"><summary>◇ 아이템 버튼 <span class="pl">(본문에 삽입 + 주요 아이템 칸에 추가)</span></summary><div class="insrow">${it.map(n=>btn("i",n)).join("")||'<span class="pl">등록된 아이템 없음 (아이템설정에서 등록)</span>'}</div></details></div>
+ <textarea class="actual-field" name="actual" rows="12" placeholder="이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.">${esc(val)}</textarea>
+ <div class="actbar"><button type="button" id="fsOn">⛶ 화면 가득 편집</button><button type="button" id="goChars">⚙ 등장인물 설정</button><button type="button" id="goItems">⚙ 아이템 설정</button></div></div>`;
+}
+const addToField=(name,n)=>{const inp=$("f")[name];if(!inp)return;const a=split(inp.value);if(!a.includes(n)){a.push(n);inp.value=a.join(",")}};
+$("f").addEventListener("click",ev=>{
+ const b=ev.target.closest("[data-ins]");
+ if(b){const ta=$("f").actual,n=b.dataset.v,s=ta.selectionStart??ta.value.length,e=ta.selectionEnd??s;
+  ta.setRangeText(n,s,e,"end");ta.focus();addToField(b.dataset.ins=="c"?"chars":"items",n);return}
+ if(ev.target.closest("#fsOn")){$("actwrap").classList.add("fs");$("f").actual.focus();return}
+ if(ev.target.closest("#fsOff")){$("actwrap").classList.remove("fs");return}
+ const go=ev.target.closest("#goChars,#goItems");
+ if(go){if(!confirm("설정 화면으로 이동합니다. 저장하지 않은 편집 내용은 사라집니다. 이동할까요?"))return;$("dlg").close();tab=go.id==="goItems"?"it":"ch";$("q").value="";render();return}
+});
+$("f").addEventListener("change",ev=>{
+ const s=ev.target.closest(".pick");if(!s)return;let v=s.value;const isC=s.id==="pickc";
+ if(v==="__new")v=(prompt(isC?"추가할 등장인물 이름":"추가할 아이템 이름")||"").trim();
+ s.value="";if(v)addToField(isC?"chars":"items",v);
+});
+$("dlg").addEventListener("cancel",ev=>{const w=$("actwrap");if(w&&w.classList.contains("fs")){ev.preventDefault();w.classList.remove("fs")}});
+function openEd(t,id,insertAfterId=null,actIdx=null){
+ editing={t,id,insertAfterId};const anchor=insertAfterId!=null?D.events.find(x=>x.id===insertAfterId):null;const o=(id&&arrOf(t).find(x=>x.id==id))||(anchor?{act:+anchor.act,when:anchor.when,place:anchor.place}:{act:actIdx!=null?actIdx:2,when:"D+"});
+ $("f").innerHTML=`<h3 style="margin:0">${t=="e"?"이벤트":t=="i"?"아이템":"인물"} ${id?"수정":"추가"}</h3>`+SCH[t].map(([k,l,ty])=>{
+  const val=o[k]??"";
+  if(t=="e"&&k==="actual")return actualBlock(l,val);
+  if(ty=="ta")return `<label>${l}</label><textarea class="${k==="actual"?"actual-field":""}" name="${k}" rows="${k==="actual"?12:3}" placeholder="${k==="summary"?"사건의 핵심을 간단히 요약해 주세요.":k==="actual"?"이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.":""}">${esc(val)}</textarea>`;
+  if(ty=="cb")return `<label><input type="checkbox" name="${k}" ${val?"checked":""}> ${l}</label>`;
+  if(ty=="sel")return `<label>${l}</label><select name="${k}">${ACTS.map((a,i)=>`<option value="${i}" ${i==val?"selected":""}>${a}</option>`).join("")}</select>`;
+  return `<label>${l}</label><input name="${k}" value="${esc(val)}">`}).join("")+
+  `<div class="row" style="margin-top:12px"><button class="p" value="ok">저장</button><button value="cancel" formnovalidate>취소</button></div>`;
+ $("dlg").showModal();
+}
+$("f").addEventListener("submit",ev=>{
+ if(ev.submitter.value!="ok")return;const {t,id}=editing,f=$("f"),arr=arrOf(t),d={};
+ SCH[t].forEach(([k,,ty])=>d[k]=ty=="cb"?f[k].checked:ty=="sel"?+f[k].value:f[k].value);
+ if(id)Object.assign(arr.find(x=>x.id==id),d);else {const fresh={id:Math.max(0,...arr.map(x=>x.id))+1,...d};if(t==="e"&&editing.insertAfterId!=null){const at=arr.findIndex(x=>x.id===editing.insertAfterId);arr.splice(at<0?arr.length:at+1,0,fresh)}else arr.push(fresh)}
+ save();render();
+});
+function drawActRows(){
+ const host=$("actRows");host.innerHTML=ACTS.map((a,i)=>`<div class="row" data-actrow="${i}" style="border-bottom:1px solid var(--bd);padding:5px 0"><input data-actname="${i}" value="${esc(a)}" style="flex:1;min-width:170px"><button type="button" data-actmove="up" data-idx="${i}" ${i===0?"disabled":""}>←</button><button type="button" data-actmove="dn" data-idx="${i}" ${i===ACTS.length-1?"disabled":""}>→</button><button type="button" class="danger" data-actdel="${i}">삭제</button></div>`).join("");
+}
+$("actsEdit").onclick=()=>{drawActRows();$("adlg").showModal()};
+$("actAdd").onclick=()=>{const inputs=[...document.querySelectorAll("[data-actname]")];inputs.forEach((el,i)=>ACTS[i]=el.value.trim()||ACTS[i]);ACTS.push(`${ACTS.length}막 · 새 막`);drawActRows()};
+$("actRows").addEventListener("click",ev=>{const b=ev.target.closest("button");if(!b)return;const i=+b.dataset.idx;
+ if(b.dataset.actmove){const inputs=[...document.querySelectorAll("[data-actname]")];inputs.forEach((el,j)=>ACTS[j]=el.value.trim()||ACTS[j]);const j=b.dataset.actmove==="up"?i-1:i+1;[ACTS[i],ACTS[j]]=[ACTS[j],ACTS[i]];D.events.forEach(e=>{if(+e.act===i)e.act=j;else if(+e.act===j)e.act=i});drawActRows()}
+ if(b.dataset.actdel!==undefined){const del=+b.dataset.actdel;if(ACTS.length<=1){alert("막은 최소 1개 이상 있어야 합니다.");return}const inputs=[...document.querySelectorAll("[data-actname]")];inputs.forEach((el,j)=>ACTS[j]=el.value.trim()||ACTS[j]);if(!confirm(`「${ACTS[del]}」을 삭제할까요? 이 막의 사건은 이전 막으로 이동합니다.`))return;ACTS.splice(del,1);D.events.forEach(e=>{if(+e.act===del)e.act=Math.max(0,del-1);else if(+e.act>del)e.act--});drawActRows()}
+});
+$("af").addEventListener("submit",ev=>{if(ev.submitter.value!=="ok")return;const inputs=[...document.querySelectorAll("[data-actname]")];const names=inputs.map(el=>el.value.trim()).filter(Boolean);if(!names.length){ev.preventDefault();alert("막 이름을 하나 이상 입력하세요.");return}ACTS.splice(0,ACTS.length,...names);D.events.forEach(e=>{e.act=Math.min(Math.max(0,+e.act||0),ACTS.length-1)});save();fillActFilter();render()});
+$("add").onclick=()=>openEd(tab=="tl"?"e":tab=="it"?"i":"c");
+// ===== 소설 내용 보기: [제목] 내용 형식으로 이어서 표시 =====
+let novAct=-1; // -1 = 전체, 0 이상 = 해당 막만
+const novelAll=()=>D.events.filter(e=>String(e.actual||"").trim());
+const novelList=()=>novelAll().filter(e=>novAct<0||+e.act===novAct);
+// 전체를 하나의 문서처럼 줄 단위로 만든다. (줄 번호 = 전체 복사 텍스트의 줄 번호와 동일)
+function novelLines(){
+ const out=[];
+ novelList().forEach((e,i)=>{
+  if(i)out.push({t:""}); // 사건 사이 빈 줄
+  out.push({t:`[${e.title}]`,h:true,id:e.id});
+  String(e.actual).replace(/\r\n?/g,"\n").replace(/\n+$/,"").split("\n").forEach(t=>out.push({t}));
+ });
+ return out;
+}
+function openNovel(focusId){
+ if(focusId!=null){const fe=D.events.find(x=>x.id===focusId);if(fe&&novAct>=0)novAct=+fe.act}
+ if(novAct>=ACTS.length)novAct=-1;
+ renderNovel(focusId);
+ $("ndlg").showModal();
+ if(focusId!=null){const t=$("nbody").querySelector(`.nl[data-e="${focusId}"]`);if(t){t.scrollIntoView({block:"start"});t.classList.add("flash")}}else $("ndlg").scrollTop=0;
+}
+$("nacts").addEventListener("click",ev=>{const b=ev.target.closest("[data-nact]");if(!b)return;novAct=+b.dataset.nact;renderNovel();$("ndlg").scrollTop=0});
+function renderNovel(){
+ const all=novelAll(),L=novelList(),lines=novelLines();
+ $("nacts").innerHTML=`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${all.length}</small></button>`+ACTS.map((a,i)=>`<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${all.filter(e=>+e.act===i).length}</small></button>`).join("");
+ $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · 내용이 작성된 사건 ${L.length}개 / 해당 사건 ${novAct<0?D.events.length:D.events.filter(e=>+e.act===novAct).length}개 · 총 ${lines.length}줄`;
+ $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
+}
+$("viewNovel").onclick=()=>openNovel();
+$("ndlg").addEventListener("cancel",ev=>{if(SHARE)ev.preventDefault()});
+// 공유 링크 복사: 지금 보고 있는 막(전체/특정 막)이 그대로 링크에 들어간다.
+$("nlink").onclick=async()=>{
+ if(location.protocol==="file:"){alert("파일로 직접 연 상태에서는 공유 링크를 만들 수 없습니다.\nGitHub Pages 주소로 접속한 뒤 눌러 주세요.");return}
+ const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("novel","1");if(novAct>=0)u.searchParams.set("act",novAct);
+ const url=u.toString(),b=$("nlink"),old=b.textContent;
+ try{await navigator.clipboard.writeText(url);b.textContent="✅ 링크 복사됨"}catch(e){prompt("아래 링크를 복사하세요",url);return}
+ setTimeout(()=>{b.textContent=old},1800);
+};
+$("ncopy").onclick=async()=>{const t=novelLines().map(l=>l.t).join("\n");const b=$("ncopy"),old=b.textContent;try{await navigator.clipboard.writeText(t);b.textContent="✅ 복사됨"}catch(e){b.textContent="복사 실패"}setTimeout(()=>{b.textContent=old},1500)};
+document.addEventListener("click",ev=>{
+ const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit],[data-nv]");if(!el)return;if(el.dataset.nv){openNovel(+el.dataset.nv);return}
+ const d=el.dataset;
+ if(d.tab){tab=d.tab;$("q").value=""} // 메뉴(탭)를 고를 때마다 검색 필드 초기화
+ else if(d.tag){d.tag&&(ft.has(d.tag)?ft.delete(d.tag):ft.add(d.tag))}
+ else if(d.showit){ev.preventDefault();tab="tl";$("view").value="act";$("q").value=d.showit}
+ else if(d.showch){ev.preventDefault();tab="tl";$("view").value="char";$("q").value=d.showch}
+ else if(d.ch){ev.preventDefault();tab="ch";$("q").value=d.ch}
+ else if(d.it){tab="it";$("q").value=d.it}
+ else if(d.a){
+  const arr=arrOf(d.t),i=arr.findIndex(x=>x.id==d.i);
+  if(d.a=="ed"){openEd(d.t,d.i);return}
+  if(d.a=="ins"){openEd("e",null,+d.i);return}
+  if(d.a=="insact"){openEd("e",null,null,+d.act);return}
+  if(d.a=="del"){if(!confirm(`「${arr[i].title||arr[i].name}」을(를) 삭제할까요? 삭제 후에는 복구할 수 없습니다.`))return;arr.splice(i,1)}
+  if(d.a=="up"&&i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];
+  if(d.a=="dn"&&i<arr.length-1)[arr[i+1],arr[i]]=[arr[i],arr[i+1]];
+  save();
+ }
+ render();
+});
+$("q").oninput=render;$("fa").onchange=render;
+$("view").onchange=()=>{$("q").value="";render()}; // 보기 메뉴를 바꿀 때도 검색 필드 초기화
+$("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);render()};
+// GitHub 백업·설정·JSON 내보내기 및 data.json 가져오기 기능은 제거했습니다.
+// 초기화 버튼 비활성화: $("rst").onclick=()=>{if(confirm("초기 데이터로 되돌릴까요? 저장된 수정이 사라집니다.")){D={events:clone(SEEDE),chars:clone(SEEDC),items:clone(SEEDI)};save();render()}};
+
+// 로딩 표시: 공개 공유 페이지에서 소설을 불러올 때 사용합니다.
+let ldTimer=null;
+function ldShow(msg){$("ldm").textContent=msg||"소설 불러오는 중…";$("ldb").style.width="0%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
+function ldSet(p){const cur=parseFloat($("ldb").style.width)||0;if(p>cur)$("ldb").style.width=p+"%"}
+function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100%";setTimeout(()=>{$("ld").style.display="none"},delay)}
+document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄ 메뉴 펼치기":"⌃ 메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
+// ===== 공유 링크로 열었을 때: 소설 내용 보기만 표시 (저장·수정 불가) =====
+function shareFail(msg){
+ ldHide();$("nsum").textContent="";$("nacts").innerHTML="";
+ $("nbody").innerHTML='<p class="nv-empty">'+esc(msg)+'</p>';
+ $("ndlg").showModal();
+}
+function shareShow(){
+ const a=parseInt(new URLSearchParams(location.search).get("act"),10);
+ novAct=Number.isInteger(a)&&a>=0&&a<ACTS.length?a:-1;
+ $("ndlg").querySelector("h3").textContent="📖 "+(D.title||DEFTITLE).replace(/^📖\s*/,"");
+ openNovel();
+}
+async function shareLoad(){ // Firebase를 쓰지 않을 때: GitHub의 data.json을 읽는다
+ ldShow("소설 불러오는 중…");
+ try{
+  const r=await fetch("data.json?"+Date.now(),{cache:"no-store"});
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  const d=await r.json();
+  if(!d||!Array.isArray(d.events)||!Array.isArray(d.chars))throw new Error("형식 오류");
+  D=d;normalizeData();fillActFilter();ldHide();
+ }catch(e){shareFail("소설 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");return}
+ shareShow();
+}
+
+// ===== Firebase 서버 저장 (Firestore + 구글 로그인) =====
+// ▼ Firebase 콘솔 → 프로젝트 설정 → 내 앱(웹) 의 firebaseConfig 값을 여기에 붙여 넣으세요.
+//   (이 값은 공개되어도 되는 Firebase 웹 설정입니다.)
+const FBCFG={apiKey:"AIzaSyCx-8UCTJPOOvaBdLrf8KmMqPJGmutK7FE",authDomain:"yongppang-43589.firebaseapp.com",projectId:"yongppang-43589",storageBucket:"yongppang-43589.firebasestorage.app",messagingSenderId:"191234612811",appId:"1:191234612811:web:678899cbff4a100492f7ce"};
+const FBON=!!(FBCFG.apiKey&&FBCFG.projectId);
+const FBV="10.14.1",FBU=m=>`https://www.gstatic.com/firebasejs/${FBV}/firebase-${m}.js`;
+let FB=null,fbUser=null,fbTimer=null,fbErr="",fbBased=false,fbAsked=false,fbGot=new Set(),fbUnsub=[],SNAP={},BASE=new Map();
+const COLS=["events","chars","items"];
+// 로그인 전에는 브라우저/서버의 개인 데이터를 읽지 않고 이 더미 데이터만 보여 줍니다.
+const makeDummyData=()=>({title:DEFTITLE,acts:clone(ACTS),events:clone(SEEDE),chars:clone(SEEDC),items:clone(SEEDI),_tagsRemoved:true});
+const stable=o=>JSON.stringify(o,(k,v)=>v&&typeof v==="object"&&!Array.isArray(v)?Object.keys(v).sort().reduce((a,x)=>(a[x]=v[x],a),{}):v);
+const cacheLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
+async function fbInit(persist){
+ if(FB)return FB;
+ const [appM,authM,fs]=await Promise.all([import(FBU("app")),import(FBU("auth")),import(FBU("firestore"))]);
+ const app=appM.initializeApp(FBCFG);let db;
+ if(persist){try{db=fs.initializeFirestore(app,{localCache:fs.persistentLocalCache({tabManager:fs.persistentMultipleTabManager()})})}catch(e){db=fs.getFirestore(app)}}
+ else db=fs.getFirestore(app);
+ FB={app,db,fs,au:authM,auth:authM.getAuth(app)};return FB;
+}
+function fbErrText(e){
+ const c=e&&e.code||"";
+ if(c==="permission-denied")return "권한 없음 (허용된 구글 계정인지, 보안 규칙을 게시했는지 확인)";
+ if(c==="unavailable")return "서버에 연결할 수 없음";
+ return (e&&e.message)||"알 수 없는 오류";
+}
+function fbStatus(){
+ const b=$("fbst");if(!FBON||SHARE){b.hidden=true;return}
+ b.hidden=false;let t;
+ if(!fbUser)t="🔑 구글 로그인 (서버 동기화)";
+ else if(fbErr)t="☁ ⚠ "+fbErr;
+ else if(fbGot.size<4)t="☁ 불러오는 중…";
+ else{
+  const pend=COLS.some(k=>SNAP[k]&&SNAP[k].metadata.hasPendingWrites)||(SNAP.meta&&SNAP.meta.metadata.hasPendingWrites);
+  t=fbTimer?"☁ 저장 중…":pend?(navigator.onLine?"☁ 저장 중…":"☁ 오프라인 · 서버 반영 대기 중"):"☁ 서버와 동기화됨";
+ }
+ b.textContent=t;b.classList.toggle("p",!fbUser);
+ b.title=fbUser?`${fbUser.email||""} · 클릭하면 로그아웃`:"구글 계정으로 로그인하면 PC·모바일이 같은 데이터를 씁니다";
+}
+// save()가 호출될 때마다 1.2초 뒤 변경된 항목만 서버에 반영한다.
+window.fbHook=()=>{if(!FBON||SHARE)return;clearTimeout(fbTimer);fbTimer=setTimeout(fbFlush,1200);fbStatus()};
+function fbUniqueIds(){
+ COLS.forEach(k=>{const seen=new Set();let mx=Math.max(0,...D[k].map(x=>+x.id||0));D[k].forEach(o=>{if(seen.has(o.id))o.id=++mx;seen.add(o.id)})});
+}
+function fbFlush(){
+ fbTimer=null;
+ if(!fbUser||!FB)return fbStatus();
+ if(!fbBased||fbGot.size<4){fbTimer=setTimeout(fbFlush,800);return} // 서버 상태를 받기 전에는 쓰지 않는다
+ fbUniqueIds();
+ const {db,fs}=FB,writes=[],ordOnly=[],seen=new Set();
+ COLS.forEach(k=>D[k].forEach((o,i)=>{
+  const key=k+"/"+o.id;seen.add(key);
+  const data=JSON.parse(JSON.stringify(o)),s=stable(data),b=BASE.get(key);
+  if(!b||b.s!==s)writes.push({key,ref:fs.doc(db,k,String(o.id)),data:{...data,ord:i},s,ord:i});
+  else if(b.ord!==i)ordOnly.push({key,ref:fs.doc(db,k,String(o.id)),ord:i,s}); // 순서만 바뀐 항목은 순서 값만 쓴다 (다른 기기의 내용 수정을 덮지 않기 위해)
+ }));
+ const dels=[];BASE.forEach((b,key)=>{if(key!=="meta"&&!seen.has(key)){const [k,id]=key.split("/");dels.push({key,ref:fs.doc(db,k,id)})}});
+ const meta={title:D.title||"",acts:ACTS.slice()},ms=stable(meta),mb=BASE.get("meta");
+ const metaChanged=!mb||mb.s!==ms;
+ if(!writes.length&&!ordOnly.length&&!dels.length&&!metaChanged)return fbStatus();
+ const ops=[...writes.map(w=>({t:"s",ref:w.ref,data:w.data})),...ordOnly.map(w=>({t:"m",ref:w.ref,data:{ord:w.ord}})),...dels.map(d=>({t:"d",ref:d.ref}))];
+ if(metaChanged)ops.push({t:"s",ref:fs.doc(db,"meta","main"),data:meta});
+ for(let i=0;i<ops.length;i+=400){
+  const b=fs.writeBatch(db);
+  ops.slice(i,i+400).forEach(o=>o.t==="s"?b.set(o.ref,o.data):o.t==="m"?b.set(o.ref,o.data,{merge:true}):b.delete(o.ref));
+  b.commit().catch(e=>{fbErr=fbErrText(e);BASE.clear();fbStatus()});
+ }
+ writes.forEach(w=>BASE.set(w.key,{s:w.s,ord:w.ord}));ordOnly.forEach(w=>BASE.set(w.key,{s:w.s,ord:w.ord}));dels.forEach(d=>BASE.delete(d.key));BASE.set("meta",{s:ms});
+ fbStatus();
+}
+// 서버 내용을 화면 데이터(D)에 반영한다. 저장하지 않은 수정이 있을 때는 호출하지 않는다.
+function fbApply(first){
+ const docs=k=>SNAP[k].docs.map(d=>d.data());
+ const evs=docs("events"),chs=docs("chars"),its=docs("items"),meta=SNAP.meta.exists()?SNAP.meta.data():null;
+ if(!evs.length&&!chs.length&&!its.length&&!meta){
+  // 서버가 비어 있으면 로그인 후 작업 화면은 빈 상태로 시작합니다.
+  // 로그인 전 미리보기용 더미 데이터는 서버 데이터로 취급하지 않습니다.
+  // 따라서 첫 저장 때 더미 항목 전체가 서버에 올라가는 일을 방지합니다.
+  D={title:DEFTITLE,acts:ACTS.slice(),events:[],chars:[],items:[],_tagsRemoved:true};
+  normalizeData();
+  BASE=new Map();
+  // 기본 제목/막 이름을 기준값으로 잡아, 새 항목을 만들지 않았다면 아무것도 업로드하지 않습니다.
+  BASE.set("meta",{s:stable({title:D.title||"",acts:ACTS.slice()})});
+  fbBased=true;
+  fillActFilter();render();cacheLocal();
+  return;
+ }
+ const sig=()=>stable({t:D.title,a:ACTS,e:D.events,c:D.chars,i:D.items});
+ const before=sig();
+ if(first){try{localStorage.setItem("novel-backup-before-sync",JSON.stringify(D))}catch(e){}}
+ const ord=a=>a.slice().sort((x,y)=>(x.ord??1e9)-(y.ord??1e9)).map(o=>{const c={...o};delete c.ord;return c});
+ D={title:meta&&meta.title||"",acts:meta&&Array.isArray(meta.acts)&&meta.acts.length?meta.acts:ACTS.slice(),events:ord(evs),chars:ord(chs),items:ord(its),_tagsRemoved:true};
+ normalizeData();
+ // 비교 기준(BASE)은 화면에서 쓰는(정규화된) 데이터로 만든다. 서버 원본으로 만들면 빠진 필드 때문에 모든 항목이 '바뀐 것'으로 보여 다른 기기의 수정을 덮어쓰게 된다.
+ BASE=new Map();const ordOf={};
+ COLS.forEach(k=>SNAP[k].docs.forEach(d=>{ordOf[k+"/"+d.id]=d.data().ord}));
+ COLS.forEach(k=>D[k].forEach(o=>BASE.set(k+"/"+o.id,{s:stable(JSON.parse(JSON.stringify(o))),ord:ordOf[k+"/"+o.id]})));
+ if(meta)BASE.set("meta",{s:stable({title:D.title||"",acts:ACTS.slice()})});
+ fbBased=true;
+ if(before!==sig()){fillActFilter();render();cacheLocal()}
+}
+function fbOnSnap(){
+ if(fbGot.size<4)return;
+ fbErr="";
+ if(!fbBased)fbApply(true);
+ else if(!fbTimer)fbApply(false);
+ fbStatus();
+}
+function fbListen(){
+ fbUnlisten();const {db,fs}=FB;
+ const onErr=e=>{fbErr=fbErrText(e);fbStatus()};
+ COLS.forEach(k=>fbUnsub.push(fs.onSnapshot(fs.collection(db,k),{includeMetadataChanges:true},s=>{SNAP[k]=s;fbGot.add(k);fbOnSnap()},onErr)));
+ fbUnsub.push(fs.onSnapshot(fs.doc(db,"meta","main"),{includeMetadataChanges:true},s=>{SNAP.meta=s;fbGot.add("meta");fbOnSnap()},onErr));
+}
+function fbUnlisten(){fbUnsub.forEach(f=>{try{f()}catch(e){}});fbUnsub=[];SNAP={};fbGot=new Set();fbBased=false;fbAsked=false;BASE=new Map()}
+async function fbLogin(){
+ const {au,auth}=FB,provider=new au.GoogleAuthProvider();provider.setCustomParameters({prompt:"select_account"});
+ try{await au.signInWithPopup(auth,provider)}
+ catch(e){
+  const c=e&&e.code||"";
+  if(c==="auth/popup-blocked"||c==="auth/operation-not-supported-in-this-environment"){try{await au.signInWithRedirect(auth,provider)}catch(e2){alert("로그인 실패: "+(e2.message||e2))}}
+  else if(c==="auth/unauthorized-domain")alert("이 주소가 Firebase에 등록되지 않았습니다.\nFirebase 콘솔 → Authentication → 설정 → 승인된 도메인에\n"+location.hostname+" 을(를) 추가하세요.");
+  else if(c!=="auth/popup-closed-by-user"&&c!=="auth/cancelled-popup-request")alert("로그인 실패: "+(e.message||c));
+ }
+}
+async function fbPublish(){
+ if(!fbUser){alert("먼저 로그인하세요.");return}
+ if(!navigator.onLine){alert("오프라인에서는 공유 내용을 업데이트할 수 없습니다.");return}
+ const evs=D.events.map((e,i)=>({e,i})).filter(x=>String(x.e.actual||"").trim());
+ if(!confirm(`공유 링크에 소설 내용이 공개됩니다.\n\n· 공개: 막 이름, 사건 제목, 실제 내용(소설 원문) ${evs.length}개 사건\n· 비공개: 요약, 인물·아이템 설정, 작가 메모\n\n지금 작성한 내용으로 공유 페이지를 업데이트할까요?`))return;
+ const b=$("fbpub"),old=b.textContent;b.textContent="올리는 중…";b.disabled=true;
+ try{
+  const {db,fs}=FB,cur=await fs.getDocs(fs.collection(db,"pubEvents")),keep=new Set(evs.map(x=>String(x.e.id)));
+  const ops=evs.map(x=>({t:"s",ref:fs.doc(db,"pubEvents",String(x.e.id)),data:{id:x.e.id,act:+x.e.act||0,title:x.e.title||"",actual:String(x.e.actual),ord:x.i}}));
+  cur.docs.forEach(d=>{if(!keep.has(d.id))ops.push({t:"d",ref:d.ref})});
+  ops.push({t:"s",ref:fs.doc(db,"pubMeta","main"),data:{title:D.title||"",acts:ACTS.slice(),updatedAt:Date.now()}});
+  for(let i=0;i<ops.length;i+=400){const wb=fs.writeBatch(db);ops.slice(i,i+400).forEach(o=>o.t==="s"?wb.set(o.ref,o.data):wb.delete(o.ref));await wb.commit()}
+  b.textContent="✅ 업데이트됨";setTimeout(()=>{b.textContent=old},2000);
+ }catch(e){alert("공유 내용 업데이트 실패: "+fbErrText(e));b.textContent=old}
+ b.disabled=false;
+}
+async function fbStart(){
+ // GitHub 관련 기능과 초기화 버튼은 제거했습니다. 서버 데이터는 구글 로그인 후 Firestore에서만 읽습니다.
+ // 초기화 버튼 요소(rst)는 HTML에서 주석 처리되어 있으므로 접근하지 않습니다.
+ $("fbpub").hidden=false;
+ fbStatus();
+ try{await fbInit(true)}catch(e){fbErr="Firebase를 불러오지 못했습니다 (인터넷 확인)";fbStatus();return}
+ $("fbst").onclick=async()=>{if(fbUser){if(confirm(`${fbUser.email||"계정"} 에서 로그아웃할까요?\n(이 기기의 데이터는 그대로 남고, 서버 동기화만 멈춥니다.)`))await FB.au.signOut(FB.auth)}else await fbLogin()};
+ $("fbpub").onclick=fbPublish;
+ window.addEventListener("online",fbStatus);window.addEventListener("offline",fbStatus);
+ window.addEventListener("beforeunload",ev=>{if(fbTimer){ev.preventDefault();ev.returnValue=""}});
+ FB.au.onAuthStateChanged(FB.auth,u=>{
+  fbUser=u;fbErr="";
+  if(u){fbListen()}
+  else{
+   fbUnlisten();
+   // 로그아웃하면 서버/개인 데이터 대신 더미 화면으로 되돌립니다.
+   if(!SHARE){D=makeDummyData();normalizeData();fillActFilter();render();cacheLocal()}
+  }
+  fbStatus();
+ });
+}
+// 공유 링크: 로그인 없이 공개 사본(pubMeta / pubEvents)만 읽는다.
+async function fbShare(){
+ ldShow("소설 불러오는 중…");
+ try{
+  await fbInit(false);const {db,fs}=FB;
+  const [m,es]=await Promise.all([fs.getDoc(fs.doc(db,"pubMeta","main")),fs.getDocs(fs.collection(db,"pubEvents"))]);
+  if(!m.exists()&&es.empty){shareFail("아직 공개된 내용이 없습니다.");return}
+  const mm=m.exists()?m.data():{};
+  const evs=es.docs.map(d=>d.data()).sort((a,b)=>(a.ord??0)-(b.ord??0)).map(({ord,...r})=>r);
+  D={title:mm.title||"",acts:Array.isArray(mm.acts)?mm.acts:[],events:evs,chars:[],items:[]};
+  normalizeData();fillActFilter();ldHide();
+ }catch(e){shareFail("소설 데이터를 불러오지 못했습니다. ("+fbErrText(e)+")");return}
+ shareShow();
+}
+// 공유 링크는 편집 화면을 렌더링하지 않고, 서버에서 공개된 소설만 불러옵니다.
+// 이 분기를 먼저 처리해 공유 모드에서 일반 화면의 렌더링 오류가 발생해도
+// 공유 소설을 불러오는 작업까지 막히지 않게 합니다.
+if(SHARE){
+ normalizeData();
+ fillActFilter();
+ if(FBON)fbShare();
+ else shareLoad();
+}else{
+ // 일반 화면은 항상 더미 데이터로 시작합니다. 로그인 성공 후에만 Firestore 데이터로 교체됩니다.
+ if(FBON){D=makeDummyData();normalizeData();fillActFilter()}
+ render();
+ if(FBON)fbStart();
+}
+</script>
+</body>
+</html>
