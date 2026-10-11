@@ -73,6 +73,12 @@ main{width:100%;padding:12px 16px 60px}
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
 .nv-code{margin-top:8px;border:1px solid var(--bd);border-radius:8px;background:#f6f4ff;padding:8px 0;font-size:15px;line-height:1.8}
 .nl{display:flex;align-items:flex-start}.nl:hover{background:#6c5ce70d}
+/* 소설 내용 보기 안의 복사/공유 버튼: 레이아웃 공간을 차지하지 않고 우측 하단에 고정 */
+#novelFloatActions{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:100;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:calc(100vw - 28px);pointer-events:none}
+#novelFloatActions button{pointer-events:auto;font-size:13px;padding:8px 11px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.78);color:var(--ac);box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.84;transition:opacity .15s,background .15s}
+#novelFloatActions button:hover,#novelFloatActions button:focus-visible{opacity:1;background:rgba(255,255,255,.97)}
+#ndlg #nhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#ndlg #nbody{padding-bottom:62px}
 body.share header,body.share .bar,body.share main,body.share #nclose{display:none}
 .nacts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.nacts button{font-size:13px;padding:4px 12px;font-weight:700}.nacts button small{font-weight:400;opacity:.8;margin-left:3px}
 .nl .ln{flex:none;width:var(--w);box-sizing:content-box;text-align:right;padding:0 12px 0 10px;margin-right:12px;border-right:1px solid var(--bd);color:#9aa0b3;font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none}
@@ -122,14 +128,14 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
  <select id="view"><option value="tree" selected>좌우 라인트리</option><option value="act">막별 보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
  <div class="row" id="tagbar"></div>
- <!--<div class="row"><button id="rst">초기화</button></div>-->
+ <!-- 초기화 버튼 비활성화: <div class="row"><button id="rst">초기화</button></div> -->
 </div>
 <main id="list"></main>
 <!-- 화면 하단에 고정된 소설 읽기 버튼: 문서 흐름을 차지하지 않음 -->
 <button id="viewNovel" class="novel-fab" type="button">📖 소설내용보기</button>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
-<dialog id="ndlg"><form method="dialog" id="nf"><h3 style="margin:0">📖 소설 내용 보기</h3><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div class="row"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button type="button" id="fbpub" hidden title="공유 링크로 보이는 내용을 지금 작성한 내용으로 갱신">🌐 공유 내용 업데이트</button><span style="flex:1"></span><button class="p" id="nclose" value="close" formnovalidate>닫기</button></div></form></dialog>
+<dialog id="ndlg"><form method="dialog" id="nf"><div id="nhead"><h3 style="margin:0">📖 소설 내용 보기</h3><button class="p" id="nclose" value="close" formnovalidate>닫기 ✕</button></div><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div id="novelFloatActions"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button type="button" id="fbpub" hidden title="공유 링크로 보이는 내용을 지금 작성한 내용으로 갱신">🌐 공유 내용 업데이트</button></div></form></dialog>
 
 <script>
 const ACTS=["프롤로그","1막","2막","3막","4막"];
@@ -505,7 +511,7 @@ $("q").oninput=render;$("fa").onchange=render;
 $("view").onchange=()=>{$("q").value="";render()}; // 보기 메뉴를 바꿀 때도 검색 필드 초기화
 $("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);render()};
 // GitHub 백업·설정·JSON 내보내기 및 data.json 가져오기 기능은 제거했습니다.
-$("rst").onclick=()=>{if(confirm("초기 데이터로 되돌릴까요? 저장된 수정이 사라집니다.")){D={events:clone(SEEDE),chars:clone(SEEDC),items:clone(SEEDI)};save();render()}};
+// 초기화 버튼 비활성화: $("rst").onclick=()=>{if(confirm("초기 데이터로 되돌릴까요? 저장된 수정이 사라집니다.")){D={events:clone(SEEDE),chars:clone(SEEDC),items:clone(SEEDI)};save();render()}};
 
 // 로딩 표시: 공개 공유 페이지에서 소설을 불러올 때 사용합니다.
 let ldTimer=null;
@@ -712,11 +718,20 @@ async function fbShare(){
  }catch(e){shareFail("소설 데이터를 불러오지 못했습니다. ("+fbErrText(e)+")");return}
  shareShow();
 }
-// 일반 화면은 항상 더미 데이터로 시작합니다. 로그인 성공 후에만 Firestore 데이터로 교체됩니다.
-if(FBON&&!SHARE){D=makeDummyData();normalizeData();fillActFilter()}
-render();
-if(FBON)SHARE?fbShare():fbStart();
-else if(SHARE)shareLoad();
+// 공유 링크는 편집 화면을 렌더링하지 않고, 서버에서 공개된 소설만 불러옵니다.
+// 이 분기를 먼저 처리해 공유 모드에서 일반 화면의 렌더링 오류가 발생해도
+// 공유 소설을 불러오는 작업까지 막히지 않게 합니다.
+if(SHARE){
+ normalizeData();
+ fillActFilter();
+ if(FBON)fbShare();
+ else shareLoad();
+}else{
+ // 일반 화면은 항상 더미 데이터로 시작합니다. 로그인 성공 후에만 Firestore 데이터로 교체됩니다.
+ if(FBON){D=makeDummyData();normalizeData();fillActFilter()}
+ render();
+ if(FBON)fbStart();
+}
 </script>
 </body>
 </html>
