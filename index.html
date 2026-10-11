@@ -80,13 +80,15 @@ main{width:100%;padding:12px 16px 60px}
 #novelFloatActions button:hover,#novelFloatActions button:focus-visible{opacity:1;background:rgba(255,255,255,.97)}
 #novelFloatActions.actions-hidden #nview,#novelFloatActions.actions-hidden #ncopy,#novelFloatActions.actions-hidden #nlink,#novelFloatActions.actions-hidden #nclose{display:none!important}
 #novelMenuToggle{font-weight:700!important;background:rgba(255,255,255,.95)!important}
+#nsum{display:none}
 #ndlg #nhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
 #ndlg #nbody{padding-bottom:0}#ndlg form{padding-bottom:0;min-height:0}
-.nacts{flex-wrap:nowrap!important;overflow-x:auto;align-items:center;scrollbar-width:thin}.nacts.menu-hidden{display:none!important}#nmenuToggle{width:100%;text-align:left;margin:6px 0 2px;font-size:14px;padding:8px 12px;border-radius:8px} @media(max-width:600px){#ndlg{width:96vw;max-width:96vw;padding:12px}#ndlg #nhead h3{font-size:17px}#ndlg #nbody{font-size:15px}#nmenuToggle{position:sticky;top:0;z-index:5;background:var(--card)}}.nacts button{white-space:nowrap;flex:none}.nacts .arr{color:var(--sub);flex:none;font-size:13px}
+.nacts{flex-wrap:nowrap!important;overflow-x:auto;align-items:center;scrollbar-width:thin}.nacts.menu-hidden{display:none!important}#nmenuToggle{width:100%;text-align:left;margin:6px 0 2px;font-size:14px;padding:8px 12px;border-radius:8px} @media(max-width:600px){#ndlg{width:100vw;max-width:100vw;padding:12px}#ndlg #nhead h3{font-size:17px}#ndlg #nbody{font-size:15px}#nmenuToggle{position:sticky;top:0;z-index:5;background:var(--card)}}.nacts button{white-space:nowrap;flex:none}.nacts .arr{color:var(--sub);flex:none;font-size:13px}
 
 /* 바로가기 바: 소설을 읽는 동안 위에 붙어 있으며, 지금 읽는 사건을 보여준다 */
 #neventnav:empty{display:none}
-#neventnav{position:sticky;top:0;z-index:20;margin:6px 0 10px;border:1px solid var(--blkbd);border-radius:10px;background:var(--card);box-shadow:0 4px 14px #0002;overflow:hidden}
+#ndlg{--npad:20px}@media(max-width:560px){#ndlg{--npad:14px}}
+#neventnav{position:sticky;top:calc(var(--npad) * -1);z-index:20;margin:6px 0 10px;border:1px solid var(--blkbd);border-top-width:0;border-radius:0 0 10px 10px;background:var(--card);box-shadow:0 4px 14px #0002;overflow:hidden}
 .nnav-bar{display:flex;align-items:center;gap:4px;padding:4px}
 .nnav-step{flex:none;width:36px;height:36px;padding:0;border-radius:8px;font-size:20px;line-height:1;font-weight:700;color:var(--ac)}
 .nnav-step:disabled{opacity:.3}
@@ -103,7 +105,7 @@ main{width:100%;padding:12px 16px 60px}
 /* 맨위로/맨아래로: 투명하게(뒤의 글자가 보임), 필요할 때만 나타남 */
 .novel-edge-scroll{position:fixed;z-index:110;left:50%;transform:translateX(-50%);border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.5);color:var(--ac);font-size:13px;font-weight:700;padding:6px 12px;box-shadow:0 2px 10px #0001;opacity:0;pointer-events:none;transition:opacity .2s}
 .novel-edge-scroll.show{opacity:1;pointer-events:auto}
-.novel-edge-scroll.top{top:calc(var(--ntop,0px) + 6px)}
+.novel-edge-scroll.top{top:calc(var(--ntop,0px) + 3px)}
 .novel-edge-scroll.bottom{bottom:max(10px,env(safe-area-inset-bottom))}
 :root[data-theme=dark] .novel-edge-scroll{background:rgba(32,36,56,.5);color:#c9c1ff;border-color:#8d7fff88}
 
@@ -145,10 +147,13 @@ body.share header,body.share .bar,body.share main,body.share #nclose{display:non
 .insrow .ins{padding:3px 10px;font-size:13px;font-weight:700}
 .actbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
 .pick{width:auto;max-width:220px;padding:8px 10px;font-size:14px}
-.actwrap.fs{position:fixed;inset:0;z-index:50;background:var(--bg);padding:10px 14px;display:flex;flex-direction:column}
+.actwrap.fs{position:fixed;inset:0;z-index:50;background:var(--bg);padding:10px 14px 112px;display:flex;flex-direction:column}
+.actwrap.fs .story-pickers{display:none}
+details.story-pickers{display:block;padding:8px 10px}.story-pickers>summary{cursor:pointer;list-style-position:inside;font-size:14px}
+.story-pickers .spbody{display:flex;flex-direction:column;gap:5px;margin-top:8px}.spbody>label{font-size:13px;font-weight:700;margin-top:3px}.spbody>input{width:100%;min-width:0}
 .actwrap.fs .acthead label{margin:0}
 .actwrap.fs .fsoff{display:inline-block;font-size:14px;padding:5px 12px}
-.actwrap.fs textarea.actual-field{flex:1;min-height:0!important;resize:none;margin-top:6px}
+.actwrap.fs textarea.actual-field{flex:1 1 auto;min-height:200px!important;height:auto;resize:none;margin-top:6px}
 .actwrap.fs .actbar{display:none}
 
 /* 트리 보기: 화면 전체 채우기 */
@@ -498,8 +503,8 @@ document.addEventListener("pointercancel",ev=>endAct(ev,true));
 // ===== 실제 내용 입력창: 등장인물/아이템 선택 칩을 원문 위에 배치 =====
 function actualBlock(l,val,charsVal,itemsVal){
  return `<div class="actwrap" id="actwrap"><div class="acthead"><label>${l}</label><button type="button" id="fsOff" class="fsoff">[원래대로 보기]</button></div>
- <div class="story-pickers"><label>👤 등장인물</label><input name="chars" value="${esc(charsVal||"")}" placeholder="등장인물 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-chars">${pkChips("chars",split(charsVal||""))}</div>
- <label>◇ 주요 아이템</label><input name="items" value="${esc(itemsVal||"")}" placeholder="아이템 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(itemsVal||""))}</div></div>
+ <details class="story-pickers" id="spick"><summary><b>👤 등장인물 · ◇ 주요 아이템</b> <span class="pl" id="pksum"></span></summary><div class="spbody"><label>👤 등장인물</label><input name="chars" value="${esc(charsVal||"")}" placeholder="등장인물 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-chars">${pkChips("chars",split(charsVal||""))}</div>
+ <label>◇ 주요 아이템</label><input name="items" value="${esc(itemsVal||"")}" placeholder="아이템 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(itemsVal||""))}</div></div></details>
  <textarea class="actual-field" name="actual" rows="12" placeholder="이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.">${esc(val)}</textarea>
  <div class="actbar"><button type="button" id="fsOn">⛶ 화면 가득 편집</button><button type="button" id="goChars">⚙ 등장인물 설정</button><button type="button" id="goItems">⚙ 아이템 설정</button></div></div>`;
 }
@@ -512,7 +517,8 @@ function pkChips(k,sel){
  return all.map(n=>{const al=alias.get(n);return `<button type="button" class="chip pk ${sel.includes(n)?"on":""}" data-pk="${k}" data-v="${esc(n)}" title="${reg.has(n)?(al?"이명 · 본명: "+esc(al):""):"저장하면 새로 등록됩니다"}">${reg.has(n)?"":"＋ "}${esc(n)}${al?` <small>(=${esc(al)})</small>`:""}</button>`}).join("")||'<span class="pl">등록된 항목이 없습니다. 위 칸에 이름을 직접 입력하세요.</span>';
 }
 const pkHTML=(k,val)=>`<div class="pkrow" id="pk-${k}">${pkChips(k,split(val))}</div>`;
-function refreshPk(k){const box=$("pk-"+k);if(box)box.innerHTML=pkChips(k,split($("f")[k].value))}
+function pkSum(){const el=$("pksum"),f=$("f");if(!el||!f.chars)return;const c=split(f.chars.value),i=split(f.items.value);el.textContent=(c.length||i.length)?`· 👤 ${c.join(", ")||"없음"} / ◇ ${i.join(", ")||"없음"}`:"· 눌러서 열기";}
+function refreshPk(k){const box=$("pk-"+k);if(box)box.innerHTML=pkChips(k,split($("f")[k].value));pkSum()}
 function pkToggle(k,n){const a=split($("f")[k].value),i=a.indexOf(n);if(i<0)a.push(n);else a.splice(i,1);$("f")[k].value=a.join(",");refreshPk(k)}
 $("f").addEventListener("input",ev=>{const n=ev.target.name;if(n==="chars"||n==="items")refreshPk(n)});
 $("f").addEventListener("click",ev=>{
@@ -543,7 +549,7 @@ function openEd(t,id,insertAfterId=null,actIdx=null){
   if(ty=="sel")return `<label>${l}</label><select name="${k}">${ACTS.map((a,i)=>`<option value="${i}" ${i==val?"selected":""}>${a}</option>`).join("")}</select>`;
   return `<label>${l}</label><input name="${k}" value="${esc(val)}">`})();return `<div class="fld${wide?" w":""}">${inner}</div>`}).join("")+
   `</div><div class="row dacts"><button class="pill" value="ok">저장</button><button class="pill" value="cancel" formnovalidate>취소</button></div>`;
- $("dlg").showModal();
+ $("dlg").showModal();pkSum();
 }
 $("f").addEventListener("submit",ev=>{
  if(ev.submitter.value!="ok")return;const {t,id}=editing,f=$("f"),arr=arrOf(t),d={};
@@ -570,7 +576,9 @@ $("add").onclick=()=>{if(tab=="ac"){ACTS.push(`${ACTS.length}막 · 새 막`);fi
 let novAct=-1; // -1 = 전체, 0 이상 = 해당 막만
 let NVUSER=false; // true = 사용자로 보기 (작성 완료된 사건만)
 const nvVis=e=>SHARE||!NVUSER||e.done; // 공유 링크의 데이터는 이미 완료된 사건만 들어 있다
-const novelAll=()=>D.events.filter(e=>nvVis(e)&&String(e.actual||"").trim());
+// 보이는 사건: 사용자(공유 링크 포함) = 완료(☑)된 사건 전부, 관리자 = 소설 내용이 작성된 사건
+const nvShown=e=>SHARE?true:NVUSER?!!e.done:!!String(e.actual||"").trim();
+const novelAll=()=>D.events.filter(nvShown);
 const novelList=()=>novelAll().filter(e=>novAct<0||+e.act===novAct);
 // 전체를 하나의 문서처럼 줄 단위로 만든다. (줄 번호 = 전체 복사 텍스트의 줄 번호와 동일)
 function novelLines(){
@@ -578,7 +586,8 @@ function novelLines(){
  novelList().forEach((e,i)=>{
   if(i)out.push({t:""}); // 사건 사이 빈 줄
   out.push({t:`[${e.title}]`,h:true,id:e.id});
-  String(e.actual).replace(/\r\n?/g,"\n").replace(/\n+$/,"").split("\n").forEach(t=>out.push({t}));
+  const body=String(e.actual||"").replace(/\r\n?/g,"\n").replace(/\n+$/,"");
+  if(body.trim())body.split("\n").forEach(t=>out.push({t}));else out.push({t:"(아직 작성된 내용이 없습니다)"});
  });
  return out;
 }
@@ -654,14 +663,14 @@ $("novelScrollTop").addEventListener("click",()=>$("ndlg").scrollTo({top:0,behav
 $("novelScrollBottom").addEventListener("click",()=>$("ndlg").scrollTo({top:$("ndlg").scrollHeight,behavior:"smooth"}));
 function renderNovel(){
  const all=novelAll(),L=novelList(),lines=novelLines();
- const countLabel=events=>SHARE||NVUSER?String(events.filter(e=>e.done).length):`${events.filter(e=>e.done).length}/${events.length}`;
+ const countLabel=events=>SHARE||NVUSER?String(events.filter(nvShown).length):`${events.filter(nvShown).length}/${events.length}`;
  $("nacts").innerHTML=[`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${countLabel(D.events)}</small></button>`,...ACTS.map((a,i)=>{const events=D.events.filter(e=>+e.act===i);return `<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${countLabel(events)}</small></button>`})].join('<span class="arr">→</span>');
  const scopeEvents=D.events.filter(e=>novAct<0||+e.act===novAct);
  const navList=novelList(),navUser=SHARE||NVUSER;let lastAct=-2;
  $("neventnav").innerHTML=navList.length?`<div class="nnav-bar"><button type="button" class="nnav-step" data-nnav="prev" title="이전 사건">‹</button><button type="button" class="nnav-cur" data-nnav="list" aria-expanded="false" title="사건 목록 열기"><span class="nnav-k">바로가기</span><span class="nnav-t" id="nnavT"></span><span class="nnav-n" id="nnavN"></span><span class="nnav-c">▾</span></button><button type="button" class="nnav-step" data-nnav="next" title="다음 사건">›</button></div><div class="nnav-prog"><i id="nnavP"></i></div><div class="nnav-list" id="nnavList" hidden>${navList.map(e=>{const h=novAct<0&&+e.act!==lastAct?`<div class="nnav-act">${esc(ACTS[+e.act]||"")}</div>`:"";lastAct=+e.act;return h+`<button type="button" class="nnav-item" data-nevent="${esc(String(e.id))}">${navUser?"":(e.done?"☑ ":"☐ ")}${esc(e.title||"제목 없는 사건")}</button>`}).join("")}</div>`:"";
  nvCur=-1;
  const totalCount=scopeEvents.length,doneCount=scopeEvents.filter(e=>e.done).length;
- $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · ${SHARE||NVUSER?`완료 ${doneCount}개`:`완료 ${doneCount}/${totalCount}개`} · 내용이 작성된 사건 ${L.length}개 · 총 ${lines.length}줄`;
+ $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · ${SHARE||NVUSER?`사건 ${L.length}개`:`내용이 작성된 사건 ${L.length}/${totalCount}개 · 완료 ${doneCount}개`} · 총 ${lines.length}줄`;
  const asUser=SHARE||NVUSER;$("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자 (완료된 사건만)":asUser?"👤 사용자로 보는 중 (완료된 사건만)":"🛠 관리자 (전체 보기)";
  $("nview").textContent=asUser?"🛠 관리자로 보기":"👁 사용자로 보기";
  $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
@@ -890,7 +899,7 @@ async function fbLogin(){
 function fbSyncPub(){
  if(SHARE||!FB||!fbUser||!fbBased||!PUBGOT)return;
  const {db,fs}=FB,want=new Map(),ops=[];
-  D.events.forEach((e,i)=>{if(e.done&&String(e.actual||"").trim())want.set(String(e.id),{id:e.id,act:+e.act||0,title:e.title||"",actual:String(e.actual),ord:i})});
+  D.events.forEach((e,i)=>{if(e.done)want.set(String(e.id),{id:e.id,act:+e.act||0,title:e.title||"",actual:String(e.actual||""),ord:i})});
  want.forEach((d,id)=>{if(PUBMAP.get(id)!==stable(d))ops.push({t:"s",ref:fs.doc(db,"pubEvents",id),data:d})});
  PUBMAP.forEach((v,id)=>{if(!want.has(id))ops.push({t:"d",ref:fs.doc(db,"pubEvents",id)})});
  const meta={title:D.title||"",acts:ACTS.slice()},ms=want.size?stable(meta):"";
