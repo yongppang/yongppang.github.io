@@ -166,7 +166,7 @@ const SEEDC=CH.map((r,i)=>({id:i+1,name:r[0],role:r[1],age:"",look:"",personalit
 const SEEDI=[{id:1,name:"검",desc:"설명을 입력하세요.",owner:"임꺽정",memo:""}];
 const arrOf=t=>t=="e"?D.events:t=="i"?D.items:D.chars;
 const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (이름을 눌러 선택 · 없는 이름은 아래에서 새로 추가)"],["items","주요 아이템 (이름을 눌러 선택 · 없는 이름은 아래에서 새로 추가)"],["fs","⭐ 중요 표시","cb"],["done","☑ 작성 완료 (체크한 사건만 공유 링크에 보입니다)","cb"],["memo","작가 메모","ta"]],
- c:[["name","이름"],["role","역할"],["age","나이/학년"],["look","외모","ta"],["personality","성격","ta"],["background","배경","ta"],["arc","변화(arc)","ta"],["relations","관계","ta"],["memo","메모","ta"]]};
+ c:[["name","이름"],["aliases","이명 (다른 이름 · 쉼표로 구분, 예: 목사, 윤 집사)"],["role","역할"],["age","나이/학년"],["look","외모","ta"],["personality","성격","ta"],["background","배경","ta"],["arc","변화(arc)","ta"],["relations","관계","ta"],["memo","메모","ta"]]};
 const KEY="novel-mgr-v2",$=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const split=s=>String(s||"").split(",").map(x=>x.trim()).filter(Boolean);
@@ -218,7 +218,7 @@ const normalizeData=()=>{
   e.fs=!!e.fs;e.done=!!e.done;
   return e;
  });
- const charFields=["name","role","age","look","personality","background","arc","relations","tags","memo"];
+ const charFields=["name","aliases","role","age","look","personality","background","arc","relations","tags","memo"];
  D.chars=D.chars.map((c,i)=>{
   if(!c||typeof c!=="object")c={name:safeText(c)};
   charFields.forEach(k=>{c[k]=safeText(c[k],"")});
@@ -230,6 +230,11 @@ normalizeData();
 save();
 function fillActFilter(){const sel=$("fa"),v=sel.value;sel.innerHTML='<option value="">전체</option>'+ACTS.map((a,i)=>`<option value="${i}">${esc(a)}</option>`).join("");if([...sel.options].some(o=>o.value===v))sel.value=v}
 fillActFilter();
+// 이명(별칭): 인물의 다른 이름. 어느 이름으로 선택·조회해도 같은 인물로 취급한다.
+const canon=n=>{const c=D.chars.find(x=>x.name===n||split(x.aliases).includes(n));return c?c.name:n};
+const evHas=(e,name)=>split(e.chars).map(canon).includes(canon(name));
+const aliasText=e=>split(e.chars).flatMap(n=>{const c=D.chars.find(x=>x.name===n||split(x.aliases).includes(n));return c?[c.name,...split(c.aliases)]:[]}).join(" ");
+const aliasLbl=n=>{const c=D.chars.find(x=>x.name===n);return c&&split(c.aliases).length?` <small>(${esc(split(c.aliases).join(", "))})</small>`:""};
 const hit=(o,q,ks)=>!q||ks.map(k=>o[k]).join(" ").toLowerCase().includes(q);
 const tagOk=o=>[...ft].every(t=>split(o.tags).includes(t));
 
@@ -249,11 +254,11 @@ function evHTML(e,mini,drag){
  <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
 function chHTML(c){
- const n=D.events.filter(e=>split(e.chars).includes(c.name)).length;
+ const n=D.events.filter(e=>evHas(e,c.name)).length;
  const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
  return `<div class="card"><div class="btns"><button data-a="del" data-t="c" data-i="${c.id}">✕</button></div>
  <h3 class="clk" data-a="ed" data-t="c" data-i="${c.id}" title="클릭하면 수정">${esc(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3>
- ${kv("look","외모")}${kv("personality","성격")}${kv("background","배경")}${kv("arc","변화")}${kv("relations","관계")}
+ ${kv("aliases","이명")}${kv("look","외모")}${kv("personality","성격")}${kv("background","배경")}${kv("arc","변화")}${kv("relations","관계")}
  <div class="kv"><b>등장</b><a href="#" data-showch="${esc(c.name)}">타임라인 ${n}건 보기</a></div>
  <div class="tags">${split(c.tags).map(t=>`<span class="tg" data-tag="${esc(t)}">#${esc(t)}</span>`).join("")}</div>
  ${c.memo?`<div class="memo">📝 ${esc(c.memo)}</div>`:""}</div>`}
@@ -280,11 +285,11 @@ function render(){
   h=`<div class="grid">${L.map(itHTML).join("")}</div>`;
   $("stat").textContent=`아이템 ${D.items.length}개 · 표시 ${L.length}`;
  }else if(tab=="ch"){
-  const L=D.chars.filter(c=>hit(c,q,["name","role","personality","background","arc","relations","tags","memo"])&&tagOk(c));
+  const L=D.chars.filter(c=>hit(c,q,["name","aliases","role","personality","background","arc","relations","tags","memo"])&&tagOk(c));
   h=`<div class="grid">${L.map(chHTML).join("")}</div>`;
   $("stat").textContent=`인물 ${D.chars.length}명 · 표시 ${L.length}`;
  }else{
-  const L=D.events.filter(e=>hit(e,q,["title","summary","actual","place","items","chars","tags","memo"])&&tagOk(e)&&(fa===""||e.act==fa)&&(!onlyFs||e.fs));
+  const L=D.events.filter(e=>hit(Object.assign({},e,{_al:aliasText(e)}),q,["title","summary","actual","place","items","chars","_al","tags","memo"])&&tagOk(e)&&(fa===""||e.act==fa)&&(!onlyFs||e.fs));
   if(v=="act"){let last=-1;L.forEach(e=>{if(e.act!=last){h+=`<div class="act">${esc(ACTS[e.act])}</div>`;last=e.act}h+=evHTML(e)+`<div class="insert-slot"><button data-a="ins" data-t="e" data-i="${e.id}">＋ 이 사건 다음에 삽입</button></div>`})}
   else if(v=="tree"){
    h='<div class="tree-wrap"><div class="tree">';
@@ -295,8 +300,8 @@ function render(){
    });h+='</div></div>';
   }
   else if(v=="char"){
-   const names=[...new Set([...D.chars.map(c=>c.name),...L.flatMap(e=>split(e.chars))])];
-   names.forEach(n=>{const l=L.filter(e=>split(e.chars).includes(n));if(l.length)h+=`<div class="act">👤 ${esc(n)} (${l.length})</div>`+l.map(e=>evHTML(e,1)).join("")})}
+   const names=[...new Set([...D.chars.map(c=>c.name),...L.flatMap(e=>split(e.chars)).map(canon)])];
+   names.forEach(n=>{const l=L.filter(e=>evHas(e,n));if(l.length)h+=`<div class="act">👤 ${esc(n)}${aliasLbl(n)} (${l.length})</div>`+l.map(e=>evHTML(e,1)).join("")})}
   else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${stIcons(e)}${e.fs?"⭐ ":""}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td></tr>`).join("")}</table></div>`;
   $("stat").textContent=`사건 ${D.events.length}개 · 중요 ${D.events.filter(e=>e.fs).length}개 · 표시 ${L.length}개`;
  }
@@ -403,7 +408,7 @@ document.addEventListener("pointercancel",ev=>endAct(ev,true));
 
 // ===== 실제 내용 입력창: 등장인물/아이템 삽입 버튼 + 화면 가득 편집 =====
 function actualBlock(l,val){
- const cn=[...new Set([...D.chars.map(c=>c.name),...D.events.flatMap(e=>split(e.chars))])].filter(Boolean);
+ const cn=[...new Set([...D.chars.flatMap(c=>[c.name,...split(c.aliases)]),...D.events.flatMap(e=>split(e.chars))])].filter(Boolean);
  const it=[...new Set([...D.items.map(i=>i.name),...D.events.flatMap(e=>split(e.items))])].filter(Boolean);
  const btn=(t,n)=>`<button type="button" class="ins" data-ins="${t}" data-v="${esc(n)}">${esc(n)}</button>`;
  const opts=(ph,arr)=>`<option value="">${ph}</option>`+arr.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("")+`<option value="__new">✎ 직접 입력…</option>`;
@@ -416,9 +421,10 @@ function actualBlock(l,val){
 const addToField=(name,n)=>{const inp=$("f")[name];if(!inp)return;const a=split(inp.value);if(!a.includes(n)){a.push(n);inp.value=a.join(",")}refreshPk(name)};
 // ===== 등장인물/아이템 선택 칩 + 새 이름 추가 =====
 function pkChips(k,sel){
- const reg=(k=="chars"?D.chars:D.items).map(x=>x.name).filter(Boolean);
- const all=[...new Set([...reg,...D.events.flatMap(e=>split(e[k])),...sel])];
- return all.map(n=>`<button type="button" class="chip pk ${sel.includes(n)?"on":""}" data-pk="${k}" data-v="${esc(n)}" title="${reg.includes(n)?"":"저장하면 새로 등록됩니다"}">${reg.includes(n)?"":"＋ "}${esc(n)}</button>`).join("")||'<span class="pl">등록된 항목이 없습니다. 아래에서 새로 추가하세요.</span>';
+ const src=k=="chars"?D.chars:D.items,reg=new Set(),alias=new Map(),order=[];
+ src.forEach(x=>{if(!x.name)return;reg.add(x.name);order.push(x.name);if(k=="chars")split(x.aliases).forEach(a=>{reg.add(a);alias.set(a,x.name);order.push(a)})});
+ const all=[...new Set([...order,...D.events.flatMap(e=>split(e[k])),...sel])];
+ return all.map(n=>{const al=alias.get(n);return `<button type="button" class="chip pk ${sel.includes(n)?"on":""}" data-pk="${k}" data-v="${esc(n)}" title="${reg.has(n)?(al?"이명 · 본명: "+esc(al):""):"저장하면 새로 등록됩니다"}">${reg.has(n)?"":"＋ "}${esc(n)}${al?` <small>(=${esc(al)})</small>`:""}</button>`}).join("")||'<span class="pl">등록된 항목이 없습니다. 아래에서 새로 추가하세요.</span>';
 }
 const pkHTML=(k,val)=>`<div class="pkrow" id="pk-${k}">${pkChips(k,split(val))}</div><div class="pkadd"><input data-pkn="${k}" placeholder="새 이름 입력 후 Enter"><button type="button" class="pill" data-pkadd="${k}">＋ 추가</button></div>`;
 function refreshPk(k){const box=$("pk-"+k);if(box)box.innerHTML=pkChips(k,split($("f")[k].value))}
@@ -460,7 +466,7 @@ $("f").addEventListener("submit",ev=>{
  SCH[t].forEach(([k,,ty])=>d[k]=ty=="cb"?f[k].checked:ty=="sel"?+f[k].value:f[k].value);
  if(t==="e"){ // 목록에 없는 이름은 이름만 새로 등록한다
   const nid=a=>Math.max(0,...a.map(x=>x.id))+1;
-  split(d.chars).forEach(n=>{if(!D.chars.some(c=>c.name===n))D.chars.push({id:nid(D.chars),name:n,role:"",age:"",look:"",personality:"",background:"",arc:"",relations:"",tags:"",memo:""})});
+  split(d.chars).forEach(n=>{if(!D.chars.some(c=>c.name===n||split(c.aliases).includes(n)))D.chars.push({id:nid(D.chars),name:n,role:"",aliases:"",age:"",look:"",personality:"",background:"",arc:"",relations:"",tags:"",memo:""})});
   split(d.items).forEach(n=>{if(!D.items.some(c=>c.name===n))D.items.push({id:nid(D.items),name:n,desc:"",owner:"",memo:""})});
  }
  if(id)Object.assign(arr.find(x=>x.id==id),d);else {const fresh={id:Math.max(0,...arr.map(x=>x.id))+1,...d};if(t==="e"&&editing.insertAfterId!=null){const at=arr.findIndex(x=>x.id===editing.insertAfterId);arr.splice(at<0?arr.length:at+1,0,fresh)}else arr.push(fresh)}
