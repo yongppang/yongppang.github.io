@@ -85,6 +85,7 @@ main{width:100%;padding:12px 16px 60px}
 .pill:hover,.pill:focus-visible{opacity:1;background:rgba(255,255,255,.97)!important}
 .rolechip{font-size:13px;font-weight:700;padding:3px 12px;border-radius:999px;border:1px solid var(--bd);white-space:nowrap}.rolechip.adm{background:#ece8ff;color:var(--ac);border-color:#c9c0f7}.rolechip.usr{background:#e4f7ec;color:#1f7a50;border-color:#b5e3c9}
 body.share #nview{display:none}
+.pkrow{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.pkrow .pk{font-size:14px;padding:4px 12px}.pkadd{display:flex;gap:6px;align-items:center;margin:2px 0 6px}
 .btns{flex-wrap:nowrap;align-items:center}.btns button{white-space:nowrap}.btns .st{margin-left:4px}
 body.share header,body.share .bar,body.share main,body.share #nclose{display:none}
 .nacts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.nacts button{font-size:13px;padding:4px 12px;font-weight:700}.nacts button small{font-weight:400;opacity:.8;margin-left:3px}
@@ -164,7 +165,7 @@ const CH=[
 const SEEDC=CH.map((r,i)=>({id:i+1,name:r[0],role:r[1],age:"",look:"",personality:r[2],background:r[3],arc:r[4],relations:r[5],tags:r[6],memo:""}));
 const SEEDI=[{id:1,name:"검",desc:"설명을 입력하세요.",owner:"임꺽정",memo:""}];
 const arrOf=t=>t=="e"?D.events:t=="i"?D.items:D.chars;
-const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (쉼표)"],["items","주요 아이템 (쉼표)"],["fs","⭐ 중요 표시","cb"],["done","☑ 작성 완료 (체크한 사건만 공유 링크에 보입니다)","cb"],["memo","작가 메모","ta"]],
+const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (이름을 눌러 선택 · 없는 이름은 아래에서 새로 추가)"],["items","주요 아이템 (이름을 눌러 선택 · 없는 이름은 아래에서 새로 추가)"],["fs","⭐ 중요 표시","cb"],["done","☑ 작성 완료 (체크한 사건만 공유 링크에 보입니다)","cb"],["memo","작가 메모","ta"]],
  c:[["name","이름"],["role","역할"],["age","나이/학년"],["look","외모","ta"],["personality","성격","ta"],["background","배경","ta"],["arc","변화(arc)","ta"],["relations","관계","ta"],["memo","메모","ta"]]};
 const KEY="novel-mgr-v2",$=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -412,8 +413,22 @@ function actualBlock(l,val){
  <textarea class="actual-field" name="actual" rows="12" placeholder="이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.">${esc(val)}</textarea>
  <div class="actbar"><button type="button" id="fsOn">⛶ 화면 가득 편집</button><button type="button" id="goChars">⚙ 등장인물 설정</button><button type="button" id="goItems">⚙ 아이템 설정</button></div></div>`;
 }
-const addToField=(name,n)=>{const inp=$("f")[name];if(!inp)return;const a=split(inp.value);if(!a.includes(n)){a.push(n);inp.value=a.join(",")}};
+const addToField=(name,n)=>{const inp=$("f")[name];if(!inp)return;const a=split(inp.value);if(!a.includes(n)){a.push(n);inp.value=a.join(",")}refreshPk(name)};
+// ===== 등장인물/아이템 선택 칩 + 새 이름 추가 =====
+function pkChips(k,sel){
+ const reg=(k=="chars"?D.chars:D.items).map(x=>x.name).filter(Boolean);
+ const all=[...new Set([...reg,...D.events.flatMap(e=>split(e[k])),...sel])];
+ return all.map(n=>`<button type="button" class="chip pk ${sel.includes(n)?"on":""}" data-pk="${k}" data-v="${esc(n)}" title="${reg.includes(n)?"":"저장하면 새로 등록됩니다"}">${reg.includes(n)?"":"＋ "}${esc(n)}</button>`).join("")||'<span class="pl">등록된 항목이 없습니다. 아래에서 새로 추가하세요.</span>';
+}
+const pkHTML=(k,val)=>`<div class="pkrow" id="pk-${k}">${pkChips(k,split(val))}</div><div class="pkadd"><input data-pkn="${k}" placeholder="새 이름 입력 후 Enter"><button type="button" class="pill" data-pkadd="${k}">＋ 추가</button></div>`;
+function refreshPk(k){const box=$("pk-"+k);if(box)box.innerHTML=pkChips(k,split($("f")[k].value))}
+function pkToggle(k,n){const a=split($("f")[k].value),i=a.indexOf(n);if(i<0)a.push(n);else a.splice(i,1);$("f")[k].value=a.join(",");refreshPk(k)}
+function pkNew(k){const inp=document.querySelector(`[data-pkn="${k}"]`),n=inp?inp.value.trim().replace(/,/g," "):"";if(!n)return;addToField(k,n);inp.value="";inp.focus()}
+$("f").addEventListener("keydown",ev=>{const i=ev.target.closest&&ev.target.closest("[data-pkn]");if(i&&ev.key==="Enter"){ev.preventDefault();pkNew(i.dataset.pkn)}});
+$("f").addEventListener("input",ev=>{const n=ev.target.name;if(n==="chars"||n==="items")refreshPk(n)});
 $("f").addEventListener("click",ev=>{
+ const pk=ev.target.closest("[data-pk]");if(pk){pkToggle(pk.dataset.pk,pk.dataset.v);return}
+ const pa=ev.target.closest("[data-pkadd]");if(pa){pkNew(pa.dataset.pkadd);return}
  const b=ev.target.closest("[data-ins]");
  if(b){const ta=$("f").actual,n=b.dataset.v,s=ta.selectionStart??ta.value.length,e=ta.selectionEnd??s;
   ta.setRangeText(n,s,e,"end");ta.focus();addToField(b.dataset.ins=="c"?"chars":"items",n);return}
@@ -436,13 +451,18 @@ function openEd(t,id,insertAfterId=null,actIdx=null){
   if(ty=="ta")return `<label>${l}</label><textarea class="${k==="actual"?"actual-field":""}" name="${k}" rows="${k==="actual"?12:3}" placeholder="${k==="summary"?"사건의 핵심을 간단히 요약해 주세요.":k==="actual"?"이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.":""}">${esc(val)}</textarea>`;
   if(ty=="cb")return `<label><input type="checkbox" name="${k}" ${val?"checked":""}> ${l}</label>`;
   if(ty=="sel")return `<label>${l}</label><select name="${k}">${ACTS.map((a,i)=>`<option value="${i}" ${i==val?"selected":""}>${a}</option>`).join("")}</select>`;
-  return `<label>${l}</label><input name="${k}" value="${esc(val)}">`}).join("")+
+  return `<label>${l}</label><input name="${k}" value="${esc(val)}">`+(t=="e"&&(k=="chars"||k=="items")?pkHTML(k,val):"")}).join("")+
   `<div class="row" style="margin-top:12px"><button class="pill" value="ok">저장</button><button class="pill" value="cancel" formnovalidate>취소</button></div>`;
  $("dlg").showModal();
 }
 $("f").addEventListener("submit",ev=>{
  if(ev.submitter.value!="ok")return;const {t,id}=editing,f=$("f"),arr=arrOf(t),d={};
  SCH[t].forEach(([k,,ty])=>d[k]=ty=="cb"?f[k].checked:ty=="sel"?+f[k].value:f[k].value);
+ if(t==="e"){ // 목록에 없는 이름은 이름만 새로 등록한다
+  const nid=a=>Math.max(0,...a.map(x=>x.id))+1;
+  split(d.chars).forEach(n=>{if(!D.chars.some(c=>c.name===n))D.chars.push({id:nid(D.chars),name:n,role:"",age:"",look:"",personality:"",background:"",arc:"",relations:"",tags:"",memo:""})});
+  split(d.items).forEach(n=>{if(!D.items.some(c=>c.name===n))D.items.push({id:nid(D.items),name:n,desc:"",owner:"",memo:""})});
+ }
  if(id)Object.assign(arr.find(x=>x.id==id),d);else {const fresh={id:Math.max(0,...arr.map(x=>x.id))+1,...d};if(t==="e"&&editing.insertAfterId!=null){const at=arr.findIndex(x=>x.id===editing.insertAfterId);arr.splice(at<0?arr.length:at+1,0,fresh)}else arr.push(fresh)}
  save();render();
 });
