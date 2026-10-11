@@ -83,12 +83,17 @@ main{width:100%;padding:12px 16px 60px}
 #ndlg #nhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
 #ndlg #nbody{padding-bottom:0}#ndlg form{padding-bottom:0;min-height:0}
 .nacts{flex-wrap:nowrap!important;overflow-x:auto;align-items:center;scrollbar-width:thin}.nacts.menu-hidden{display:none!important}#nmenuToggle{width:100%;text-align:left;margin:6px 0 2px;font-size:14px;padding:8px 12px;border-radius:8px} @media(max-width:600px){#ndlg{width:96vw;max-width:96vw;padding:12px}#ndlg #nhead h3{font-size:17px}#ndlg #nbody{font-size:15px}#nmenuToggle{position:sticky;top:0;z-index:5;background:var(--card)}}.nacts button{white-space:nowrap;flex:none}.nacts .arr{color:var(--sub);flex:none;font-size:13px}
+
+#neventnav:empty{display:none}#neventnav{margin:4px 0 10px;padding:8px 10px;border:1px solid var(--bd);border-radius:9px;background:var(--card)}.neventnav-label{font-size:12px;color:var(--sub);font-weight:700;margin-bottom:5px}.neventnav-links{display:flex;flex-wrap:wrap;gap:6px}.novel-event-link{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--blk);border-color:var(--blkbd);white-space:normal;text-align:left}
+.novel-edge-scroll{position:fixed;z-index:110;border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.92);color:var(--ac);font-size:13px;font-weight:700;padding:8px 12px;box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.novel-edge-scroll.top{top:38%;left:50%;right:auto;transform:translate(-50%,-50%)}.novel-edge-scroll.bottom{top:62%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-50%)}
+
 .st{font-size:15px;margin-right:3px;cursor:pointer;flex:none;user-select:none;-webkit-user-select:none}
 .pill{padding:8px 14px!important;font-size:14px;border:1px solid #6c5ce766!important;border-radius:999px!important;background:rgba(255,255,255,.78)!important;color:var(--ac)!important;box-shadow:0 4px 16px #0002;opacity:.9}
 .pill:hover,.pill:focus-visible{opacity:1;background:rgba(255,255,255,.97)!important}
 .rolechip{font-size:13px;font-weight:700;padding:3px 12px;border-radius:999px;border:1px solid var(--bd);white-space:nowrap}.rolechip.adm{background:#ece8ff;color:var(--ac);border-color:#c9c0f7}.rolechip.usr{background:#e4f7ec;color:#1f7a50;border-color:#b5e3c9}
 body.share #nview{display:none}
 .pkrow{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.pkrow .pk{font-size:14px;padding:4px 12px}.pkadd{display:flex;gap:6px;align-items:center;margin:2px 0 6px}
+.story-pickers{display:flex;flex-direction:column;gap:5px;margin:8px 0 12px;padding:10px;border:1px solid var(--bd);border-radius:9px;background:var(--card)}.story-pickers>label{font-size:13px;font-weight:700;margin-top:3px}.story-pickers>input{width:100%;min-width:0}.story-pickers .pkrow{margin:2px 0 7px}
 .pkadd input{flex:1 1 auto;min-width:0;width:auto!important}.pkadd button{flex:none;white-space:nowrap;padding:9px 14px;font-size:15px}
 .card p.onel,.tree-node .card>p.onel{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:none;-webkit-line-clamp:unset;line-clamp:unset}
 /* 떠 있는 버튼은 모두 우측 하단에 세로로 쌓는다 */
@@ -200,7 +205,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
 <button id="viewNovel" class="novel-fab" type="button">📖 소설내용보기</button>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row dacts"><button type="button" class="pill" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="pill" value="ok">적용</button><button class="pill" value="cancel" formnovalidate>취소</button></div></form></dialog>
-<dialog id="ndlg"><form method="dialog" id="nf"><div id="nhead"><h3 style="margin:0">📖 소설 내용 보기</h3><span id="nrole" class="rolechip"></span></div><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div id="novelFloatActions"><button type="button" id="novelMenuToggle" aria-expanded="true">☰ 메뉴 접기</button><button type="button" id="nview"></button><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button id="nclose" value="close" formnovalidate title="닫기">✕ 닫기</button></div></form></dialog>
+<dialog id="ndlg"><form method="dialog" id="nf"><div id="nhead"><h3 style="margin:0">📖 소설 내용 보기</h3><span id="nrole" class="rolechip"></span></div><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="neventnav" aria-label="막 안의 사건 바로가기"></div><div id="nbody"></div><div id="novelFloatActions"><button type="button" id="novelMenuToggle" aria-expanded="true">☰ 메뉴 접기</button><button type="button" id="nview"></button><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button id="nclose" value="close" formnovalidate title="닫기">✕ 닫기</button></div></form><button type="button" id="novelScrollTop" class="novel-edge-scroll top" title="맨 위로">↑ 맨위로</button><button type="button" id="novelScrollBottom" class="novel-edge-scroll bottom" title="맨 아래로">↓ 맨아래로</button></dialog>
 
 <script>
 const ACTS=["프롤로그","1막","2막","3막","4막"];
@@ -470,15 +475,11 @@ function endAct(ev,cancel){
 document.addEventListener("pointerup",ev=>endAct(ev,false));
 document.addEventListener("pointercancel",ev=>endAct(ev,true));
 
-// ===== 실제 내용 입력창: 등장인물/아이템 삽입 버튼 + 화면 가득 편집 =====
-function actualBlock(l,val){
- const cn=[...new Set([...D.chars.flatMap(c=>[c.name,...split(c.aliases)]),...D.events.flatMap(e=>split(e.chars))])].filter(Boolean);
- const it=[...new Set([...D.items.map(i=>i.name),...D.events.flatMap(e=>split(e.items))])].filter(Boolean);
- const btn=(t,n)=>`<button type="button" class="ins" data-ins="${t}" data-v="${esc(n)}">${esc(n)}</button>`;
- const opts=(ph,arr)=>`<option value="">${ph}</option>`+arr.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("")+`<option value="__new">✎ 직접 입력…</option>`;
+// ===== 실제 내용 입력창: 등장인물/아이템 선택 칩을 원문 위에 배치 =====
+function actualBlock(l,val,charsVal,itemsVal){
  return `<div class="actwrap" id="actwrap"><div class="acthead"><label>${l}</label><button type="button" id="fsOff" class="fsoff">[원래대로 보기]</button></div>
- <div class="insbar"><details class="insdet"><summary>👤 등장인물 버튼 <span class="pl">(본문에 삽입 + 등장인물 칸에 추가)</span></summary><div class="insrow">${cn.map(n=>btn("c",n)).join("")||'<span class="pl">등록된 인물 없음</span>'}</div></details>
- <details class="insdet"><summary>◇ 아이템 버튼 <span class="pl">(본문에 삽입 + 주요 아이템 칸에 추가)</span></summary><div class="insrow">${it.map(n=>btn("i",n)).join("")||'<span class="pl">등록된 아이템 없음 (아이템설정에서 등록)</span>'}</div></details></div>
+ <div class="story-pickers"><label>👤 등장인물</label><input name="chars" value="${esc(charsVal||"")}" placeholder="등장인물 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-chars">${pkChips("chars",split(charsVal||""))}</div>
+ <label>◇ 주요 아이템</label><input name="items" value="${esc(itemsVal||"")}" placeholder="아이템 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(itemsVal||""))}</div></div>
  <textarea class="actual-field" name="actual" rows="12" placeholder="이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.">${esc(val)}</textarea>
  <div class="actbar"><button type="button" id="fsOn">⛶ 화면 가득 편집</button><button type="button" id="goChars">⚙ 등장인물 설정</button><button type="button" id="goItems">⚙ 아이템 설정</button></div></div>`;
 }
@@ -513,13 +514,14 @@ $("dlg").addEventListener("cancel",ev=>{const w=$("actwrap");if(w&&w.classList.c
 function openEd(t,id,insertAfterId=null,actIdx=null){
  editing={t,id,insertAfterId};const anchor=insertAfterId!=null?D.events.find(x=>x.id===insertAfterId):null;const o=(id&&arrOf(t).find(x=>x.id==id))||(anchor?{act:+anchor.act,when:anchor.when,place:anchor.place}:{act:actIdx!=null?actIdx:2,when:"D+"});
  $("f").innerHTML=`<h3 style="margin:0">${t=="e"?"이벤트":t=="i"?"아이템":"인물"} ${id?"수정":"추가"}</h3><div class="fgrid">`+SCH[t].map(([k,l,ty])=>{
-  const wide=ty=="ta"||k==="actual"||(t=="e"&&(k=="chars"||k=="items"));
+  if(t==="e"&&(k==="chars"||k==="items"))return "";
+  const wide=ty=="ta"||k==="actual";
   const val=o[k]??"";const inner=(()=>{
   if(t=="e"&&k==="actual")return actualBlock(l,val);
   if(ty=="ta")return `<label>${l}</label><textarea class="${k==="actual"?"actual-field":""}" name="${k}" rows="${k==="actual"?12:1}" placeholder="${k==="actual"?"이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.":""}">${esc(val)}</textarea>`;
   if(ty=="cb")return `<label><input type="checkbox" name="${k}" ${val?"checked":""}> ${l}</label>`;
   if(ty=="sel")return `<label>${l}</label><select name="${k}">${ACTS.map((a,i)=>`<option value="${i}" ${i==val?"selected":""}>${a}</option>`).join("")}</select>`;
-  return `<label>${l}</label><input name="${k}" value="${esc(val)}">`+(t=="e"&&(k=="chars"||k=="items")?pkHTML(k,val):"")})();return `<div class="fld${wide?" w":""}">${inner}</div>`}).join("")+
+  return `<label>${l}</label><input name="${k}" value="${esc(val)}">`})();return `<div class="fld${wide?" w":""}">${inner}</div>`}).join("")+
   `</div><div class="row dacts"><button class="pill" value="ok">저장</button><button class="pill" value="cancel" formnovalidate>취소</button></div>`;
  $("dlg").showModal();
 }
@@ -546,8 +548,8 @@ $("af").addEventListener("submit",ev=>{if(ev.submitter.value!=="ok")return;const
 $("add").onclick=()=>{if(tab=="ac"){ACTS.push(`${ACTS.length}막 · 새 막`);fillActFilter();save();render();return}openEd(tab=="tl"?"e":tab=="it"?"i":"c")};
 // ===== 소설 내용 보기: [제목] 내용 형식으로 이어서 표시 =====
 let novAct=-1; // -1 = 전체, 0 이상 = 해당 막만
-let NVUSER=false; // false = 관리자 보기(미완료 포함), true = 사용자 미리보기(완료 사건만)
-const nvVis=e=>{ if(SHARE) return !!e.done; if(NVUSER) return !!e.done; return true; }; // 관리자는 미완료 사건도 모두 볼 수 있음
+let NVUSER=false; // true = 사용자로 보기 (작성 완료된 사건만)
+const nvVis=e=>SHARE||!NVUSER||e.done; // 공유 링크의 데이터는 이미 완료된 사건만 들어 있다
 const novelAll=()=>D.events.filter(e=>nvVis(e)&&String(e.actual||"").trim());
 const novelList=()=>novelAll().filter(e=>novAct<0||+e.act===novAct);
 // 전체를 하나의 문서처럼 줄 단위로 만든다. (줄 번호 = 전체 복사 텍스트의 줄 번호와 동일)
@@ -577,19 +579,27 @@ $("novelMenuToggle").addEventListener("click",()=>{
  $("novelMenuToggle").textContent=hidden?"☰ 메뉴 보기":"☰ 메뉴 접기";
  $("novelMenuToggle").setAttribute("aria-expanded",String(!hidden));
 });
+function jumpToNovelEvent(ev){
+ const eb=ev.target.closest("[data-nevent]");if(!eb)return;
+ const id=String(eb.dataset.nevent);const t=$("nbody").querySelector(`.nl[data-e="${id}"]`);
+ if(t){t.scrollIntoView({behavior:"smooth",block:"start"});t.classList.remove("flash");void t.offsetWidth;t.classList.add("flash")}
+}
+$("neventnav").addEventListener("click",jumpToNovelEvent);
 $("nacts").addEventListener("click",ev=>{
- const scroll=ev.target.closest("[data-nscroll]");
- if(scroll){$("ndlg").scrollTo({top:scroll.dataset.nscroll==="top"?0:$("ndlg").scrollHeight,behavior:"smooth"});return}
- const b=ev.target.closest("[data-nact]");if(!b)return;novAct=+b.dataset.nact;renderNovel();$("ndlg").scrollTop=0;
+ const b=ev.target.closest("[data-nact]");if(!b)return;novAct=+b.dataset.nact;renderNovel();$("ndlg").scrollTo({top:0,behavior:"smooth"});
 });
+$("novelScrollTop").addEventListener("click",()=>$("ndlg").scrollTo({top:0,behavior:"smooth"}));
+$("novelScrollBottom").addEventListener("click",()=>$("ndlg").scrollTo({top:$("ndlg").scrollHeight,behavior:"smooth"}));
 function renderNovel(){
  const all=novelAll(),L=novelList(),lines=novelLines();
  const countLabel=events=>SHARE||NVUSER?String(events.filter(e=>e.done).length):`${events.filter(e=>e.done).length}/${events.length}`;
- $("nacts").innerHTML=[`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${countLabel(D.events)}</small></button>`,...ACTS.map((a,i)=>{const events=D.events.filter(e=>+e.act===i);return `<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${countLabel(events)}</small></button>`}),`<button type="button" data-nscroll="top">[맨위로]</button>`,`<button type="button" data-nscroll="bottom">[맨아래로]</button>`].join('<span class="arr">→</span>');
+ $("nacts").innerHTML=[`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${countLabel(D.events)}</small></button>`,...ACTS.map((a,i)=>{const events=D.events.filter(e=>+e.act===i);return `<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${countLabel(events)}</small></button>`})].join('<span class="arr">→</span>');
  const scopeEvents=D.events.filter(e=>novAct<0||+e.act===novAct);
+ const eventLinks=novAct>=0?novelList().map(e=>`<button type="button" class="novel-event-link" data-nevent="${esc(String(e.id))}">${esc(e.title||"제목 없는 사건")}</button>`).join(""):"";
+ $("neventnav").innerHTML=eventLinks?`<div class="neventnav-label">${esc(ACTS[novAct]||"")} 사건 바로가기</div><div class="neventnav-links">${eventLinks}</div>`:"";
  const totalCount=scopeEvents.length,doneCount=scopeEvents.filter(e=>e.done).length;
  $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · ${SHARE||NVUSER?`완료 ${doneCount}개`:`완료 ${doneCount}/${totalCount}개`} · 내용이 작성된 사건 ${L.length}개 · 총 ${lines.length}줄`;
- const asUser=SHARE||NVUSER;$("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자":asUser?"👤 사용자로 보는 중":"🛠 관리자 (전체 보기)";
+ const asUser=SHARE||NVUSER;$("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자 (완료된 사건만)":asUser?"👤 사용자로 보는 중 (완료된 사건만)":"🛠 관리자 (전체 보기)";
  $("nview").textContent=asUser?"🛠 관리자로 보기":"👁 사용자로 보기";
  $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
 }
