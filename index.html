@@ -110,7 +110,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
 </head>
 <body>
 <div id="ld"><div class="t"><div class="b" id="ldb"></div></div><div class="m" id="ldm">data.json 불러오는 중…</div></div>
-<header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span class="pl" id="sub">수정본 · 사건 편집창에 ‘실제 내용 (소설 원문)’ 입력란 포함</span><span id="stat"></span></header>
+<header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span class="pl" id="sub">수정본 · 사건 편집창에 ‘실제 내용 (소설 원문)’ 입력란 포함</span><span id="stat"></span><button id="fbst" hidden style="flex:none;font-size:12px;padding:2px 10px;white-space:nowrap"></button></header>
 <div class="bar">
  <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button><button class="tab" data-tab="it">아이템설정</button><button id="actsEdit">막 설정</button>
  <span style="flex:1"></span><button class="menu-toggle" id="menuToggle" aria-expanded="true">⌃ 메뉴 접기</button><button id="viewNovel">📖 소설내용보기</button><button class="p" id="add">+ 추가</button></div>
@@ -118,12 +118,12 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
  <select id="view"><option value="tree" selected>좌우 라인트리</option><option value="act">막별 보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
  <div class="row" id="tagbar"></div>
- <div class="row"><button class="p" id="gsave">☁ GitHub에 저장</button><!-- 불러오기 비활성화 <button id="gload" class="warn">⚠️ ☁ GitHub에서 불러오기</button> --><button id="gset">⚙ GitHub 설정</button><button id="exp">내보내기(JSON)</button><!-- 불러오기 비활성화 <button id="imp" class="warn">⚠️ 불러오기</button><button id="srv" class="warn">⚠️ 저장소 data.json 불러오기</button> --><!--<button id="rst">초기화</button>--></div>
+ <div class="row"><button class="p" id="gsave">☁ GitHub에 저장</button><!-- 불러오기 비활성화 <button id="gload" class="warn">⚠️ ☁ GitHub에서 불러오기</button> --><button id="gset">⚙ GitHub 설정</button><button id="exp">내보내기(JSON)</button><!-- 불러오기 비활성화 <button id="imp" class="warn">⚠️ 불러오기</button><button id="srv" class="warn">⚠️ 저장소 data.json 불러오기</button> --><button id="fbimp" class="warn" hidden>⚠️ GitHub data.json → 서버로 올리기</button><button id="rst">초기화</button></div>
 </div>
 <main id="list"></main>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
-<dialog id="ndlg"><form method="dialog" id="nf"><h3 style="margin:0">📖 소설 내용 보기</h3><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div class="row"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><span style="flex:1"></span><button class="p" id="nclose" value="close" formnovalidate>닫기</button></div></form></dialog>
+<dialog id="ndlg"><form method="dialog" id="nf"><h3 style="margin:0">📖 소설 내용 보기</h3><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div class="row"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button type="button" id="fbpub" hidden title="공유 링크로 보이는 내용을 지금 작성한 내용으로 갱신">🌐 공유 내용 업데이트</button><span style="flex:1"></span><button class="p" id="nclose" value="close" formnovalidate>닫기</button></div></form></dialog>
 <dialog id="gdlg"><form method="dialog" id="gf">
 <h3 style="margin:0">GitHub 저장 설정</h3>
 <label>GitHub 아이디(owner) · 고정</label><input name="owner" value="yongppang" readonly>
@@ -169,7 +169,7 @@ let HAD=false;try{HAD=!!localStorage.getItem(KEY)}catch(e){}
 let D;try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!D||!D.events){let v1;try{v1=JSON.parse(localStorage.getItem("novel-timeline-v1"))}catch(e){}
  D={events:Array.isArray(v1)?v1.map(e=>({tags:"",...e})):clone(SEEDE),chars:clone(SEEDC)}}
-const save=()=>{if(SHARE)return;D.acts=clone(ACTS);try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
+const save=()=>{if(SHARE)return;D.acts=clone(ACTS);try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}if(window.fbHook)window.fbHook()};
 let tab="tl",ft=new Set(),onlyFs=false,editing=null;
 // 이전 버전에서 저장된 자동 태그를 한 번 제거한다.
 if(!D._tagsRemoved){[...D.events,...D.chars].forEach(o=>o.tags="");D._tagsRemoved=true;try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
@@ -617,8 +617,19 @@ async function autoLoad(){
  load(remote);markSynced();
 }
 document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄ 메뉴 펼치기":"⌃ 메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
-// 공유 링크로 열었을 때: data.json을 읽어 소설 내용 보기만 표시 (저장·수정 불가)
-async function shareLoad(){
+// ===== 공유 링크로 열었을 때: 소설 내용 보기만 표시 (저장·수정 불가) =====
+function shareFail(msg){
+ ldHide();$("nsum").textContent="";$("nacts").innerHTML="";
+ $("nbody").innerHTML='<p class="nv-empty">'+esc(msg)+'</p>';
+ $("ndlg").showModal();
+}
+function shareShow(){
+ const a=parseInt(new URLSearchParams(location.search).get("act"),10);
+ novAct=Number.isInteger(a)&&a>=0&&a<ACTS.length?a:-1;
+ $("ndlg").querySelector("h3").textContent="📖 "+(D.title||DEFTITLE).replace(/^📖\s*/,"");
+ openNovel();
+}
+async function shareLoad(){ // Firebase를 쓰지 않을 때: GitHub의 data.json을 읽는다
  ldShow("소설 불러오는 중…");
  try{
   const r=await fetch("data.json?"+Date.now(),{cache:"no-store"});
@@ -626,18 +637,178 @@ async function shareLoad(){
   const d=await r.json();
   if(!d||!Array.isArray(d.events)||!Array.isArray(d.chars))throw new Error("형식 오류");
   D=d;normalizeData();fillActFilter();ldHide();
- }catch(e){
-  ldHide();$("nsum").textContent="";$("nacts").innerHTML="";
-  $("nbody").innerHTML='<p class="nv-empty">소설 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>';
-  $("ndlg").showModal();return;
+ }catch(e){shareFail("소설 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");return}
+ shareShow();
+}
+
+// ===== Firebase 서버 저장 (Firestore + 구글 로그인) =====
+// ▼ Firebase 콘솔 → 프로젝트 설정 → 내 앱(웹) 의 firebaseConfig 값을 여기에 붙여 넣으세요.
+//   (이 값은 공개되어도 되는 값입니다. 비워 두면 기존 GitHub 방식으로 동작합니다.)
+const FBCFG={apiKey:"AIzaSyCx-8UCTJPOOvaBdLrf8KmMqPJGmutK7FE",authDomain:"yongppang-43589.firebaseapp.com",projectId:"yongppang-43589",storageBucket:"yongppang-43589.firebasestorage.app",messagingSenderId:"191234612811",appId:"1:191234612811:web:678899cbff4a100492f7ce"};
+const FBON=!!(FBCFG.apiKey&&FBCFG.projectId);
+const FBV="10.14.1",FBU=m=>`https://www.gstatic.com/firebasejs/${FBV}/firebase-${m}.js`;
+let FB=null,fbUser=null,fbTimer=null,fbErr="",fbBased=false,fbAsked=false,fbGot=new Set(),fbUnsub=[],SNAP={},BASE=new Map();
+const COLS=["events","chars","items"];
+const stable=o=>JSON.stringify(o,(k,v)=>v&&typeof v==="object"&&!Array.isArray(v)?Object.keys(v).sort().reduce((a,x)=>(a[x]=v[x],a),{}):v);
+const cacheLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
+async function fbInit(persist){
+ if(FB)return FB;
+ const [appM,authM,fs]=await Promise.all([import(FBU("app")),import(FBU("auth")),import(FBU("firestore"))]);
+ const app=appM.initializeApp(FBCFG);let db;
+ if(persist){try{db=fs.initializeFirestore(app,{localCache:fs.persistentLocalCache({tabManager:fs.persistentMultipleTabManager()})})}catch(e){db=fs.getFirestore(app)}}
+ else db=fs.getFirestore(app);
+ FB={app,db,fs,au:authM,auth:authM.getAuth(app)};return FB;
+}
+function fbErrText(e){
+ const c=e&&e.code||"";
+ if(c==="permission-denied")return "권한 없음 (허용된 구글 계정인지, 보안 규칙을 게시했는지 확인)";
+ if(c==="unavailable")return "서버에 연결할 수 없음";
+ return (e&&e.message)||"알 수 없는 오류";
+}
+function fbStatus(){
+ const b=$("fbst");if(!FBON||SHARE){b.hidden=true;return}
+ b.hidden=false;let t;
+ if(!fbUser)t="🔑 구글 로그인 (서버 동기화)";
+ else if(fbErr)t="☁ ⚠ "+fbErr;
+ else if(fbGot.size<4)t="☁ 불러오는 중…";
+ else{
+  const pend=COLS.some(k=>SNAP[k]&&SNAP[k].metadata.hasPendingWrites)||(SNAP.meta&&SNAP.meta.metadata.hasPendingWrites);
+  t=fbTimer?"☁ 저장 중…":pend?(navigator.onLine?"☁ 저장 중…":"☁ 오프라인 · 서버 반영 대기 중"):"☁ 서버와 동기화됨";
  }
- const a=parseInt(new URLSearchParams(location.search).get("act"),10);
- novAct=Number.isInteger(a)&&a>=0&&a<ACTS.length?a:-1;
- $("ndlg").querySelector("h3").textContent="📖 "+(D.title||DEFTITLE).replace(/^📖\s*/,"");
- openNovel();
+ b.textContent=t;b.classList.toggle("p",!fbUser);
+ b.title=fbUser?`${fbUser.email||""} · 클릭하면 로그아웃`:"구글 계정으로 로그인하면 PC·모바일이 같은 데이터를 씁니다";
+}
+// save()가 호출될 때마다 1.2초 뒤 변경된 항목만 서버에 반영한다.
+window.fbHook=()=>{if(!FBON||SHARE)return;clearTimeout(fbTimer);fbTimer=setTimeout(fbFlush,1200);fbStatus()};
+function fbUniqueIds(){
+ COLS.forEach(k=>{const seen=new Set();let mx=Math.max(0,...D[k].map(x=>+x.id||0));D[k].forEach(o=>{if(seen.has(o.id))o.id=++mx;seen.add(o.id)})});
+}
+function fbFlush(){
+ fbTimer=null;
+ if(!fbUser||!FB)return fbStatus();
+ if(!fbBased||fbGot.size<4){fbTimer=setTimeout(fbFlush,800);return} // 서버 상태를 받기 전에는 쓰지 않는다
+ fbUniqueIds();
+ const {db,fs}=FB,writes=[],ordOnly=[],seen=new Set();
+ COLS.forEach(k=>D[k].forEach((o,i)=>{
+  const key=k+"/"+o.id;seen.add(key);
+  const data=JSON.parse(JSON.stringify(o)),s=stable(data),b=BASE.get(key);
+  if(!b||b.s!==s)writes.push({key,ref:fs.doc(db,k,String(o.id)),data:{...data,ord:i},s,ord:i});
+  else if(b.ord!==i)ordOnly.push({key,ref:fs.doc(db,k,String(o.id)),ord:i,s}); // 순서만 바뀐 항목은 순서 값만 쓴다 (다른 기기의 내용 수정을 덮지 않기 위해)
+ }));
+ const dels=[];BASE.forEach((b,key)=>{if(key!=="meta"&&!seen.has(key)){const [k,id]=key.split("/");dels.push({key,ref:fs.doc(db,k,id)})}});
+ const meta={title:D.title||"",acts:ACTS.slice()},ms=stable(meta),mb=BASE.get("meta");
+ const metaChanged=!mb||mb.s!==ms;
+ if(!writes.length&&!ordOnly.length&&!dels.length&&!metaChanged)return fbStatus();
+ const ops=[...writes.map(w=>({t:"s",ref:w.ref,data:w.data})),...ordOnly.map(w=>({t:"m",ref:w.ref,data:{ord:w.ord}})),...dels.map(d=>({t:"d",ref:d.ref}))];
+ if(metaChanged)ops.push({t:"s",ref:fs.doc(db,"meta","main"),data:meta});
+ for(let i=0;i<ops.length;i+=400){
+  const b=fs.writeBatch(db);
+  ops.slice(i,i+400).forEach(o=>o.t==="s"?b.set(o.ref,o.data):o.t==="m"?b.set(o.ref,o.data,{merge:true}):b.delete(o.ref));
+  b.commit().catch(e=>{fbErr=fbErrText(e);BASE.clear();fbStatus()});
+ }
+ writes.forEach(w=>BASE.set(w.key,{s:w.s,ord:w.ord}));ordOnly.forEach(w=>BASE.set(w.key,{s:w.s,ord:w.ord}));dels.forEach(d=>BASE.delete(d.key));BASE.set("meta",{s:ms});
+ fbStatus();
+}
+// 서버 내용을 화면 데이터(D)에 반영한다. 저장하지 않은 수정이 있을 때는 호출하지 않는다.
+function fbApply(first){
+ const docs=k=>SNAP[k].docs.map(d=>d.data());
+ const evs=docs("events"),chs=docs("chars"),its=docs("items"),meta=SNAP.meta.exists()?SNAP.meta.data():null;
+ if(!evs.length&&!chs.length&&!its.length&&!meta){
+  fbBased=true;
+  if(first&&!fbAsked){fbAsked=true;
+   setTimeout(()=>{if(confirm(`서버가 비어 있습니다.\n\n이 화면의 데이터(사건 ${D.events.length}개 · 인물 ${D.chars.length}명)를 서버에 올릴까요?\n\n[확인] 올리기\n[취소] 올리지 않음 (GitHub의 data.json을 올리려면 '⚠️ GitHub data.json → 서버로 올리기' 버튼 사용)`))fbHook()},300);
+  }
+  return;
+ }
+ const sig=()=>stable({t:D.title,a:ACTS,e:D.events,c:D.chars,i:D.items});
+ const before=sig();
+ if(first){try{localStorage.setItem("novel-backup-before-sync",JSON.stringify(D))}catch(e){}}
+ const ord=a=>a.slice().sort((x,y)=>(x.ord??1e9)-(y.ord??1e9)).map(o=>{const c={...o};delete c.ord;return c});
+ D={title:meta&&meta.title||"",acts:meta&&Array.isArray(meta.acts)&&meta.acts.length?meta.acts:ACTS.slice(),events:ord(evs),chars:ord(chs),items:ord(its),_tagsRemoved:true};
+ normalizeData();
+ // 비교 기준(BASE)은 화면에서 쓰는(정규화된) 데이터로 만든다. 서버 원본으로 만들면 빠진 필드 때문에 모든 항목이 '바뀐 것'으로 보여 다른 기기의 수정을 덮어쓰게 된다.
+ BASE=new Map();const ordOf={};
+ COLS.forEach(k=>SNAP[k].docs.forEach(d=>{ordOf[k+"/"+d.id]=d.data().ord}));
+ COLS.forEach(k=>D[k].forEach(o=>BASE.set(k+"/"+o.id,{s:stable(JSON.parse(JSON.stringify(o))),ord:ordOf[k+"/"+o.id]})));
+ if(meta)BASE.set("meta",{s:stable({title:D.title||"",acts:ACTS.slice()})});
+ fbBased=true;
+ if(before!==sig()){fillActFilter();render();cacheLocal()}
+}
+function fbOnSnap(){
+ if(fbGot.size<4)return;
+ fbErr="";
+ if(!fbBased)fbApply(true);
+ else if(!fbTimer)fbApply(false);
+ fbStatus();
+}
+function fbListen(){
+ fbUnlisten();const {db,fs}=FB;
+ const onErr=e=>{fbErr=fbErrText(e);fbStatus()};
+ COLS.forEach(k=>fbUnsub.push(fs.onSnapshot(fs.collection(db,k),{includeMetadataChanges:true},s=>{SNAP[k]=s;fbGot.add(k);fbOnSnap()},onErr)));
+ fbUnsub.push(fs.onSnapshot(fs.doc(db,"meta","main"),{includeMetadataChanges:true},s=>{SNAP.meta=s;fbGot.add("meta");fbOnSnap()},onErr));
+}
+function fbUnlisten(){fbUnsub.forEach(f=>{try{f()}catch(e){}});fbUnsub=[];SNAP={};fbGot=new Set();fbBased=false;fbAsked=false;BASE=new Map()}
+async function fbLogin(){
+ const {au,auth}=FB,provider=new au.GoogleAuthProvider();provider.setCustomParameters({prompt:"select_account"});
+ try{await au.signInWithPopup(auth,provider)}
+ catch(e){
+  const c=e&&e.code||"";
+  if(c==="auth/popup-blocked"||c==="auth/operation-not-supported-in-this-environment"){try{await au.signInWithRedirect(auth,provider)}catch(e2){alert("로그인 실패: "+(e2.message||e2))}}
+  else if(c==="auth/unauthorized-domain")alert("이 주소가 Firebase에 등록되지 않았습니다.\nFirebase 콘솔 → Authentication → 설정 → 승인된 도메인에\n"+location.hostname+" 을(를) 추가하세요.");
+  else if(c!=="auth/popup-closed-by-user"&&c!=="auth/cancelled-popup-request")alert("로그인 실패: "+(e.message||c));
+ }
+}
+async function fbPublish(){
+ if(!fbUser){alert("먼저 로그인하세요.");return}
+ if(!navigator.onLine){alert("오프라인에서는 공유 내용을 업데이트할 수 없습니다.");return}
+ const evs=D.events.map((e,i)=>({e,i})).filter(x=>String(x.e.actual||"").trim());
+ if(!confirm(`공유 링크에 소설 내용이 공개됩니다.\n\n· 공개: 막 이름, 사건 제목, 실제 내용(소설 원문) ${evs.length}개 사건\n· 비공개: 요약, 인물·아이템 설정, 작가 메모\n\n지금 작성한 내용으로 공유 페이지를 업데이트할까요?`))return;
+ const b=$("fbpub"),old=b.textContent;b.textContent="올리는 중…";b.disabled=true;
+ try{
+  const {db,fs}=FB,cur=await fs.getDocs(fs.collection(db,"pubEvents")),keep=new Set(evs.map(x=>String(x.e.id)));
+  const ops=evs.map(x=>({t:"s",ref:fs.doc(db,"pubEvents",String(x.e.id)),data:{id:x.e.id,act:+x.e.act||0,title:x.e.title||"",actual:String(x.e.actual),ord:x.i}}));
+  cur.docs.forEach(d=>{if(!keep.has(d.id))ops.push({t:"d",ref:d.ref})});
+  ops.push({t:"s",ref:fs.doc(db,"pubMeta","main"),data:{title:D.title||"",acts:ACTS.slice(),updatedAt:Date.now()}});
+  for(let i=0;i<ops.length;i+=400){const wb=fs.writeBatch(db);ops.slice(i,i+400).forEach(o=>o.t==="s"?wb.set(o.ref,o.data):wb.delete(o.ref));await wb.commit()}
+  b.textContent="✅ 업데이트됨";setTimeout(()=>{b.textContent=old},2000);
+ }catch(e){alert("공유 내용 업데이트 실패: "+fbErrText(e));b.textContent=old}
+ b.disabled=false;
+}
+async function fbStart(){
+ $("fbimp").hidden=false;$("rst").hidden=true;$("fbpub").hidden=false;
+ $("gsave").textContent="☁ GitHub에 백업";
+ fbStatus();
+ try{await fbInit(true)}catch(e){fbErr="Firebase를 불러오지 못했습니다 (인터넷 확인)";fbStatus();return}
+ $("fbst").onclick=async()=>{if(fbUser){if(confirm(`${fbUser.email||"계정"} 에서 로그아웃할까요?\n(이 기기의 데이터는 그대로 남고, 서버 동기화만 멈춥니다.)`))await FB.au.signOut(FB.auth)}else await fbLogin()};
+ $("fbpub").onclick=fbPublish;
+ $("fbimp").onclick=async()=>{
+  if(!fbUser){alert("먼저 로그인하세요.");return}
+  let d;try{const r=await fetch("data.json?"+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;d=await r.json()}catch(e){alert(WARN+"data.json을 불러오지 못했습니다. (GitHub Pages 주소에서 열어야 합니다)");return}
+  if(!d||!Array.isArray(d.events)||!Array.isArray(d.chars)){alert(WARN+"올바른 data.json 형식이 아닙니다.");return}
+  if(!confirm(WARN+`GitHub의 data.json (사건 ${d.events.length}개, 인물 ${d.chars.length}명)으로 서버 데이터를 덮어씁니다.\n서버에 있던 내용은 사라집니다.\n\n계속할까요?`))return;
+  load(d);
+ };
+ window.addEventListener("online",fbStatus);window.addEventListener("offline",fbStatus);
+ window.addEventListener("beforeunload",ev=>{if(fbTimer){ev.preventDefault();ev.returnValue=""}});
+ FB.au.onAuthStateChanged(FB.auth,u=>{fbUser=u;fbErr="";if(u)fbListen();else fbUnlisten();fbStatus()});
+}
+// 공유 링크: 로그인 없이 공개 사본(pubMeta / pubEvents)만 읽는다.
+async function fbShare(){
+ ldShow("소설 불러오는 중…");
+ try{
+  await fbInit(false);const {db,fs}=FB;
+  const [m,es]=await Promise.all([fs.getDoc(fs.doc(db,"pubMeta","main")),fs.getDocs(fs.collection(db,"pubEvents"))]);
+  if(!m.exists()&&es.empty){shareFail("아직 공개된 내용이 없습니다.");return}
+  const mm=m.exists()?m.data():{};
+  const evs=es.docs.map(d=>d.data()).sort((a,b)=>(a.ord??0)-(b.ord??0)).map(({ord,...r})=>r);
+  D={title:mm.title||"",acts:Array.isArray(mm.acts)?mm.acts:[],events:evs,chars:[],items:[]};
+  normalizeData();fillActFilter();ldHide();
+ }catch(e){shareFail("소설 데이터를 불러오지 못했습니다. ("+fbErrText(e)+")");return}
+ shareShow();
 }
 render();
-SHARE?shareLoad():autoLoad();
+if(FBON)SHARE?fbShare():fbStart();
+else SHARE?shareLoad():autoLoad();
 </script>
 </body>
 </html>
