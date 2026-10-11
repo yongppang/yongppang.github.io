@@ -685,8 +685,9 @@ async function fbPublish(){
  b.disabled=false;
 }
 async function fbStart(){
- // GitHub 관련 기능은 제거했습니다. 서버 데이터는 구글 로그인 후 Firestore에서만 읽습니다.
- $("rst").hidden=false;$("fbpub").hidden=false;
+ // GitHub 관련 기능과 초기화 버튼은 제거했습니다. 서버 데이터는 구글 로그인 후 Firestore에서만 읽습니다.
+ // 초기화 버튼 요소(rst)는 HTML에서 주석 처리되어 있으므로 접근하지 않습니다.
+ $("fbpub").hidden=false;
  fbStatus();
  try{await fbInit(true)}catch(e){fbErr="Firebase를 불러오지 못했습니다 (인터넷 확인)";fbStatus();return}
  $("fbst").onclick=async()=>{if(fbUser){if(confirm(`${fbUser.email||"계정"} 에서 로그아웃할까요?\n(이 기기의 데이터는 그대로 남고, 서버 동기화만 멈춥니다.)`))await FB.au.signOut(FB.auth)}else await fbLogin()};
