@@ -118,23 +118,13 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
  <select id="view"><option value="tree" selected>좌우 라인트리</option><option value="act">막별 보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
  <div class="row" id="tagbar"></div>
- <div class="row"><button class="p" id="gsave">☁ GitHub에 저장</button><!-- 불러오기 비활성화 <button id="gload" class="warn">⚠️ ☁ GitHub에서 불러오기</button> --><button id="gset">⚙ GitHub 설정</button><button id="exp">내보내기(JSON)</button><!-- 불러오기 비활성화 <button id="imp" class="warn">⚠️ 불러오기</button><button id="srv" class="warn">⚠️ 저장소 data.json 불러오기</button> --><button id="fbimp" class="warn" hidden>⚠️ GitHub data.json → 서버로 올리기</button><button id="rst">초기화</button></div>
+ <div class="row"><button id="rst">초기화</button></div>
 </div>
 <main id="list"></main>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
 <dialog id="ndlg"><form method="dialog" id="nf"><h3 style="margin:0">📖 소설 내용 보기</h3><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div class="row"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button type="button" id="fbpub" hidden title="공유 링크로 보이는 내용을 지금 작성한 내용으로 갱신">🌐 공유 내용 업데이트</button><span style="flex:1"></span><button class="p" id="nclose" value="close" formnovalidate>닫기</button></div></form></dialog>
-<dialog id="gdlg"><form method="dialog" id="gf">
-<h3 style="margin:0">GitHub 저장 설정</h3>
-<label>GitHub 아이디(owner) · 고정</label><input name="owner" value="yongppang" readonly>
-<label>저장소 이름(repo) · 고정</label><input name="repo" value="yongppang.github.io" readonly>
-<label>브랜치 · 고정</label><input name="branch" value="main" readonly>
-<label>저장할 파일 경로</label><input name="path">
-<label>Personal Access Token (이 브라우저에만 저장됩니다)</label><input name="token" type="password" placeholder="github_pat_...">
-<p class="pl">GitHub → Settings → Developer settings → Fine-grained tokens에서 <b>이 저장소만</b> 선택하고 Contents 권한을 Read and write로 발급하세요.</p>
-<div class="row"><button class="p" value="ok">저장</button><button value="cancel" formnovalidate>취소</button></div>
-</form></dialog>
-<!-- 불러오기 비활성화 <input type="file" id="file" accept=".json" hidden> -->
+
 <script>
 const ACTS=["프롤로그","1막","2막","3막","4막"];
 const DEFTITLE="📖 소설 관리";
@@ -508,114 +498,14 @@ document.addEventListener("click",ev=>{
 $("q").oninput=render;$("fa").onchange=render;
 $("view").onchange=()=>{$("q").value="";render()}; // 보기 메뉴를 바꿀 때도 검색 필드 초기화
 $("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);render()};
-$("exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,2)],{type:"application/json"}));a.download="data.json";a.click()};
-const WARN="⚠️ *주의* ⚠️\n\n";
-const load=d=>{if(d&&Array.isArray(d.events)&&Array.isArray(d.chars)){D=d;normalizeData();fillActFilter();save();render();return true}alert(WARN+"올바른 data.json 형식이 아닙니다.\n기존 데이터는 변경되지 않았습니다.")};
-/* 불러오기 비활성화 (필요하면 이 주석을 풀고 위 HTML 버튼 주석도 해제)
-$("imp").onclick=()=>{if(!confirm(WARN+"불러온 JSON 파일의 내용으로 현재 데이터를 덮어씁니다.\n저장하지 않은 변경 사항은 모두 사라지며 복구할 수 없습니다.\n\n파일을 선택할까요?"))return;$("file").click()};
-$("file").onchange=async ev=>{const fl=ev.target.files[0];if(!fl)return;try{load(JSON.parse(await fl.text()))}catch(e){alert(WARN+"JSON 읽기에 실패했습니다.\n기존 데이터는 변경되지 않았습니다.")}ev.target.value=""};
-$("srv").onclick=async()=>{try{const r=await fetch("data.json?"+Date.now());if(!r.ok)throw 0;if(confirm(WARN+"저장소의 data.json으로 현재 데이터를 덮어씁니다.\n저장하지 않은 변경 사항은 모두 사라지며 복구할 수 없습니다.\n\n계속할까요?"))load(await r.json())}catch(e){alert(WARN+"data.json을 찾을 수 없습니다. (GitHub Pages 등 웹에서 열어야 합니다)")}};
-*/
+// GitHub 백업·설정·JSON 내보내기 및 data.json 가져오기 기능은 제거했습니다.
 $("rst").onclick=()=>{if(confirm("초기 데이터로 되돌릴까요? 저장된 수정이 사라집니다.")){D={events:clone(SEEDE),chars:clone(SEEDC),items:clone(SEEDI)};save();render()}};
 
-const GK="novel-gh";
-const FIXED={owner:"yongppang",repo:"yongppang.github.io",branch:"main"}; // 아이디·저장소·브랜치 고정
-const guess=()=>({...FIXED,path:"data.json",token:""});
-let GH;try{GH={...guess(),...JSON.parse(localStorage.getItem(GK))}}catch(e){GH=guess()}
-Object.assign(GH,FIXED);
-$("gset").onclick=()=>{const f=$("gf");["owner","repo","branch","path","token"].forEach(k=>f[k].value=GH[k]||"");["owner","repo","branch"].forEach(k=>{f[k].value=FIXED[k];f[k].readOnly=true});$("gdlg").showModal()};
-$("gf").addEventListener("submit",ev=>{if(ev.submitter.value!="ok")return;const f=$("gf");
- ["owner","repo","branch","path","token"].forEach(k=>GH[k]=f[k].value.trim());Object.assign(GH,FIXED);
- try{localStorage.setItem(GK,JSON.stringify(GH))}catch(e){}});
-function ghConfigReady(){if(!GH.owner||!GH.repo||!GH.token){alert("먼저 ⚙ GitHub 설정에서 아이디·저장소·토큰을 입력하세요.");$("gset").click();return false}return true}
-function ghUrl(){return `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${GH.path.split("/").map(encodeURIComponent).join("/")}`}
-function ghHeaders(){return{Authorization:"Bearer "+GH.token,Accept:"application/vnd.github+json"}}
-
-// ===== 마지막으로 GitHub와 동기화된 시점의 데이터 (로컬 미저장 수정 감지용) =====
-const SNK="novel-synced",SSK="novel-loaded";
-const markSynced=()=>{try{localStorage.setItem(SNK,JSON.stringify(D))}catch(e){}};
-
-/* 불러오기 비활성화
-$("gload").onclick=async()=>{
- if(!ghConfigReady())return;
- if(!confirm(WARN+"GitHub의 data 파일로 현재 브라우저 데이터를 덮어씁니다.\n저장하지 않은 변경 사항은 모두 사라지며 복구할 수 없습니다.\n\n계속할까요?"))return;
- const b=$("gload"),old=b.textContent;b.textContent="불러오는 중...";b.disabled=true;
- try{
-  const r=await fetch(`${ghUrl()}?ref=${encodeURIComponent(GH.branch)}&t=${Date.now()}`,{headers:ghHeaders()});
-  if(!r.ok)throw new Error("불러오기 실패 "+r.status+": "+((await r.json()).message||"토큰·저장소·파일 경로를 확인하세요."));
-  const file=await r.json();
-  const bytes=Uint8Array.from(atob(file.content.replace(/\s/g,"")),c=>c.charCodeAt(0));
-  const data=JSON.parse(new TextDecoder("utf-8").decode(bytes));
-  if(!data||!Array.isArray(data.events)||!Array.isArray(data.chars))throw new Error("GitHub 파일이 올바른 소설 데이터 형식이 아닙니다.");
-  load(data);b.textContent="✅ 불러옴";setTimeout(()=>{b.textContent=old},2000);
- }catch(e){alert(WARN+e.message);b.textContent=old}
- b.disabled=false;
-};
-*/
-$("gsave").onclick=async()=>{
- if(!GH.owner||!GH.repo||!GH.token){alert("먼저 ⚙ GitHub 설정에서 아이디·저장소·토큰을 입력하세요.");$("gset").click();return}
- const b=$("gsave"),old=b.textContent;b.textContent="저장 중...";b.disabled=true;
- const url=ghUrl();
- const H=ghHeaders();
- try{
-  save();
-  let sha;const g=await fetch(`${url}?ref=${encodeURIComponent(GH.branch)}&t=${Date.now()}`,{headers:H});
-  if(g.ok)sha=(await g.json()).sha;else if(g.status!=404)throw new Error("조회 실패 "+g.status+" (토큰·저장소 이름·권한 확인)");
-  const body={message:"update novel data "+new Date().toLocaleString("ko-KR"),content:btoa(unescape(encodeURIComponent(JSON.stringify(D,null,2)))),branch:GH.branch};
-  if(sha)body.sha=sha;
-  const p=await fetch(url,{method:"PUT",headers:{...H,"Content-Type":"application/json"},body:JSON.stringify(body)});
-  if(!p.ok)throw new Error("저장 실패 "+p.status+": "+((await p.json()).message||""));
-  markSynced(); // 저장 성공 = 이 PC 데이터가 GitHub와 동일
-  b.textContent="✅ 저장됨";setTimeout(()=>{b.textContent=old},2000);
- }catch(e){alert(e.message);b.textContent=old}
- b.disabled=false;
-};
-
-// ===== 최초 접속 시 data.json 자동 불러오기 (프로그래스바 표시) =====
-// 탭을 새로 열 때 한 번만 실행하고, 새로고침(F5)에서는 다시 불러오지 않는다.
+// 로딩 표시: 공개 공유 페이지에서 소설을 불러올 때 사용합니다.
 let ldTimer=null;
-function ldShow(msg){$("ldm").textContent=msg||"data.json 불러오는 중…";$("ldb").style.width="0%";$("ld").style.display="block";
- let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);
- ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
+function ldShow(msg){$("ldm").textContent=msg||"소설 불러오는 중…";$("ldb").style.width="0%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
 function ldSet(p){const cur=parseFloat($("ldb").style.width)||0;if(p>cur)$("ldb").style.width=p+"%"}
 function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100%";setTimeout(()=>{$("ld").style.display="none"},delay)}
-async function fetchText(url,headers){
- const r=await fetch(url,{cache:"no-store",headers});
- if(!r.ok)throw new Error("HTTP "+r.status);
- const total=+r.headers.get("content-length")||0;
- if(!r.body||!r.body.getReader)return r.text();
- const rd=r.body.getReader(),chunks=[];let got=0;
- for(;;){const {done,value}=await rd.read();if(done)break;chunks.push(value);got+=value.length;if(total)ldSet(Math.min(95,got/total*95))}
- const buf=new Uint8Array(got);let o=0;chunks.forEach(c=>{buf.set(c,o);o+=c.length});
- return new TextDecoder("utf-8").decode(buf);
-}
-async function autoLoad(){
- try{if(sessionStorage.getItem(SSK))return}catch(e){}   // 새로고침이면 건너뜀
- if(location.protocol==="file:")return;                 // 파일로 직접 열면 fetch 불가
- ldShow();
- let remote=null;
- try{
-  const text=GH.token
-   ?await fetchText(`${ghUrl()}?ref=${encodeURIComponent(GH.branch)}&t=${Date.now()}`,{...ghHeaders(),Accept:"application/vnd.github.raw+json"})
-   :await fetchText("data.json?"+Date.now());
-  const d=JSON.parse(text);
-  if(!d||!Array.isArray(d.events)||!Array.isArray(d.chars))throw new Error("형식 오류");
-  remote=d;ldHide();
- }catch(e){
-  $("ldm").textContent="data.json을 불러오지 못했습니다. 이 PC에 저장된 데이터를 사용합니다.";
-  clearInterval(ldTimer);$("ldb").style.width="100%";setTimeout(()=>{$("ld").style.display="none"},2500);
-  return; // 실패하면 새로고침 때 다시 시도
- }
- try{sessionStorage.setItem(SSK,"1")}catch(e){}
- // 이 PC에 GitHub에 저장하지 않은 수정이 있으면 덮어쓰기 전에 확인한다.
- let snap=null;try{snap=localStorage.getItem(SNK)}catch(e){}
- const changed=snap!==null?JSON.stringify(D)!==snap:HAD;
- if(changed){
-  await new Promise(r=>setTimeout(r,350)); // 프로그래스바가 사라진 뒤에 확인창 표시
-  if(!confirm(WARN+(snap!==null?"이 PC에 GitHub에 저장하지 않은 수정 내용이 있습니다.":"이 PC에 저장된 데이터가 GitHub와 동기화된 적이 없습니다.")+"\n\nGitHub의 data.json으로 덮어쓸까요?\n\n[확인] GitHub 데이터로 덮어쓰기\n[취소] 이 PC 데이터 유지"))return;
- }
- load(remote);markSynced();
-}
 document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄ 메뉴 펼치기":"⌃ 메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
 // ===== 공유 링크로 열었을 때: 소설 내용 보기만 표시 (저장·수정 불가) =====
 function shareFail(msg){
@@ -643,12 +533,14 @@ async function shareLoad(){ // Firebase를 쓰지 않을 때: GitHub의 data.jso
 
 // ===== Firebase 서버 저장 (Firestore + 구글 로그인) =====
 // ▼ Firebase 콘솔 → 프로젝트 설정 → 내 앱(웹) 의 firebaseConfig 값을 여기에 붙여 넣으세요.
-//   (이 값은 공개되어도 되는 값입니다. 비워 두면 기존 GitHub 방식으로 동작합니다.)
+//   (이 값은 공개되어도 되는 Firebase 웹 설정입니다.)
 const FBCFG={apiKey:"AIzaSyCx-8UCTJPOOvaBdLrf8KmMqPJGmutK7FE",authDomain:"yongppang-43589.firebaseapp.com",projectId:"yongppang-43589",storageBucket:"yongppang-43589.firebasestorage.app",messagingSenderId:"191234612811",appId:"1:191234612811:web:678899cbff4a100492f7ce"};
 const FBON=!!(FBCFG.apiKey&&FBCFG.projectId);
 const FBV="10.14.1",FBU=m=>`https://www.gstatic.com/firebasejs/${FBV}/firebase-${m}.js`;
 let FB=null,fbUser=null,fbTimer=null,fbErr="",fbBased=false,fbAsked=false,fbGot=new Set(),fbUnsub=[],SNAP={},BASE=new Map();
 const COLS=["events","chars","items"];
+// 로그인 전에는 브라우저/서버의 개인 데이터를 읽지 않고 이 더미 데이터만 보여 줍니다.
+const makeDummyData=()=>({title:DEFTITLE,acts:clone(ACTS),events:clone(SEEDE),chars:clone(SEEDC),items:clone(SEEDI),_tagsRemoved:true});
 const stable=o=>JSON.stringify(o,(k,v)=>v&&typeof v==="object"&&!Array.isArray(v)?Object.keys(v).sort().reduce((a,x)=>(a[x]=v[x],a),{}):v);
 const cacheLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
 async function fbInit(persist){
@@ -714,10 +606,16 @@ function fbApply(first){
  const docs=k=>SNAP[k].docs.map(d=>d.data());
  const evs=docs("events"),chs=docs("chars"),its=docs("items"),meta=SNAP.meta.exists()?SNAP.meta.data():null;
  if(!evs.length&&!chs.length&&!its.length&&!meta){
+  // 서버가 비어 있으면 로그인 후 작업 화면은 빈 상태로 시작합니다.
+  // 로그인 전 미리보기용 더미 데이터는 서버 데이터로 취급하지 않습니다.
+  // 따라서 첫 저장 때 더미 항목 전체가 서버에 올라가는 일을 방지합니다.
+  D={title:DEFTITLE,acts:ACTS.slice(),events:[],chars:[],items:[],_tagsRemoved:true};
+  normalizeData();
+  BASE=new Map();
+  // 기본 제목/막 이름을 기준값으로 잡아, 새 항목을 만들지 않았다면 아무것도 업로드하지 않습니다.
+  BASE.set("meta",{s:stable({title:D.title||"",acts:ACTS.slice()})});
   fbBased=true;
-  if(first&&!fbAsked){fbAsked=true;
-   setTimeout(()=>{if(confirm(`서버가 비어 있습니다.\n\n이 화면의 데이터(사건 ${D.events.length}개 · 인물 ${D.chars.length}명)를 서버에 올릴까요?\n\n[확인] 올리기\n[취소] 올리지 않음 (GitHub의 data.json을 올리려면 '⚠️ GitHub data.json → 서버로 올리기' 버튼 사용)`))fbHook()},300);
-  }
+  fillActFilter();render();cacheLocal();
   return;
  }
  const sig=()=>stable({t:D.title,a:ACTS,e:D.events,c:D.chars,i:D.items});
@@ -775,22 +673,24 @@ async function fbPublish(){
  b.disabled=false;
 }
 async function fbStart(){
- $("fbimp").hidden=false;$("rst").hidden=true;$("fbpub").hidden=false;
- $("gsave").textContent="☁ GitHub에 백업";
+ // GitHub 관련 기능은 제거했습니다. 서버 데이터는 구글 로그인 후 Firestore에서만 읽습니다.
+ $("rst").hidden=false;$("fbpub").hidden=false;
  fbStatus();
  try{await fbInit(true)}catch(e){fbErr="Firebase를 불러오지 못했습니다 (인터넷 확인)";fbStatus();return}
  $("fbst").onclick=async()=>{if(fbUser){if(confirm(`${fbUser.email||"계정"} 에서 로그아웃할까요?\n(이 기기의 데이터는 그대로 남고, 서버 동기화만 멈춥니다.)`))await FB.au.signOut(FB.auth)}else await fbLogin()};
  $("fbpub").onclick=fbPublish;
- $("fbimp").onclick=async()=>{
-  if(!fbUser){alert("먼저 로그인하세요.");return}
-  let d;try{const r=await fetch("data.json?"+Date.now(),{cache:"no-store"});if(!r.ok)throw 0;d=await r.json()}catch(e){alert(WARN+"data.json을 불러오지 못했습니다. (GitHub Pages 주소에서 열어야 합니다)");return}
-  if(!d||!Array.isArray(d.events)||!Array.isArray(d.chars)){alert(WARN+"올바른 data.json 형식이 아닙니다.");return}
-  if(!confirm(WARN+`GitHub의 data.json (사건 ${d.events.length}개, 인물 ${d.chars.length}명)으로 서버 데이터를 덮어씁니다.\n서버에 있던 내용은 사라집니다.\n\n계속할까요?`))return;
-  load(d);
- };
  window.addEventListener("online",fbStatus);window.addEventListener("offline",fbStatus);
  window.addEventListener("beforeunload",ev=>{if(fbTimer){ev.preventDefault();ev.returnValue=""}});
- FB.au.onAuthStateChanged(FB.auth,u=>{fbUser=u;fbErr="";if(u)fbListen();else fbUnlisten();fbStatus()});
+ FB.au.onAuthStateChanged(FB.auth,u=>{
+  fbUser=u;fbErr="";
+  if(u){fbListen()}
+  else{
+   fbUnlisten();
+   // 로그아웃하면 서버/개인 데이터 대신 더미 화면으로 되돌립니다.
+   if(!SHARE){D=makeDummyData();normalizeData();fillActFilter();render();cacheLocal()}
+  }
+  fbStatus();
+ });
 }
 // 공유 링크: 로그인 없이 공개 사본(pubMeta / pubEvents)만 읽는다.
 async function fbShare(){
@@ -806,9 +706,11 @@ async function fbShare(){
  }catch(e){shareFail("소설 데이터를 불러오지 못했습니다. ("+fbErrText(e)+")");return}
  shareShow();
 }
+// 일반 화면은 항상 더미 데이터로 시작합니다. 로그인 성공 후에만 Firestore 데이터로 교체됩니다.
+if(FBON&&!SHARE){D=makeDummyData();normalizeData();fillActFilter()}
 render();
 if(FBON)SHARE?fbShare():fbStart();
-else SHARE?shareLoad():autoLoad();
+else if(SHARE)shareLoad();
 </script>
 </body>
 </html>
