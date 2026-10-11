@@ -84,8 +84,8 @@ main{width:100%;padding:12px 16px 60px}
 #ndlg #nbody{padding-bottom:0}#ndlg form{padding-bottom:0;min-height:0}
 .nacts{flex-wrap:nowrap!important;overflow-x:auto;align-items:center;scrollbar-width:thin}.nacts.menu-hidden{display:none!important}#nmenuToggle{width:100%;text-align:left;margin:6px 0 2px;font-size:14px;padding:8px 12px;border-radius:8px} @media(max-width:600px){#ndlg{width:96vw;max-width:96vw;padding:12px}#ndlg #nhead h3{font-size:17px}#ndlg #nbody{font-size:15px}#nmenuToggle{position:sticky;top:0;z-index:5;background:var(--card)}}.nacts button{white-space:nowrap;flex:none}.nacts .arr{color:var(--sub);flex:none;font-size:13px}
 
-#neventnav:empty{display:none}#neventnav{margin:4px 0 10px;padding:8px 10px;border:1px solid var(--bd);border-radius:9px;background:var(--card)}.neventnav-label{font-size:12px;color:var(--sub);font-weight:700;margin-bottom:5px}.neventnav-links{display:flex;flex-wrap:wrap;gap:6px}.novel-event-link{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--blk);border-color:var(--blkbd);white-space:normal;text-align:left}
-.novel-edge-scroll{position:fixed;z-index:110;border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.92);color:var(--ac);font-size:13px;font-weight:700;padding:8px 12px;box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.novel-edge-scroll.top{top:38%;left:50%;right:auto;transform:translate(-50%,-50%)}.novel-edge-scroll.bottom{top:62%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-50%)}
+#neventnav:empty{display:none}#neventnav{margin:4px 0 10px;padding:8px 10px;border:1px solid var(--bd);border-radius:9px;background:var(--card)}.neventnav-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}.neventnav-label{font-size:12px;color:var(--sub);font-weight:700}.nevent-layout-toggle{font-size:12px;padding:4px 9px;white-space:nowrap}.neventnav-links{display:flex;flex-wrap:wrap;gap:6px}.neventnav-links.horizontal{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}.novel-event-link{font-size:13px;padding:4px 10px;border-radius:999px;background:var(--blk);border-color:var(--blkbd);white-space:normal;text-align:left;flex:0 0 auto}
+.novel-edge-scroll{position:fixed;z-index:110;border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.92);color:var(--ac);font-size:13px;font-weight:700;padding:8px 12px;box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.novel-edge-scroll.top{top:12%;left:50%;right:auto;transform:translate(-50%,-50%)}.novel-edge-scroll.bottom{top:78%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-50%)}
 
 .st{font-size:15px;margin-right:3px;cursor:pointer;flex:none;user-select:none;-webkit-user-select:none}
 .pill{padding:8px 14px!important;font-size:14px;border:1px solid #6c5ce766!important;border-radius:999px!important;background:rgba(255,255,255,.78)!important;color:var(--ac)!important;box-shadow:0 4px 16px #0002;opacity:.9}
@@ -579,12 +579,21 @@ $("novelMenuToggle").addEventListener("click",()=>{
  $("novelMenuToggle").textContent=hidden?"☰ 메뉴 보기":"☰ 메뉴 접기";
  $("novelMenuToggle").setAttribute("aria-expanded",String(!hidden));
 });
+let eventLinksHorizontal=false;
+function setEventLinksLayout(){
+ const links=$("neventnav").querySelector(".neventnav-links");if(!links)return;
+ links.classList.toggle("horizontal",eventLinksHorizontal);
+ const b=$("neventLayoutToggle");if(b)b.textContent=eventLinksHorizontal?"↔ 수평 정렬 해제":"↔ 플롯 방식 수평 정렬";
+}
 function jumpToNovelEvent(ev){
  const eb=ev.target.closest("[data-nevent]");if(!eb)return;
  const id=String(eb.dataset.nevent);const t=$("nbody").querySelector(`.nl[data-e="${id}"]`);
  if(t){t.scrollIntoView({behavior:"smooth",block:"start"});t.classList.remove("flash");void t.offsetWidth;t.classList.add("flash")}
 }
-$("neventnav").addEventListener("click",jumpToNovelEvent);
+$("neventnav").addEventListener("click",ev=>{
+ const toggle=ev.target.closest("#neventLayoutToggle");if(toggle){eventLinksHorizontal=!eventLinksHorizontal;setEventLinksLayout();return;}
+ jumpToNovelEvent(ev);
+});
 $("nacts").addEventListener("click",ev=>{
  const b=ev.target.closest("[data-nact]");if(!b)return;novAct=+b.dataset.nact;renderNovel();$("ndlg").scrollTo({top:0,behavior:"smooth"});
 });
@@ -596,7 +605,8 @@ function renderNovel(){
  $("nacts").innerHTML=[`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${countLabel(D.events)}</small></button>`,...ACTS.map((a,i)=>{const events=D.events.filter(e=>+e.act===i);return `<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${countLabel(events)}</small></button>`})].join('<span class="arr">→</span>');
  const scopeEvents=D.events.filter(e=>novAct<0||+e.act===novAct);
  const eventLinks=novAct>=0?novelList().map(e=>`<button type="button" class="novel-event-link" data-nevent="${esc(String(e.id))}">${esc(e.title||"제목 없는 사건")}</button>`).join(""):"";
- $("neventnav").innerHTML=eventLinks?`<div class="neventnav-label">${esc(ACTS[novAct]||"")} 사건 바로가기</div><div class="neventnav-links">${eventLinks}</div>`:"";
+ $("neventnav").innerHTML=eventLinks?`<div class="neventnav-head"><div class="neventnav-label">${esc(ACTS[novAct]||"")} 사건 바로가기</div><button type="button" id="neventLayoutToggle" class="nevent-layout-toggle">↔ 플롯 방식 수평 정렬</button></div><div class="neventnav-links">${eventLinks}</div>`:"";
+ setEventLinksLayout();
  const totalCount=scopeEvents.length,doneCount=scopeEvents.filter(e=>e.done).length;
  $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · ${SHARE||NVUSER?`완료 ${doneCount}개`:`완료 ${doneCount}/${totalCount}개`} · 내용이 작성된 사건 ${L.length}개 · 총 ${lines.length}줄`;
  const asUser=SHARE||NVUSER;$("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자 (완료된 사건만)":asUser?"👤 사용자로 보는 중 (완료된 사건만)":"🛠 관리자 (전체 보기)";
