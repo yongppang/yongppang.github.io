@@ -43,6 +43,7 @@ main{width:100%;padding:12px 16px 60px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
 
 /* 최초 로딩 프로그래스바 */
+body.connecting main{visibility:hidden}
 #ld{position:fixed;left:0;right:0;top:0;z-index:300;display:none}
 #ld .t{height:4px;background:#0002}
 #ld .b{height:100%;width:0;background:var(--ac);transition:width .25s}
@@ -325,6 +326,9 @@ fillActFilter();
 const canon=n=>{const c=D.chars.find(x=>x.name===n||split(x.aliases).includes(n));return c?c.name:n};
 const evHas=(e,name)=>split(e.chars).map(canon).includes(canon(name));
 const aliasText=e=>split(e.chars).flatMap(n=>{const c=D.chars.find(x=>x.name===n||split(x.aliases).includes(n));return c?[c.name,...split(c.aliases)]:[]}).join(" ");
+// 사건에 적힌 이름(이름 또는 이명)을 인물 하나로 합쳐 "이름(이명)" 형태로 보여준다.
+const charList=e=>[...new Set(split(e.chars).map(canon))];
+const charLbl=n=>{const c=D.chars.find(x=>x.name===n),al=c?split(c.aliases):[];return n+(al.length?`(${al.join(", ")})`:"")};
 const aliasLbl=n=>{const c=D.chars.find(x=>x.name===n);return c&&split(c.aliases).length?`(${esc(split(c.aliases).join(", "))})`:""};
 const hit=(o,q,ks)=>!q||ks.map(k=>o[k]).join(" ").toLowerCase().includes(q);
 const tagOk=o=>[...ft].every(t=>split(o.tags).includes(t));
@@ -344,7 +348,7 @@ function evHTML(e,mini,drag){
  return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
  <div class="btns">${mini?stIcons(e):`${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}${stIcons(e)}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button>`}</div>
  <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${nvPrev(e)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
- <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
+ <div class="tags">${charList(e).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(charLbl(c))}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
 function chHTML(c){
  const n=D.events.filter(e=>evHas(e,c.name)).length;
@@ -399,7 +403,7 @@ function render(){
   else if(v=="char"){
    const names=[...new Set([...D.chars.map(c=>c.name),...L.flatMap(e=>split(e.chars)).map(canon)])];
    names.forEach(n=>{const l=L.filter(e=>evHas(e,n));if(l.length)h+=`<div class="act">👤 ${esc(n)}${aliasLbl(n)} (${l.length})</div>`+l.map(e=>evHTML(e,1)).join("")})}
-  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${stIcons(e)}${e.fs?"⭐ ":""}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td></tr>`).join("")}</table></div>`;
+  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${stIcons(e)}${e.fs?"⭐ ":""}${esc(e.title)}</td><td>${esc(charList(e).map(charLbl).join(", "))}</td><td>${esc(e.tags)}</td></tr>`).join("")}</table></div>`;
   $("stat").textContent=`사건 ${D.events.length}개 · 중요 ${D.events.filter(e=>e.fs).length}개 · 표시 ${L.length}개`;
  }
  $("list").innerHTML=h||"<p class='pl'>해당하는 항목이 없습니다.</p>";
@@ -752,6 +756,10 @@ $("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);rend
 let ldTimer=null;
 function ldShow(msg){$("ldm").textContent=msg||"소설 불러오는 중…";$("ldb").style.width="0%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
 function ldSet(p){const cur=parseFloat($("ldb").style.width)||0;if(p>cur)$("ldb").style.width=p+"%"}
+// 관리자 재접속: 서버 데이터가 올 때까지 "접속 중입니다…"를 보여주고, 그동안 샘플(더미) 화면은 가린다.
+let connOn=false,connTimer=null;
+function connShow(){connOn=true;ldShow("접속 중입니다…");document.body.classList.add("connecting");clearTimeout(connTimer);connTimer=setTimeout(connDone,15000)}
+function connDone(){if(!connOn)return;connOn=false;clearTimeout(connTimer);document.body.classList.remove("connecting");ldHide()}
 function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100%";setTimeout(()=>{$("ld").style.display="none"},delay)}
 document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄":"⌃";b.title=collapsed?"메뉴 펼치기":"메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
 // ===== 공유 링크로 열었을 때: 소설 내용 보기만 표시 (저장·수정 불가) =====
@@ -890,11 +898,12 @@ function fbOnSnap(){
  if(!fbBased)fbApply(true);
  else if(!fbTimer)fbApply(false);
  if(!fbTimer)fbSyncPub();
+ if(fbBased)connDone();
  fbStatus();
 }
 function fbListen(){
  fbUnlisten();const {db,fs}=FB;
- const onErr=e=>{fbErr=fbErrText(e);fbStatus()};
+ const onErr=e=>{fbErr=fbErrText(e);connDone();fbStatus()};
  COLS.forEach(k=>fbUnsub.push(fs.onSnapshot(fs.collection(db,k),{includeMetadataChanges:true},s=>{SNAP[k]=s;fbGot.add(k);fbOnSnap()},onErr)));
  fbUnsub.push(fs.onSnapshot(fs.doc(db,"meta","main"),{includeMetadataChanges:true},s=>{SNAP.meta=s;fbGot.add("meta");fbOnSnap()},onErr));
  // 공개 상태(어떤 사건이 공개되어 있는지)를 실시간으로 반영한다.
@@ -930,7 +939,7 @@ async function fbStart(){
  // GitHub 관련 기능과 초기화 버튼은 제거했습니다. 서버 데이터는 구글 로그인 후 Firestore에서만 읽습니다.
  // 초기화 버튼 요소(rst)는 HTML에서 주석 처리되어 있으므로 접근하지 않습니다.
  fbStatus();
- try{await fbInit(true)}catch(e){fbErr="Firebase를 불러오지 못했습니다 (인터넷 확인)";fbStatus();return}
+ try{await fbInit(true)}catch(e){fbErr="Firebase를 불러오지 못했습니다 (인터넷 확인)";connDone();fbStatus();return}
  $("fbst").onclick=async()=>{if(fbUser){if(confirm(`${fbUser.email||"계정"} 에서 로그아웃할까요?\n(이 기기의 데이터는 그대로 남고, 서버 동기화만 멈춥니다.)`))await FB.au.signOut(FB.auth)}else await fbLogin()};
  window.addEventListener("online",fbStatus);window.addEventListener("offline",fbStatus);
  window.addEventListener("beforeunload",ev=>{if(fbTimer){ev.preventDefault();ev.returnValue=""}});
@@ -938,6 +947,7 @@ async function fbStart(){
   fbUser=u;fbErr="";
   if(u){fbListen()}
   else{
+   connDone();
    fbUnlisten();
    // 로그아웃하면 서버/개인 데이터 대신 더미 화면으로 되돌립니다.
    if(!SHARE){D=makeDummyData();normalizeData();fillActFilter();render();cacheLocal()}
@@ -969,7 +979,7 @@ if(SHARE){
  else shareLoad();
 }else{
  // 일반 화면은 항상 더미 데이터로 시작합니다. 로그인 성공 후에만 Firestore 데이터로 교체됩니다.
- if(FBON){D=makeDummyData();normalizeData();fillActFilter()}
+ if(FBON){D=makeDummyData();normalizeData();fillActFilter();connShow()}
  render();
  if(FBON)fbStart();
 }
