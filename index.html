@@ -309,7 +309,7 @@ const stIcons=e=>`<span class="st" data-donetog="${e.id}" title="${e.done?"작�
 const nvPrev=e=>{const t=String(e.actual||"").replace(/\s+/g," ").trim();return t?esc(t.length>50?t.slice(0,50)+"...":t):'<span class="pl">(소설 내용 없음)</span>'};
 function evHTML(e,mini,drag){
  return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
- <div class="btns">${mini?"":`${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button>`}${stIcons(e)}</div>
+ <div class="btns">${mini?stIcons(e):`${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}${stIcons(e)}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button>`}</div>
  <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${nvPrev(e)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
  <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
@@ -342,7 +342,7 @@ function render(){
  let h="";
  $("add").textContent=tab=="ac"?"+ 막 추가":"+ 추가";
  if(tab=="ac"){
-  h=`<div class="aclist">${ACTS.map((a,i)=>`<div class="acrow card"><button data-aact="up" data-ai="${i}" ${i===0?"disabled":""}>▲</button><button data-aact="dn" data-ai="${i}" ${i===ACTS.length-1?"disabled":""}>▼</button><button data-aact="del" data-ai="${i}">✕</button><input data-an="${i}" value="${esc(a)}"><span class="pl">사건 ${D.events.filter(e=>+e.act===i).length}개</span></div>`).join("")}</div>`;
+  h=`<div class="aclist">${ACTS.map((a,i)=>`<div class="acrow card"><button data-aact="up" data-ai="${i}" ${i===0?"disabled":""}>▲</button><button data-aact="dn" data-ai="${i}" ${i===ACTS.length-1?"disabled":""}>▼</button><button data-aact="del" data-ai="${i}">✕</button><input data-an="${i}" value="${esc(a)}"><span class="pl">${D.events.filter(e=>+e.act===i&&e.done).length}/${D.events.filter(e=>+e.act===i).length}개</span></div>`).join("")}</div>`;
   $("stat").textContent=`막 ${ACTS.length}개`;
  }else if(tab=="it"){
   const L=D.items.filter(c=>hit(c,q,["name","desc","owner","memo"]));
@@ -357,7 +357,7 @@ function render(){
   if(v=="act"){let last=-1;L.forEach(e=>{if(e.act!=last){h+=`<div class="act">${esc(ACTS[e.act])}</div>`;last=e.act}h+=evHTML(e)+`<div class="insert-slot"><button data-a="ins" data-t="e" data-i="${e.id}">＋ 이 사건 다음에 삽입</button></div>`})}
   else if(v=="tree"){
    h='<div class="tree-wrap"><div class="tree">';
-   ACTS.forEach((a,ai)=>{const group=L.filter(e=>+e.act===ai);h+=`<section class="tree-act" data-act="${ai}"><div class="acthd"><h2><span class="ah" data-act="${ai}" title="드래그해서 막 순서 이동">⠿</span>${esc(a)} · ${group.length}개</h2></div>`;
+   ACTS.forEach((a,ai)=>{const group=L.filter(e=>+e.act===ai),actAll=D.events.filter(e=>+e.act===ai),actDone=actAll.filter(e=>e.done).length;h+=`<section class="tree-act" data-act="${ai}"><div class="acthd"><h2><span class="ah" data-act="${ai}" title="드래그해서 막 순서 이동">⠿</span>${esc(a)} · ${actDone}/${actAll.length}개</h2></div>`;
     group.forEach(e=>{h+=`<div class="tree-node" data-id="${e.id}">${evHTML(e,0,1)}</div><div class="tree-insert"><button data-a="ins" data-t="e" data-i="${e.id}">＋ 여기 다음에 삽입</button></div>`});
     if(!group.length)h+=`<div class="tree-insert"><button data-a="insact" data-act="${ai}">＋ 이 막에 이벤트 추가</button></div>`;
     h+='</section>';
@@ -562,10 +562,10 @@ function novelLines(){
 }
 function openNovel(focusId){
  if(!SHARE)NVUSER=false;
- const mobileMenu=window.matchMedia("(max-width: 600px)").matches;
- $("novelFloatActions").classList.toggle("actions-hidden",mobileMenu);
- $("novelMenuToggle").textContent=mobileMenu?"☰ 메뉴 보기":"☰ 메뉴 접기";
- $("novelMenuToggle").setAttribute("aria-expanded",String(!mobileMenu));
+ const menuFolded=true;
+ $("novelFloatActions").classList.toggle("actions-hidden",menuFolded);
+ $("novelMenuToggle").textContent=menuFolded?"☰ 메뉴 보기":"☰ 메뉴 접기";
+ $("novelMenuToggle").setAttribute("aria-expanded",String(!menuFolded));
  if(focusId!=null){const fe=D.events.find(x=>x.id===focusId);if(fe&&novAct>=0)novAct=+fe.act}
  if(novAct>=ACTS.length)novAct=-1;
  renderNovel(focusId);
@@ -584,9 +584,12 @@ $("nacts").addEventListener("click",ev=>{
 });
 function renderNovel(){
  const all=novelAll(),L=novelList(),lines=novelLines();
- $("nacts").innerHTML=[`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${all.length}</small></button>`,...ACTS.map((a,i)=>`<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${all.filter(e=>+e.act===i).length}</small></button>`),`<button type="button" data-nscroll="top">[맨위로]</button>`,`<button type="button" data-nscroll="bottom">[맨아래로]</button>`].join('<span class="arr">→</span>');
- $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · 내용이 작성된 사건 ${L.length}개 / 해당 사건 ${D.events.filter(e=>nvVis(e)&&(novAct<0||+e.act===novAct)).length}개 · 총 ${lines.length}줄`;
- const asUser=SHARE||NVUSER;$("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자 (완료된 사건만)":asUser?"👤 사용자로 보는 중 (완료된 사건만)":"🛠 관리자 (전체 보기)";
+ const countLabel=events=>SHARE||NVUSER?String(events.filter(e=>e.done).length):`${events.filter(e=>e.done).length}/${events.length}`;
+ $("nacts").innerHTML=[`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${countLabel(D.events)}</small></button>`,...ACTS.map((a,i)=>{const events=D.events.filter(e=>+e.act===i);return `<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${countLabel(events)}</small></button>`}),`<button type="button" data-nscroll="top">[맨위로]</button>`,`<button type="button" data-nscroll="bottom">[맨아래로]</button>`].join('<span class="arr">→</span>');
+ const scopeEvents=D.events.filter(e=>novAct<0||+e.act===novAct);
+ const totalCount=scopeEvents.length,doneCount=scopeEvents.filter(e=>e.done).length;
+ $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · ${SHARE||NVUSER?`완료 ${doneCount}개`:`완료 ${doneCount}/${totalCount}개`} · 내용이 작성된 사건 ${L.length}개 · 총 ${lines.length}줄`;
+ const asUser=SHARE||NVUSER;$("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자":asUser?"👤 사용자로 보는 중":"🛠 관리자 (전체 보기)";
  $("nview").textContent=asUser?"🛠 관리자로 보기":"👁 사용자로 보기";
  $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
 }
