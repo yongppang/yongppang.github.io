@@ -162,7 +162,7 @@ const CH=[
 ["홍길동","주인공","성격을 입력하세요.","배경을 입력하세요.","변화(arc)를 입력하세요.","임꺽정의 친구","주인공"],
 ["임꺽정","조연","성격을 입력하세요.","배경을 입력하세요.","","홍길동의 친구","조연"]
 ];
-const SEEDC=CH.map((r,i)=>({id:i+1,name:r[0],role:r[1],age:"",look:"",personality:r[2],background:r[3],arc:r[4],relations:r[5],tags:r[6],memo:""}));
+const SEEDC=CH.map((r,i)=>({id:i+1,name:r[0],role:r[1],aliases:i==0?"길동":"",age:i==0?"27":"",look:"",personality:r[2],background:r[3],arc:r[4],relations:r[5],tags:r[6],memo:""}));
 const SEEDI=[{id:1,name:"검",desc:"설명을 입력하세요.",owner:"임꺽정",memo:""}];
 const arrOf=t=>t=="e"?D.events:t=="i"?D.items:D.chars;
 const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (이름을 눌러 선택 · 없는 이름은 아래에서 새로 추가)"],["items","주요 아이템 (이름을 눌러 선택 · 없는 이름은 아래에서 새로 추가)"],["fs","⭐ 중요 표시","cb"],["done","☑ 작성 완료 (체크한 사건만 공유 링크에 보입니다)","cb"],["memo","작가 메모","ta"]],
@@ -234,7 +234,7 @@ fillActFilter();
 const canon=n=>{const c=D.chars.find(x=>x.name===n||split(x.aliases).includes(n));return c?c.name:n};
 const evHas=(e,name)=>split(e.chars).map(canon).includes(canon(name));
 const aliasText=e=>split(e.chars).flatMap(n=>{const c=D.chars.find(x=>x.name===n||split(x.aliases).includes(n));return c?[c.name,...split(c.aliases)]:[]}).join(" ");
-const aliasLbl=n=>{const c=D.chars.find(x=>x.name===n);return c&&split(c.aliases).length?` <small>(${esc(split(c.aliases).join(", "))})</small>`:""};
+const aliasLbl=n=>{const c=D.chars.find(x=>x.name===n);return c&&split(c.aliases).length?`(${esc(split(c.aliases).join(", "))})`:""};
 const hit=(o,q,ks)=>!q||ks.map(k=>o[k]).join(" ").toLowerCase().includes(q);
 const tagOk=o=>[...ft].every(t=>split(o.tags).includes(t));
 
@@ -257,8 +257,8 @@ function chHTML(c){
  const n=D.events.filter(e=>evHas(e,c.name)).length;
  const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
  return `<div class="card"><div class="btns"><button data-a="del" data-t="c" data-i="${c.id}">✕</button></div>
- <h3 class="clk" data-a="ed" data-t="c" data-i="${c.id}" title="클릭하면 수정">${esc(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3>
- ${kv("aliases","이명")}${kv("look","외모")}${kv("personality","성격")}${kv("background","배경")}${kv("arc","변화")}${kv("relations","관계")}
+ <h3 class="clk" data-a="ed" data-t="c" data-i="${c.id}" title="클릭하면 수정">${esc(c.name)}${aliasLbl(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3>
+ ${kv("look","외모")}${kv("personality","성격")}${kv("background","배경")}${kv("arc","변화")}${kv("relations","관계")}
  <div class="kv"><b>등장</b><a href="#" data-showch="${esc(c.name)}">타임라인 ${n}건 보기</a></div>
  <div class="tags">${split(c.tags).map(t=>`<span class="tg" data-tag="${esc(t)}">#${esc(t)}</span>`).join("")}</div>
  ${c.memo?`<div class="memo">📝 ${esc(c.memo)}</div>`:""}</div>`}
