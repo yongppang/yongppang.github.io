@@ -86,6 +86,7 @@ main{width:100%;padding:12px 16px 60px}
 .rolechip{font-size:13px;font-weight:700;padding:3px 12px;border-radius:999px;border:1px solid var(--bd);white-space:nowrap}.rolechip.adm{background:#ece8ff;color:var(--ac);border-color:#c9c0f7}.rolechip.usr{background:#e4f7ec;color:#1f7a50;border-color:#b5e3c9}
 body.share #nview{display:none}
 .pkrow{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.pkrow .pk{font-size:14px;padding:4px 12px}.pkadd{display:flex;gap:6px;align-items:center;margin:2px 0 6px}
+.card p.onel,.tree-node .card>p.onel{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:none;-webkit-line-clamp:unset;line-clamp:unset}
 .btns{flex-wrap:nowrap;align-items:center}.btns button{white-space:nowrap}.btns .st{margin-left:4px}
 body.share header,body.share .bar,body.share main,body.share #nclose{display:none}
 .nacts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.nacts button{font-size:13px;padding:4px 12px;font-weight:700}.nacts button small{font-weight:400;opacity:.8;margin-left:3px}
@@ -165,7 +166,7 @@ const CH=[
 const SEEDC=CH.map((r,i)=>({id:i+1,name:r[0],role:r[1],aliases:i==0?"길동":"",age:i==0?"27":"",look:"",personality:r[2],background:r[3],arc:r[4],relations:r[5],tags:r[6],memo:""}));
 const SEEDI=[{id:1,name:"검",desc:"설명을 입력하세요.",owner:"임꺽정",memo:""}];
 const arrOf=t=>t=="e"?D.events:t=="i"?D.items:D.chars;
-const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (이름을 눌러 선택 · 없는 이름은 아래에서 새로 추가)"],["items","주요 아이템 (이름을 눌러 선택 · 없는 이름은 아래에서 새로 추가)"],["fs","⭐ 중요 표시","cb"],["done","☑ 작성 완료 (체크한 사건만 공유 링크에 보입니다)","cb"],["memo","작가 메모","ta"]],
+const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (이름을 눌러 선택 · 없는 이름은 아래에서 새로 추가)"],["items","주요 아이템 (이름을 눌러 선택 · 없는 이름은 아래에서 새로 추가)"],["fs","⭐ 중요 표시","cb"],["done","☑ 작성 완료 (체크한 사건만 공유 링크에 보입니다)","cb"],["memo","작가 메모","ta"]],
  c:[["name","이름"],["aliases","이명 (다른 이름 · 쉼표로 구분, 예: 목사, 윤 집사)"],["role","역할"],["age","나이/학년"],["look","외모","ta"],["personality","성격","ta"],["background","배경","ta"],["arc","변화(arc)","ta"],["relations","관계","ta"],["memo","메모","ta"]]};
 const KEY="novel-mgr-v2",$=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -247,10 +248,12 @@ $("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand(
 // 공개된 사건 id 집합 (로그인 후 Firestore pubEvents 에서 실시간으로 채워진다)
 let PUBMAP=new Map(),PUBGOT=false,PUBMETAS="";
 const stIcons=e=>`<span class="st" data-donetog="${e.id}" title="${e.done?"작성 완료 (클릭하면 미완료로)":"작성 미완료 (클릭하면 완료로)"}">${e.done?"☑️":"☐"}</span>`;
+// 요약 대신 소설 내용(실제 내용)의 첫머리를 한 줄로 보여준다.
+const nvPrev=e=>{const t=String(e.actual||"").replace(/\s+/g," ").trim();return t?esc(t.length>50?t.slice(0,50)+"...":t):'<span class="pl">(소설 내용 없음)</span>'};
 function evHTML(e,mini,drag){
  return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
  <div class="btns">${mini?"":`${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button>`}${stIcons(e)}</div>
- <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정"><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
+ <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${nvPrev(e)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
  <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
 function chHTML(c){
@@ -289,7 +292,7 @@ function render(){
   h=`<div class="grid">${L.map(chHTML).join("")}</div>`;
   $("stat").textContent=`인물 ${D.chars.length}명 · 표시 ${L.length}`;
  }else{
-  const L=D.events.filter(e=>hit(Object.assign({},e,{_al:aliasText(e)}),q,["title","summary","actual","place","items","chars","_al","tags","memo"])&&tagOk(e)&&(fa===""||e.act==fa)&&(!onlyFs||e.fs));
+  const L=D.events.filter(e=>hit(Object.assign({},e,{_al:aliasText(e)}),q,["title","actual","place","items","chars","_al","tags","memo"])&&tagOk(e)&&(fa===""||e.act==fa)&&(!onlyFs||e.fs));
   if(v=="act"){let last=-1;L.forEach(e=>{if(e.act!=last){h+=`<div class="act">${esc(ACTS[e.act])}</div>`;last=e.act}h+=evHTML(e)+`<div class="insert-slot"><button data-a="ins" data-t="e" data-i="${e.id}">＋ 이 사건 다음에 삽입</button></div>`})}
   else if(v=="tree"){
    h='<div class="tree-wrap"><div class="tree">';
