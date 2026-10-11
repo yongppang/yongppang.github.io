@@ -74,11 +74,14 @@ main{width:100%;padding:12px 16px 60px}
 .nv-code{margin-top:8px;border:1px solid var(--bd);border-radius:8px;background:#f6f4ff;padding:8px 0;font-size:15px;line-height:1.8}
 .nl{display:flex;align-items:flex-start}.nl:hover{background:#6c5ce70d}
 /* 소설 내용 보기 안의 복사/공유 버튼: 레이아웃 공간을 차지하지 않고 우측 하단에 고정 */
-#novelFloatActions{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:100;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:calc(100vw - 28px);pointer-events:none}
+#novelFloatActions{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:6px;max-width:calc(100vw - 28px);pointer-events:none}
 #novelFloatActions button{pointer-events:auto;font-size:13px;padding:8px 11px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.78);color:var(--ac);box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.84;transition:opacity .15s,background .15s}
 #novelFloatActions button:hover,#novelFloatActions button:focus-visible{opacity:1;background:rgba(255,255,255,.97)}
 #ndlg #nhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
-#ndlg #nbody{padding-bottom:62px}
+#ndlg #nbody{padding-bottom:190px}
+.nacts{flex-wrap:nowrap!important;overflow-x:auto;align-items:center;scrollbar-width:thin}.nacts button{white-space:nowrap;flex:none}.nacts .arr{color:var(--sub);flex:none;font-size:13px}
+.st{font-size:15px;margin-right:3px;cursor:pointer;flex:none;user-select:none;-webkit-user-select:none}
+.btns{flex-wrap:nowrap;align-items:center}.btns button{white-space:nowrap}.btns .st{margin-left:4px}
 body.share header,body.share .bar,body.share main,body.share #nclose{display:none}
 .nacts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.nacts button{font-size:13px;padding:4px 12px;font-weight:700}.nacts button small{font-weight:400;opacity:.8;margin-left:3px}
 .nl .ln{flex:none;width:var(--w);box-sizing:content-box;text-align:right;padding:0 12px 0 10px;margin-right:12px;border-right:1px solid var(--bd);color:#9aa0b3;font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none}
@@ -135,7 +138,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
 <button id="viewNovel" class="novel-fab" type="button">📖 소설내용보기</button>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
-<dialog id="ndlg"><form method="dialog" id="nf"><div id="nhead"><h3 style="margin:0">📖 소설 내용 보기</h3><button class="p" id="nclose" value="close" formnovalidate>닫기 ✕</button></div><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div id="novelFloatActions"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button type="button" id="fbpub" hidden title="공유 링크로 보이는 내용을 지금 작성한 내용으로 갱신">🌐 공유 내용 업데이트</button></div></form></dialog>
+<dialog id="ndlg"><form method="dialog" id="nf"><div id="nhead"><h3 style="margin:0">📖 소설 내용 보기</h3></div><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div id="novelFloatActions"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button id="nclose" value="close" formnovalidate title="닫기">✕ 닫기</button></div></form></dialog>
 
 <script>
 const ACTS=["프롤로그","1막","2막","3막","4막"];
@@ -157,7 +160,7 @@ const CH=[
 const SEEDC=CH.map((r,i)=>({id:i+1,name:r[0],role:r[1],age:"",look:"",personality:r[2],background:r[3],arc:r[4],relations:r[5],tags:r[6],memo:""}));
 const SEEDI=[{id:1,name:"검",desc:"설명을 입력하세요.",owner:"임꺽정",memo:""}];
 const arrOf=t=>t=="e"?D.events:t=="i"?D.items:D.chars;
-const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (쉼표)"],["items","주요 아이템 (쉼표)"],["fs","⭐ 중요 표시","cb"],["done","작성 완료","cb"],["memo","작가 메모","ta"]],
+const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (쉼표)"],["items","주요 아이템 (쉼표)"],["fs","⭐ 중요 표시","cb"],["done","☑ 작성 완료 (체크한 사건만 공유 링크에 보입니다)","cb"],["memo","작가 메모","ta"]],
  c:[["name","이름"],["role","역할"],["age","나이/학년"],["look","외모","ta"],["personality","성격","ta"],["background","배경","ta"],["arc","변화(arc)","ta"],["relations","관계","ta"],["memo","메모","ta"]]};
 const KEY="novel-mgr-v2",$=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -231,10 +234,13 @@ $("ttl").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault(
 $("ttl").addEventListener("blur",()=>{const v=$("ttl").textContent.replace(/\s+/g," ").trim();D.title=v||DEFTITLE;$("ttl").textContent=D.title;save();document.title=D.title.replace(/^📖\s*/,"")});
 $("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand("insertText",false,(ev.clipboardData.getData("text/plain")||"").replace(/\s+/g," "))});
 
+// 공개된 사건 id 집합 (로그인 후 Firestore pubEvents 에서 실시간으로 채워진다)
+let PUBMAP=new Map(),PUBGOT=false,PUBMETAS="";
+const stIcons=e=>`<span class="st" data-donetog="${e.id}" title="${e.done?"작성 완료 (클릭하면 미완료로)":"작성 미완료 (클릭하면 완료로)"}">${e.done?"☑️":"☐"}</span>`;
 function evHTML(e,mini,drag){
  return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
- ${mini?"":`<div class="btns">${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button></div>`}
- <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정"><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
+ <div class="btns">${mini?"":`${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button>`}${stIcons(e)}</div>
+ <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정"><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
  <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
 function chHTML(c){
@@ -286,7 +292,7 @@ function render(){
   else if(v=="char"){
    const names=[...new Set([...D.chars.map(c=>c.name),...L.flatMap(e=>split(e.chars))])];
    names.forEach(n=>{const l=L.filter(e=>split(e.chars).includes(n));if(l.length)h+=`<div class="act">👤 ${esc(n)} (${l.length})</div>`+l.map(e=>evHTML(e,1)).join("")})}
-  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td></tr>`).join("")}</table></div>`;
+  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${stIcons(e)}${e.fs?"⭐ ":""}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td></tr>`).join("")}</table></div>`;
   $("stat").textContent=`사건 ${D.events.length}개 · 복선 ${D.events.filter(e=>e.fs).length}개 · 표시 ${L.length}개`;
  }
  $("list").innerHTML=h||"<p class='pl'>해당하는 항목이 없습니다.</p>";
@@ -471,7 +477,7 @@ function openNovel(focusId){
 $("nacts").addEventListener("click",ev=>{const b=ev.target.closest("[data-nact]");if(!b)return;novAct=+b.dataset.nact;renderNovel();$("ndlg").scrollTop=0});
 function renderNovel(){
  const all=novelAll(),L=novelList(),lines=novelLines();
- $("nacts").innerHTML=`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${all.length}</small></button>`+ACTS.map((a,i)=>`<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${all.filter(e=>+e.act===i).length}</small></button>`).join("");
+ $("nacts").innerHTML=[`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${all.length}</small></button>`,...ACTS.map((a,i)=>`<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${all.filter(e=>+e.act===i).length}</small></button>`)].join('<span class="arr">→</span>');
  $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · 내용이 작성된 사건 ${L.length}개 / 해당 사건 ${novAct<0?D.events.length:D.events.filter(e=>+e.act===novAct).length}개 · 총 ${lines.length}줄`;
  $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
 }
@@ -487,6 +493,10 @@ $("nlink").onclick=async()=>{
 };
 $("ncopy").onclick=async()=>{const t=novelLines().map(l=>l.t).join("\n");const b=$("ncopy"),old=b.textContent;try{await navigator.clipboard.writeText(t);b.textContent="✅ 복사됨"}catch(e){b.textContent="복사 실패"}setTimeout(()=>{b.textContent=old},1500)};
 document.addEventListener("click",ev=>{
+ const tg=ev.target.closest("[data-donetog]");
+ if(tg){const e=D.events.find(x=>x.id==tg.dataset.donetog);
+  if(e){e.done=!e.done;save();render()}
+  return}
  const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit],[data-nv]");if(!el)return;if(el.dataset.nv){openNovel(+el.dataset.nv);return}
  const d=el.dataset;
  if(d.tab){tab=d.tab;$("q").value=""} // 메뉴(탭)를 고를 때마다 검색 필드 초기화
@@ -587,7 +597,8 @@ window.fbHook=()=>{if(!FBON||SHARE)return;clearTimeout(fbTimer);fbTimer=setTimeo
 function fbUniqueIds(){
  COLS.forEach(k=>{const seen=new Set();let mx=Math.max(0,...D[k].map(x=>+x.id||0));D[k].forEach(o=>{if(seen.has(o.id))o.id=++mx;seen.add(o.id)})});
 }
-function fbFlush(){
+function fbFlush(){fbFlushMain();fbSyncPub()}
+function fbFlushMain(){
  fbTimer=null;
  if(!fbUser||!FB)return fbStatus();
  if(!fbBased||fbGot.size<4){fbTimer=setTimeout(fbFlush,800);return} // 서버 상태를 받기 전에는 쓰지 않는다
@@ -649,6 +660,7 @@ function fbOnSnap(){
  fbErr="";
  if(!fbBased)fbApply(true);
  else if(!fbTimer)fbApply(false);
+ if(!fbTimer)fbSyncPub();
  fbStatus();
 }
 function fbListen(){
@@ -656,8 +668,10 @@ function fbListen(){
  const onErr=e=>{fbErr=fbErrText(e);fbStatus()};
  COLS.forEach(k=>fbUnsub.push(fs.onSnapshot(fs.collection(db,k),{includeMetadataChanges:true},s=>{SNAP[k]=s;fbGot.add(k);fbOnSnap()},onErr)));
  fbUnsub.push(fs.onSnapshot(fs.doc(db,"meta","main"),{includeMetadataChanges:true},s=>{SNAP.meta=s;fbGot.add("meta");fbOnSnap()},onErr));
+ // 공개 상태(어떤 사건이 공개되어 있는지)를 실시간으로 반영한다.
+ fbUnsub.push(fs.onSnapshot(fs.collection(db,"pubEvents"),s=>{PUBMAP=new Map(s.docs.map(d=>[d.id,stable(d.data())]));PUBGOT=true;if(!fbTimer)fbSyncPub()},()=>{}));
 }
-function fbUnlisten(){fbUnsub.forEach(f=>{try{f()}catch(e){}});fbUnsub=[];SNAP={};fbGot=new Set();fbBased=false;fbAsked=false;BASE=new Map()}
+function fbUnlisten(){fbUnsub.forEach(f=>{try{f()}catch(e){}});fbUnsub=[];SNAP={};fbGot=new Set();fbBased=false;fbAsked=false;BASE=new Map();PUBMAP=new Map();PUBGOT=false;PUBMETAS=""}
 async function fbLogin(){
  const {au,auth}=FB,provider=new au.GoogleAuthProvider();provider.setCustomParameters({prompt:"select_account"});
  try{await au.signInWithPopup(auth,provider)}
@@ -668,30 +682,27 @@ async function fbLogin(){
   else if(c!=="auth/popup-closed-by-user"&&c!=="auth/cancelled-popup-request")alert("로그인 실패: "+(e.message||c));
  }
 }
-async function fbPublish(){
- if(!fbUser){alert("먼저 로그인하세요.");return}
- if(!navigator.onLine){alert("오프라인에서는 공유 내용을 업데이트할 수 없습니다.");return}
- const evs=D.events.map((e,i)=>({e,i})).filter(x=>String(x.e.actual||"").trim());
- if(!confirm(`공유 링크에 소설 내용이 공개됩니다.\n\n· 공개: 막 이름, 사건 제목, 실제 내용(소설 원문) ${evs.length}개 사건\n· 비공개: 요약, 인물·아이템 설정, 작가 메모\n\n지금 작성한 내용으로 공유 페이지를 업데이트할까요?`))return;
- const b=$("fbpub"),old=b.textContent;b.textContent="올리는 중…";b.disabled=true;
- try{
-  const {db,fs}=FB,cur=await fs.getDocs(fs.collection(db,"pubEvents")),keep=new Set(evs.map(x=>String(x.e.id)));
-  const ops=evs.map(x=>({t:"s",ref:fs.doc(db,"pubEvents",String(x.e.id)),data:{id:x.e.id,act:+x.e.act||0,title:x.e.title||"",actual:String(x.e.actual),ord:x.i}}));
-  cur.docs.forEach(d=>{if(!keep.has(d.id))ops.push({t:"d",ref:d.ref})});
-  ops.push({t:"s",ref:fs.doc(db,"pubMeta","main"),data:{title:D.title||"",acts:ACTS.slice(),updatedAt:Date.now()}});
-  for(let i=0;i<ops.length;i+=400){const wb=fs.writeBatch(db);ops.slice(i,i+400).forEach(o=>o.t==="s"?wb.set(o.ref,o.data):wb.delete(o.ref));await wb.commit()}
-  b.textContent="✅ 업데이트됨";setTimeout(()=>{b.textContent=old},2000);
- }catch(e){alert("공유 내용 업데이트 실패: "+fbErrText(e));b.textContent=old}
- b.disabled=false;
+// 공유 링크: 작성 완료(☑)로 체크된 사건만 pubEvents 에 사본을 두고, 내용이 바뀌면 자동으로 다시 올린다.
+function fbSyncPub(){
+ if(SHARE||!FB||!fbUser||!fbBased||!PUBGOT)return;
+ const {db,fs}=FB,want=new Map(),ops=[];
+  D.events.forEach((e,i)=>{if(e.done&&String(e.actual||"").trim())want.set(String(e.id),{id:e.id,act:+e.act||0,title:e.title||"",actual:String(e.actual),ord:i})});
+ want.forEach((d,id)=>{if(PUBMAP.get(id)!==stable(d))ops.push({t:"s",ref:fs.doc(db,"pubEvents",id),data:d})});
+ PUBMAP.forEach((v,id)=>{if(!want.has(id))ops.push({t:"d",ref:fs.doc(db,"pubEvents",id)})});
+ const meta={title:D.title||"",acts:ACTS.slice()},ms=want.size?stable(meta):"";
+ if(want.size&&ms!==PUBMETAS)ops.push({t:"s",ref:fs.doc(db,"pubMeta","main"),data:{...meta,updatedAt:Date.now()}});
+ if(!want.size&&PUBMAP.size)ops.push({t:"d",ref:fs.doc(db,"pubMeta","main")});
+ if(!ops.length)return;
+ PUBMETAS=ms;
+ want.forEach((d,id)=>PUBMAP.set(id,stable(d)));[...PUBMAP.keys()].forEach(id=>{if(!want.has(id))PUBMAP.delete(id)});
+ for(let i=0;i<ops.length;i+=400){const wb=fs.writeBatch(db);ops.slice(i,i+400).forEach(o=>o.t==="s"?wb.set(o.ref,o.data):wb.delete(o.ref));wb.commit().catch(e=>{PUBGOT=false;fbErr="공개 반영 실패: "+fbErrText(e);fbStatus()})}
 }
 async function fbStart(){
  // GitHub 관련 기능과 초기화 버튼은 제거했습니다. 서버 데이터는 구글 로그인 후 Firestore에서만 읽습니다.
  // 초기화 버튼 요소(rst)는 HTML에서 주석 처리되어 있으므로 접근하지 않습니다.
- $("fbpub").hidden=false;
  fbStatus();
  try{await fbInit(true)}catch(e){fbErr="Firebase를 불러오지 못했습니다 (인터넷 확인)";fbStatus();return}
  $("fbst").onclick=async()=>{if(fbUser){if(confirm(`${fbUser.email||"계정"} 에서 로그아웃할까요?\n(이 기기의 데이터는 그대로 남고, 서버 동기화만 멈춥니다.)`))await FB.au.signOut(FB.auth)}else await fbLogin()};
- $("fbpub").onclick=fbPublish;
  window.addEventListener("online",fbStatus);window.addEventListener("offline",fbStatus);
  window.addEventListener("beforeunload",ev=>{if(fbTimer){ev.preventDefault();ev.returnValue=""}});
  FB.au.onAuthStateChanged(FB.auth,u=>{
