@@ -78,9 +78,11 @@ main{width:100%;padding:12px 16px 60px}
 #novelFloatActions{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:6px;max-width:calc(100vw - 28px);pointer-events:none}
 #novelFloatActions button{pointer-events:auto;font-size:13px;padding:8px 11px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.78);color:var(--ac);box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.84;transition:opacity .15s,background .15s}
 #novelFloatActions button:hover,#novelFloatActions button:focus-visible{opacity:1;background:rgba(255,255,255,.97)}
+#novelFloatActions.actions-hidden #nview,#novelFloatActions.actions-hidden #ncopy,#novelFloatActions.actions-hidden #nlink,#novelFloatActions.actions-hidden #nclose{display:none!important}
+#novelMenuToggle{font-weight:700!important;background:rgba(255,255,255,.95)!important}
 #ndlg #nhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
-#ndlg #nbody{padding-bottom:190px}
-.nacts{flex-wrap:nowrap!important;overflow-x:auto;align-items:center;scrollbar-width:thin}.nacts button{white-space:nowrap;flex:none}.nacts .arr{color:var(--sub);flex:none;font-size:13px}
+#ndlg #nbody{padding-bottom:0}#ndlg form{padding-bottom:0;min-height:0}
+.nacts{flex-wrap:nowrap!important;overflow-x:auto;align-items:center;scrollbar-width:thin}.nacts.menu-hidden{display:none!important}#nmenuToggle{width:100%;text-align:left;margin:6px 0 2px;font-size:14px;padding:8px 12px;border-radius:8px} @media(max-width:600px){#ndlg{width:96vw;max-width:96vw;padding:12px}#ndlg #nhead h3{font-size:17px}#ndlg #nbody{font-size:15px}#nmenuToggle{position:sticky;top:0;z-index:5;background:var(--card)}}.nacts button{white-space:nowrap;flex:none}.nacts .arr{color:var(--sub);flex:none;font-size:13px}
 .st{font-size:15px;margin-right:3px;cursor:pointer;flex:none;user-select:none;-webkit-user-select:none}
 .pill{padding:8px 14px!important;font-size:14px;border:1px solid #6c5ce766!important;border-radius:999px!important;background:rgba(255,255,255,.78)!important;color:var(--ac)!important;box-shadow:0 4px 16px #0002;opacity:.9}
 .pill:hover,.pill:focus-visible{opacity:1;background:rgba(255,255,255,.97)!important}
@@ -198,7 +200,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
 <button id="viewNovel" class="novel-fab" type="button">📖 소설내용보기</button>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row dacts"><button type="button" class="pill" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="pill" value="ok">적용</button><button class="pill" value="cancel" formnovalidate>취소</button></div></form></dialog>
-<dialog id="ndlg"><form method="dialog" id="nf"><div id="nhead"><h3 style="margin:0">📖 소설 내용 보기</h3><span id="nrole" class="rolechip"></span></div><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div id="novelFloatActions"><button type="button" id="nview"></button><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button id="nclose" value="close" formnovalidate title="닫기">✕ 닫기</button></div></form></dialog>
+<dialog id="ndlg"><form method="dialog" id="nf"><div id="nhead"><h3 style="margin:0">📖 소설 내용 보기</h3><span id="nrole" class="rolechip"></span></div><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div id="novelFloatActions"><button type="button" id="novelMenuToggle" aria-expanded="true">☰ 메뉴 접기</button><button type="button" id="nview"></button><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button id="nclose" value="close" formnovalidate title="닫기">✕ 닫기</button></div></form></dialog>
 
 <script>
 const ACTS=["프롤로그","1막","2막","3막","4막"];
@@ -560,16 +562,29 @@ function novelLines(){
 }
 function openNovel(focusId){
  if(!SHARE)NVUSER=false;
+ const mobileMenu=window.matchMedia("(max-width: 600px)").matches;
+ $("novelFloatActions").classList.toggle("actions-hidden",mobileMenu);
+ $("novelMenuToggle").textContent=mobileMenu?"☰ 메뉴 보기":"☰ 메뉴 접기";
+ $("novelMenuToggle").setAttribute("aria-expanded",String(!mobileMenu));
  if(focusId!=null){const fe=D.events.find(x=>x.id===focusId);if(fe&&novAct>=0)novAct=+fe.act}
  if(novAct>=ACTS.length)novAct=-1;
  renderNovel(focusId);
  $("ndlg").showModal();
  if(focusId!=null){const t=$("nbody").querySelector(`.nl[data-e="${focusId}"]`);if(t){t.scrollIntoView({block:"start"});t.classList.add("flash")}}else $("ndlg").scrollTop=0;
 }
-$("nacts").addEventListener("click",ev=>{const b=ev.target.closest("[data-nact]");if(!b)return;novAct=+b.dataset.nact;renderNovel();$("ndlg").scrollTop=0});
+$("novelMenuToggle").addEventListener("click",()=>{
+ const hidden=$("novelFloatActions").classList.toggle("actions-hidden");
+ $("novelMenuToggle").textContent=hidden?"☰ 메뉴 보기":"☰ 메뉴 접기";
+ $("novelMenuToggle").setAttribute("aria-expanded",String(!hidden));
+});
+$("nacts").addEventListener("click",ev=>{
+ const scroll=ev.target.closest("[data-nscroll]");
+ if(scroll){$("ndlg").scrollTo({top:scroll.dataset.nscroll==="top"?0:$("ndlg").scrollHeight,behavior:"smooth"});return}
+ const b=ev.target.closest("[data-nact]");if(!b)return;novAct=+b.dataset.nact;renderNovel();$("ndlg").scrollTop=0;
+});
 function renderNovel(){
  const all=novelAll(),L=novelList(),lines=novelLines();
- $("nacts").innerHTML=[`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${all.length}</small></button>`,...ACTS.map((a,i)=>`<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${all.filter(e=>+e.act===i).length}</small></button>`)].join('<span class="arr">→</span>');
+ $("nacts").innerHTML=[`<button type="button" class="${novAct<0?"on":""}" data-nact="-1">전체<small>${all.length}</small></button>`,...ACTS.map((a,i)=>`<button type="button" class="${novAct===i?"on":""}" data-nact="${i}">${esc(a)}<small>${all.filter(e=>+e.act===i).length}</small></button>`),`<button type="button" data-nscroll="top">[맨위로]</button>`,`<button type="button" data-nscroll="bottom">[맨아래로]</button>`].join('<span class="arr">→</span>');
  $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · 내용이 작성된 사건 ${L.length}개 / 해당 사건 ${D.events.filter(e=>nvVis(e)&&(novAct<0||+e.act===novAct)).length}개 · 총 ${lines.length}줄`;
  const asUser=SHARE||NVUSER;$("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자 (완료된 사건만)":asUser?"👤 사용자로 보는 중 (완료된 사건만)":"🛠 관리자 (전체 보기)";
  $("nview").textContent=asUser?"🛠 관리자로 보기":"👁 사용자로 보기";
