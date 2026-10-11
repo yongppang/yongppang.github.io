@@ -81,6 +81,7 @@ main{width:100%;padding:12px 16px 60px}
 #novelFloatActions.actions-hidden #nview,#novelFloatActions.actions-hidden #ncopy,#novelFloatActions.actions-hidden #nlink,#novelFloatActions.actions-hidden #nclose{display:none!important}
 #novelMenuToggle{font-weight:700!important;background:rgba(255,255,255,.95)!important}
 #nsum{display:none}
+#nbody.nocopy,#nbody.nocopy *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #ndlg #nhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
 #ndlg #nbody{padding-bottom:0}#ndlg form{padding-bottom:0;min-height:0}
 .nacts{flex-wrap:nowrap!important;overflow-x:auto;align-items:center;scrollbar-width:thin}.nacts.menu-hidden{display:none!important}#nmenuToggle{width:100%;text-align:left;margin:6px 0 2px;font-size:14px;padding:8px 12px;border-radius:8px} @media(max-width:600px){#ndlg{width:100vw;max-width:100vw;padding:12px}#ndlg #nhead h3{font-size:17px}#ndlg #nbody{font-size:15px}#nmenuToggle{position:sticky;top:0;z-index:5;background:var(--card)}}.nacts button{white-space:nowrap;flex:none}.nacts .arr{color:var(--sub);flex:none;font-size:13px}
@@ -147,7 +148,7 @@ body.share header,body.share .bar,body.share main,body.share #nclose{display:non
 .insrow .ins{padding:3px 10px;font-size:13px;font-weight:700}
 .actbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
 .pick{width:auto;max-width:220px;padding:8px 10px;font-size:14px}
-.actwrap.fs{position:fixed;inset:0;z-index:50;background:var(--bg);padding:10px 14px 112px;display:flex;flex-direction:column}
+.actwrap.fs{position:fixed;inset:0;z-index:50;background:var(--bg);padding:10px 14px 0;display:flex;flex-direction:column}
 .actwrap.fs .spbody{max-height:38vh;overflow:auto}
 #f:not(.isfs) #fsOff{display:none}
 #ndlg{padding-left:4px!important;padding-right:4px!important}
@@ -155,7 +156,7 @@ details.story-pickers{display:block;padding:8px 10px}.story-pickers>summary{curs
 .story-pickers .spbody{display:flex;flex-direction:column;gap:5px;margin-top:8px}.spbody>label{font-size:13px;font-weight:700;margin-top:3px}.spbody>input{width:100%;min-width:0}
 .actwrap.fs .acthead label{margin:0}
 .actwrap.fs .fsoff{display:inline-block;font-size:14px;padding:5px 12px}
-.actwrap.fs textarea.actual-field{flex:1 1 auto;min-height:200px!important;height:auto;resize:none;margin-top:6px}
+.actwrap.fs textarea.actual-field{flex:1 1 auto;min-height:200px!important;height:auto;resize:none;margin:6px 0 0;border-radius:8px 8px 0 0;padding-bottom:130px}
 .actwrap.fs .actbar{display:none}
 
 /* 트리 보기: 화면 전체 채우기 */
@@ -218,10 +219,10 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
 <body>
 <div id="ld"><div class="t"><div class="b" id="ldb"></div></div><div class="m" id="ldm">data.json 불러오는 중…</div></div>
 <header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span class="pl" id="sub">수정본 · 사건 편집창에 ‘실제 내용 (소설 원문)’ 입력란 포함</span><span id="stat"></span><button id="themeBtn" type="button" style="flex:none;font-size:12px;padding:2px 10px;white-space:nowrap" title="화면 테마 선택 (자동 → 라이트 → 다크)"></button><span id="who" class="rolechip" hidden style="flex:none"></span><button id="fbst" hidden style="flex:none;font-size:12px;padding:2px 10px;white-space:nowrap"></button></header>
-<div class="bar">
+<div class="bar collapsed">
  <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button><button class="tab" data-tab="it">아이템설정</button><button class="tab" data-tab="ac">막설정</button>
  <span style="flex:1"></span><button class="pill" id="add">+ 추가</button></div>
- <div class="row"><button class="menu-toggle" id="menuToggle" aria-expanded="true" title="메뉴 접기" aria-label="메뉴 접기">⌃</button><input id="q" placeholder="검색 (제목·내용·인물·태그·메모)"></div>
+ <div class="row"><button class="menu-toggle" id="menuToggle" aria-expanded="false" title="메뉴 펼치기" aria-label="메뉴 접기/펼치기">⌄</button><input id="q" placeholder="검색 (제목·내용·인물·태그·메모)"></div>
  <div class="row filters"><select id="view"><option value="tree" selected>세로보기</option><option value="act">가로보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체</option></select><button id="ffs">⭐ 중요만</button></div>
  <div class="row" id="tagbar"></div>
@@ -513,15 +514,25 @@ function actualBlock(l,val,charsVal,itemsVal){
 const addToField=(name,n)=>{const inp=$("f")[name];if(!inp)return;const a=split(inp.value);if(!a.includes(n)){a.push(n);inp.value=a.join(",")}refreshPk(name)};
 // ===== 등장인물/아이템 선택 칩 + 새 이름 추가 =====
 function pkChips(k,sel){
- const src=k=="chars"?D.chars:D.items,reg=new Set(),alias=new Map(),order=[];
- src.forEach(x=>{if(!x.name)return;reg.add(x.name);order.push(x.name);if(k=="chars")split(x.aliases).forEach(a=>{reg.add(a);alias.set(a,x.name);order.push(a)})});
- const all=[...new Set([...order,...D.events.flatMap(e=>split(e[k])),...sel])];
- return all.map(n=>{const al=alias.get(n);return `<button type="button" class="chip pk ${sel.includes(n)?"on":""}" data-pk="${k}" data-v="${esc(n)}" title="${reg.has(n)?(al?"이명 · 본명: "+esc(al):""):"저장하면 새로 등록됩니다"}">${reg.has(n)?"":"＋ "}${esc(n)}${al?` <small>(=${esc(al)})</small>`:""}</button>`}).join("")||'<span class="pl">등록된 항목이 없습니다. 위 칸에 이름을 직접 입력하세요.</span>';
+ const src=k=="chars"?D.chars:D.items,known=new Set(),btn=(n,label,on,isNew,tip)=>`<button type="button" class="chip pk ${on?"on":""}" data-pk="${k}" data-v="${esc(n)}" title="${esc(tip||"")}">${isNew?"＋ ":""}${label}</button>`;
+ let h="";
+ src.forEach(x=>{
+  if(!x.name)return;const al=k=="chars"?split(x.aliases):[],names=[x.name,...al];names.forEach(n=>known.add(n));
+  // 이명이 있는 인물은 버튼 하나로: 이름(이명, 이명)
+  h+=btn(x.name,esc(x.name)+(al.length?`(${esc(al.join(", "))})`:""),names.some(n=>sel.includes(n)),false,al.length?"이명 포함 · 누르면 이름과 이명이 함께 선택/해제됩니다":"");
+ });
+ // 아직 등록되지 않은 이름(사건에 적혀 있거나 직접 입력한 이름)
+ [...new Set([...D.events.flatMap(e=>split(e[k])),...sel])].forEach(n=>{if(!known.has(n)){known.add(n);h+=btn(n,esc(n),sel.includes(n),true,"저장하면 새로 등록됩니다")}});
+ return h||'<span class="pl">등록된 항목이 없습니다. 위 칸에 이름을 직접 입력하세요.</span>';
 }
 const pkHTML=(k,val)=>`<div class="pkrow" id="pk-${k}">${pkChips(k,split(val))}</div>`;
 function pkSum(){const el=$("pksum"),f=$("f");if(!el||!f.chars)return;const c=split(f.chars.value),i=split(f.items.value);el.textContent=(c.length||i.length)?`· 👤 ${c.join(", ")||"없음"} / ◇ ${i.join(", ")||"없음"}`:"· 눌러서 열기";}
 function refreshPk(k){const box=$("pk-"+k);if(box)box.innerHTML=pkChips(k,split($("f")[k].value));pkSum()}
-function pkToggle(k,n){const a=split($("f")[k].value),i=a.indexOf(n);if(i<0)a.push(n);else a.splice(i,1);$("f")[k].value=a.join(",");refreshPk(k)}
+function pkToggle(k,n){
+ let a=split($("f")[k].value);const c=k=="chars"?D.chars.find(x=>x.name===n):null,names=c?[c.name,...split(c.aliases)]:[n];
+ if(names.some(x=>a.includes(x)))a=a.filter(x=>!names.includes(x)); // 이름/이명 중 하나라도 있으면 모두 해제
+ else a.push(n);
+ $("f")[k].value=a.join(",");refreshPk(k)}
 $("f").addEventListener("input",ev=>{const n=ev.target.name;if(n==="chars"||n==="items")refreshPk(n)});
 $("f").addEventListener("click",ev=>{
  const pk=ev.target.closest("[data-pk]");if(pk){pkToggle(pk.dataset.pk,pk.dataset.v);return}
@@ -676,10 +687,12 @@ function renderNovel(){
  $("nsum").textContent=`${novAct<0?"전체":ACTS[novAct]} · ${SHARE||NVUSER?`사건 ${L.length}개`:`내용이 작성된 사건 ${L.length}/${totalCount}개 · 완료 ${doneCount}개`} · 총 ${lines.length}줄`;
  const asUser=SHARE||NVUSER;$("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자 (완료된 사건만)":asUser?"👤 사용자로 보는 중 (완료된 사건만)":"🛠 관리자 (전체 보기)";
  $("nview").textContent=asUser?"🛠 관리자로 보기":"👁 사용자로 보기";
+ $("ncopy").style.display=asUser?"none":"";$("nbody").classList.toggle("nocopy",asUser);
  $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 소설 내용이 없습니다. 사건을 눌러 수정창의 “실제 내용 (소설 원문)”에 입력하세요.</p>';
  nvUpdate();
 }
 $("viewNovel").onclick=()=>openNovel();
+["copy","cut","contextmenu","dragstart"].forEach(t=>$("nbody").addEventListener(t,ev=>{if(SHARE||NVUSER)ev.preventDefault()}));
 $("nview").onclick=()=>{NVUSER=!NVUSER;renderNovel();$("ndlg").scrollTop=0};
 $("ndlg").addEventListener("cancel",ev=>{if(SHARE)ev.preventDefault()});
 // 공유 링크 복사: 지금 보고 있는 막(전체/특정 막)이 그대로 링크에 들어간다.
@@ -690,7 +703,7 @@ $("nlink").onclick=async()=>{
  try{await navigator.clipboard.writeText(url);b.textContent="✅ 링크 복사됨"}catch(e){prompt("아래 링크를 복사하세요",url);return}
  setTimeout(()=>{b.textContent=old},1800);
 };
-$("ncopy").onclick=async()=>{const t=novelLines().map(l=>l.t).join("\n");const b=$("ncopy"),old=b.textContent;try{await navigator.clipboard.writeText(t);b.textContent="✅ 복사됨"}catch(e){b.textContent="복사 실패"}setTimeout(()=>{b.textContent=old},1500)};
+$("ncopy").onclick=async()=>{if(SHARE||NVUSER)return;const t=novelLines().map(l=>l.t).join("\n");const b=$("ncopy"),old=b.textContent;try{await navigator.clipboard.writeText(t);b.textContent="✅ 복사됨"}catch(e){b.textContent="복사 실패"}setTimeout(()=>{b.textContent=old},1500)};
 document.addEventListener("click",ev=>{
  const ab=ev.target.closest("[data-aact]");
  if(ab){const i=+ab.dataset.ai,k=ab.dataset.aact;
