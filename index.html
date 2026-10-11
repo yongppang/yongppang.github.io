@@ -17,7 +17,6 @@ h1:hover{border-bottom-color:var(--bd)}h1:focus{border-bottom-color:var(--ac)}
 .tree-act.daafter{box-shadow:4px 0 0 0 var(--ac)}
 .tree-act.dragact{opacity:.35}
 .bar{position:sticky;top:0;background:var(--bg);z-index:20;width:100%;padding:8px 16px;border-bottom:1px solid var(--bd);box-shadow:0 4px 12px #0001}.bar.collapsed .row:not(:first-child){display:none}.bar.collapsed{padding-bottom:6px}.menu-toggle{white-space:nowrap}
-/* 소설 내용 보기 버튼은 레이아웃 공간을 차지하지 않고 화면 우측 하단에 떠 있도록 배치 */
 #viewNovel.novel-fab{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:40;margin:0;padding:9px 14px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(108,92,231,.72);color:#fff;box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.82;transition:opacity .15s,background .15s}
 #viewNovel.novel-fab:hover,#viewNovel.novel-fab:focus-visible{opacity:1;background:rgba(108,92,231,.96)}
 body.share #viewNovel{display:none}
@@ -41,13 +40,11 @@ main{width:100%;padding:12px 16px 60px}
 .dh{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ac)!important;font-size:16px!important;padding:0 8px!important}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
 
-/* 최초 로딩 프로그래스바 */
 #ld{position:fixed;left:0;right:0;top:0;z-index:300;display:none}
 #ld .t{height:4px;background:#0002}
 #ld .b{height:100%;width:0;background:var(--ac);transition:width .25s}
 #ld .m{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:3px 14px;font-size:12px;color:var(--sub);white-space:nowrap}
 
-/* 라인트리 */
 .tree-wrap{overflow:auto;scrollbar-width:thin;overscroll-behavior:contain}
 .tree{display:flex;align-items:stretch;gap:18px;min-width:max-content;min-height:100%;padding:16px 12px 24px}
 .tree-act{width:300px;flex:0 0 300px;position:relative;padding-top:0;border-radius:10px}
@@ -67,24 +64,25 @@ main{width:100%;padding:12px 16px 60px}
 .insert-slot button{font-size:12px;padding:3px 9px;border-style:dashed;color:var(--ac);white-space:nowrap}
 .danger{color:var(--fs)!important}
 .clk{cursor:pointer}h3.clk:hover{color:var(--ac)}p.clk:hover{background:#6c5ce712;border-radius:6px}
-/* 소설 내용 보기 */
+
 .nv-h{margin:22px 0 4px;font-size:18px;font-weight:700;color:var(--ac)}.nv-b{white-space:pre-wrap;line-height:1.9;font-size:16px}.nv-empty{color:var(--sub)}
 .nvbtn{margin:6px 0;font-size:13px;padding:3px 10px;color:var(--ac);border-style:dashed}
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
 .nv-code{margin-top:8px;border:1px solid var(--bd);border-radius:8px;background:#f6f4ff;padding:8px 0;font-size:15px;line-height:1.8}
 .nl{display:flex;align-items:flex-start}.nl:hover{background:#6c5ce70d}
-/* 소설 내용 보기 안의 복사/공유 버튼: 레이아웃 공간을 차지하지 않고 우측 하단에 고정 */
-#novelFloatActions{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:100;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;max-width:calc(100vw - 28px);pointer-events:none}
-#novelFloatActions button{pointer-events:auto;font-size:13px;padding:8px 11px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.78);color:var(--ac);box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.84;transition:opacity .15s,background .15s}
+
+/* 플로팅 버튼 세로 구성 및 디자인 통일 */
+#novelFloatActions{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:100;display:flex;flex-direction:column;align-items:flex-end;gap:6px;max-width:calc(100vw - 28px);pointer-events:none}
+#novelFloatActions button{pointer-events:auto;font-size:13px;padding:8px 11px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(255,255,255,.92);color:var(--ac);box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.9;transition:opacity .15s,background .15s}
 #novelFloatActions button:hover,#novelFloatActions button:focus-visible{opacity:1;background:rgba(255,255,255,.97)}
 #ndlg #nhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
 #ndlg #nbody{padding-bottom:62px}
-body.share header,body.share .bar,body.share main,body.share #nclose{display:none}
+body.share header,body.share .bar,body.share main{display:none}
 .nacts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.nacts button{font-size:13px;padding:4px 12px;font-weight:700}.nacts button small{font-weight:400;opacity:.8;margin-left:3px}
 .nl .ln{flex:none;width:var(--w);box-sizing:content-box;text-align:right;padding:0 12px 0 10px;margin-right:12px;border-right:1px solid var(--bd);color:#9aa0b3;font:13px/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none}
 .nl .lt{flex:1;min-width:0;white-space:pre-wrap;word-break:break-word;padding-right:12px}
 .nl.nh .lt{font-weight:700;color:var(--ac)}
-/* 실제 내용 입력창 도구 */
+
 .acthead{display:flex;align-items:center;justify-content:space-between}
 .fsoff{display:none}
 .insbar{margin:4px 0}.insdet{margin:4px 0}.insdet summary{cursor:pointer;font-size:14px;color:var(--sub);padding:2px 0;user-select:none}.insdet summary:hover{color:var(--ac)}.insrow{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
@@ -97,13 +95,11 @@ body.share header,body.share .bar,body.share main,body.share #nclose{display:non
 .actwrap.fs textarea.actual-field{flex:1;min-height:0!important;resize:none;margin-top:6px}
 .actwrap.fs .actbar{display:none}
 
-/* 트리 보기: 화면 전체 채우기 */
 body.treeview{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 body.treeview header,body.treeview .bar{flex:none}
 body.treeview main{flex:1;min-height:0;padding:0}
 body.treeview .tree-wrap{height:100%}
 
-/* 드래그 */
 .ev.dragging{opacity:.3}
 .ghost{box-shadow:0 10px 30px #0004}
 .tree-node.dbefore{box-shadow:0 -3px 0 0 var(--ac)}
@@ -128,27 +124,35 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
  <select id="view"><option value="tree" selected>좌우 라인트리</option><option value="act">막별 보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
  <div class="row" id="tagbar"></div>
- <!-- 초기화 버튼 비활성화: <div class="row"><button id="rst">초기화</button></div> -->
 </div>
 <main id="list"></main>
-<!-- 화면 하단에 고정된 소설 읽기 버튼: 문서 흐름을 차지하지 않음 -->
 <button id="viewNovel" class="novel-fab" type="button">📖 소설내용보기</button>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
-<dialog id="ndlg"><form method="dialog" id="nf"><div id="nhead"><h3 style="margin:0">📖 소설 내용 보기</h3><button class="p" id="nclose" value="close" formnovalidate>닫기 ✕</button></div><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div id="novelFloatActions"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button type="button" id="fbpub" hidden title="공유 링크로 보이는 내용을 지금 작성한 내용으로 갱신">🌐 공유 내용 업데이트</button></div></form></dialog>
+<dialog id="ndlg"><form method="dialog" id="nf">
+ <div id="nhead"><h3 style="margin:0">📖 소설 내용 보기</h3></div>
+ <p class="pl" id="nsum"></p>
+ <div class="nacts" id="nacts"></div>
+ <div id="nbody"></div>
+ <div id="novelFloatActions">
+   <button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button>
+   <button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button>
+   <button type="button" id="fbpub" hidden title="공유 링크 공개 또는 비공개로 전환">🌐 공개</button>
+   <button type="button" id="ncloseBtn" title="소설 내용 보기 닫기">✕ 닫기</button>
+ </div>
+</form></dialog>
 
 <script>
-const ACTS=["프롤로그","1막","2막","3막","4막"];
+const ACTS=["프롤로그","접근","새신자","빌드업","진실","카운터","종말"];
 const DEFTITLE="📖 소설 관리";
 const RAW=[
-["D-day","장소 A","프롤로그 이벤트","홍길동 이벤트 1의 요약을 입력하세요.","홍길동","",0,0],
-["D-10","장소 B","첫 만남","홍길동과 임꺽정이 처음 만나는 이벤트입니다.","홍길동,임꺽정","검",1,1],
-["D-5","장소 C","갈등","두 사람 사이에 갈등이 생깁니다.","홍길동,임꺽정","",2,0],
-["D+1","장소 D","전환점","이야기의 전환점이 되는 이벤트입니다.","홍길동","",3,0],
-["D+10","장소 E","결말","이야기가 마무리됩니다.","홍길동,임꺽정","",4,0]
+["D-day","장소 A","프롤로그 이벤트","홍길동 이벤트 1의 요약을 입력하세요.","홍길동","",0,false,true],
+["D-10","장소 B","첫 만남","홍길동과 임꺽정이 처음 만나는 이벤트입니다.","홍길동,임꺽정","검",1,true,true],
+["D-5","장소 C","갈등","두 사람 사이에 갈등이 생깁니다.","홍길동,임꺽정","",1,false,true],
+["D+1","장소 D","전환점","이야기의 전환점이 되는 이벤트입니다.","홍길동","",3,false,true]
 ];
 const TR=[];
-const SEEDE=RAW.map((r,i)=>({id:i+1,when:r[0],place:r[1],title:r[2],summary:r[3],actual:"",chars:r[4],items:r[5],act:r[6],fs:!!r[7],memo:"",
+const SEEDE=RAW.map((r,i)=>({id:i+1,when:r[0],place:r[1],title:r[2],summary:r[3],actual:"",chars:r[4],items:r[5],act:r[6],fs:!!r[7],done:false,isPublic:r[8]!==undefined?r[8]:true,memo:"",
  tags:[...TR.filter(t=>t[1].test(r[2]+r[3])).map(t=>t[0]),...(r[7]?["복선"]:[])].join(",")}));
 const CH=[
 ["홍길동","주인공","성격을 입력하세요.","배경을 입력하세요.","변화(arc)를 입력하세요.","임꺽정의 친구","주인공"],
@@ -157,14 +161,12 @@ const CH=[
 const SEEDC=CH.map((r,i)=>({id:i+1,name:r[0],role:r[1],age:"",look:"",personality:r[2],background:r[3],arc:r[4],relations:r[5],tags:r[6],memo:""}));
 const SEEDI=[{id:1,name:"검",desc:"설명을 입력하세요.",owner:"임꺽정",memo:""}];
 const arrOf=t=>t=="e"?D.events:t=="i"?D.items:D.chars;
-const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (쉼표)"],["items","주요 아이템 (쉼표)"],["fs","⭐ 중요 표시","cb"],["done","작성 완료","cb"],["memo","작가 메모","ta"]],
+const SCH={i:[["name","이름"],["desc","설명","ta"],["owner","소유자/관련 인물"],["memo","메모","ta"]],e:[["act","막","sel"],["when","시점 (D-100, D+ …)"],["place","장소"],["title","제목"],["summary","요약","ta"],["actual","실제 내용 (소설 원문)","ta"],["chars","등장인물 (쉼표)"],["items","주요 아이템 (쉼표)"],["fs","⭐ 중요 표시","cb"],["done","작성 완료","cb"],["isPublic","🌐 공개 표시","cb"],["memo","작가 메모","ta"]],
  c:[["name","이름"],["role","역할"],["age","나이/학년"],["look","외모","ta"],["personality","성격","ta"],["background","배경","ta"],["arc","변화(arc)","ta"],["relations","관계","ta"],["memo","메모","ta"]]};
 const KEY="novel-mgr-v2",$=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const split=s=>String(s||"").split(",").map(x=>x.trim()).filter(Boolean);
 const clone=x=>JSON.parse(JSON.stringify(x));
-// 이 브라우저에 이미 저장된 데이터가 있었는지 (자동 불러오기 시 덮어쓰기 확인용)
-// 공유 링크(?novel=1)로 열면 읽기 전용: 이 브라우저의 저장 데이터를 건드리지 않는다.
 const SHARE=new URLSearchParams(location.search).has("novel");
 if(SHARE)document.body.classList.add("share");
 let HAD=false;try{HAD=!!localStorage.getItem(KEY)}catch(e){}
@@ -173,10 +175,7 @@ if(!D||!D.events){let v1;try{v1=JSON.parse(localStorage.getItem("novel-timeline-
  D={events:Array.isArray(v1)?v1.map(e=>({tags:"",...e})):clone(SEEDE),chars:clone(SEEDC)}}
 const save=()=>{if(SHARE)return;D.acts=clone(ACTS);try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}if(window.fbHook)window.fbHook()};
 let tab="tl",ft=new Set(),onlyFs=false,editing=null;
-// 이전 버전에서 저장된 자동 태그를 한 번 제거한다.
 if(!D._tagsRemoved){[...D.events,...D.chars].forEach(o=>o.tags="");D._tagsRemoved=true;try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
-// 막 이름 정규화: 객체 형태로 저장된 데이터도 문자열로 바꾼다. ([object Object] 방지)
-// 객체가 문자열로 강제 변환되어 "[object Object]"로 표시되는 현상을 방지한다.
 const safeText=(v,fallback="")=>{
  if(v==null)return fallback;
  if(typeof v==="string")return v;
@@ -207,7 +206,7 @@ const normalizeData=()=>{
   eventFields.forEach(k=>{e[k]=safeText(e[k],"")});
   e.id=Number(e.id)||i+1;
   e.act=Math.min(Math.max(0,Number(e.act)||0),ACTS.length-1);
-  e.fs=!!e.fs;e.done=!!e.done;
+  e.fs=!!e.fs;e.done=!!e.done;e.isPublic=e.isPublic!==undefined?!!e.isPublic:true;
   return e;
  });
  const charFields=["name","role","age","look","personality","background","arc","relations","tags","memo"];
@@ -225,7 +224,6 @@ fillActFilter();
 const hit=(o,q,ks)=>!q||ks.map(k=>o[k]).join(" ").toLowerCase().includes(q);
 const tagOk=o=>[...ft].every(t=>split(o.tags).includes(t));
 
-// 제목 편집
 function applyTitle(){const t=$("ttl");if(document.activeElement!==t)t.textContent=D.title||DEFTITLE;document.title=(D.title||DEFTITLE).replace(/^📖\s*/,"")}
 $("ttl").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();ev.target.blur()}});
 $("ttl").addEventListener("blur",()=>{const v=$("ttl").textContent.replace(/\s+/g," ").trim();D.title=v||DEFTITLE;$("ttl").textContent=D.title;save();document.title=D.title.replace(/^📖\s*/,"")});
@@ -234,7 +232,7 @@ $("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand(
 function evHTML(e,mini,drag){
  return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
  ${mini?"":`<div class="btns">${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button></div>`}
- <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정"><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
+ <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"✅ ":"⬜ "}${e.isPublic?"🌐 ":"🔒 "}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정"><b>요약</b> · ${esc(e.summary)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
  <div class="tags">${split(e.chars).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(c)}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
 function chHTML(c){
@@ -286,14 +284,13 @@ function render(){
   else if(v=="char"){
    const names=[...new Set([...D.chars.map(c=>c.name),...L.flatMap(e=>split(e.chars))])];
    names.forEach(n=>{const l=L.filter(e=>split(e.chars).includes(n));if(l.length)h+=`<div class="act">👤 ${esc(n)} (${l.length})</div>`+l.map(e=>evHTML(e,1)).join("")})}
-  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"☑ ":""}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td></tr>`).join("")}</table></div>`;
+  else h=`<div class="tw"><table><tr><th>시점</th><th>막</th><th>제목</th><th>인물</th><th>태그</th></tr>${L.map(e=>`<tr><td>${esc(e.when)}</td><td>${esc((ACTS[e.act]||"").slice(0,2))}</td><td class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${e.done?"✅ ":"⬜ "}${e.isPublic?"🌐 ":"🔒 "}${esc(e.title)}</td><td>${esc(e.chars)}</td><td>${esc(e.tags)}</td></tr>`).join("")}</table></div>`;
   $("stat").textContent=`사건 ${D.events.length}개 · 복선 ${D.events.filter(e=>e.fs).length}개 · 표시 ${L.length}개`;
  }
  $("list").innerHTML=h||"<p class='pl'>해당하는 항목이 없습니다.</p>";
  const nw=document.querySelector(".tree-wrap");if(nw){nw.scrollLeft=sl;nw.scrollTop=st}
 }
 
-// ===== 드래그로 막/위치 이동 (마우스·터치 공용) =====
 let drag=null;
 function clearMarks(){document.querySelectorAll(".dbefore,.dafter,.dcol").forEach(el=>el.classList.remove("dbefore","dafter","dcol"))}
 function moveEvent(id,t){
@@ -344,10 +341,9 @@ function endDrag(ev,cancel){
 document.addEventListener("pointerup",ev=>endDrag(ev,false));
 document.addEventListener("pointercancel",ev=>endDrag(ev,true));
 
-// ===== 막(열) 순서 드래그 =====
 let adrag=null;
 const clearAMarks=()=>document.querySelectorAll(".dabefore,.daafter").forEach(el=>el.classList.remove("dabefore","daafter"));
-function moveAct(from,p){ // p: 원래 인덱스 기준 삽입 위치(0~ACTS.length)
+function moveAct(from,p){
  const to=p>from?p-1:p;if(to===from)return false;
  const order=ACTS.map((_,i)=>i),[m]=order.splice(from,1);order.splice(to,0,m);
  const map={};order.forEach((old,ni)=>map[old]=ni);
@@ -390,12 +386,10 @@ function endAct(ev,cancel){
 document.addEventListener("pointerup",ev=>endAct(ev,false));
 document.addEventListener("pointercancel",ev=>endAct(ev,true));
 
-// ===== 실제 내용 입력창: 등장인물/아이템 삽입 버튼 + 화면 가득 편집 =====
 function actualBlock(l,val){
  const cn=[...new Set([...D.chars.map(c=>c.name),...D.events.flatMap(e=>split(e.chars))])].filter(Boolean);
  const it=[...new Set([...D.items.map(i=>i.name),...D.events.flatMap(e=>split(e.items))])].filter(Boolean);
  const btn=(t,n)=>`<button type="button" class="ins" data-ins="${t}" data-v="${esc(n)}">${esc(n)}</button>`;
- const opts=(ph,arr)=>`<option value="">${ph}</option>`+arr.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("")+`<option value="__new">✎ 직접 입력…</option>`;
  return `<div class="actwrap" id="actwrap"><div class="acthead"><label>${l}</label><button type="button" id="fsOff" class="fsoff">[원래대로 보기]</button></div>
  <div class="insbar"><details class="insdet"><summary>👤 등장인물 버튼 <span class="pl">(본문에 삽입 + 등장인물 칸에 추가)</span></summary><div class="insrow">${cn.map(n=>btn("c",n)).join("")||'<span class="pl">등록된 인물 없음</span>'}</div></details>
  <details class="insdet"><summary>◇ 아이템 버튼 <span class="pl">(본문에 삽입 + 주요 아이템 칸에 추가)</span></summary><div class="insrow">${it.map(n=>btn("i",n)).join("")||'<span class="pl">등록된 아이템 없음 (아이템설정에서 등록)</span>'}</div></details></div>
@@ -419,12 +413,12 @@ $("f").addEventListener("change",ev=>{
 });
 $("dlg").addEventListener("cancel",ev=>{const w=$("actwrap");if(w&&w.classList.contains("fs")){ev.preventDefault();w.classList.remove("fs")}});
 function openEd(t,id,insertAfterId=null,actIdx=null){
- editing={t,id,insertAfterId};const anchor=insertAfterId!=null?D.events.find(x=>x.id===insertAfterId):null;const o=(id&&arrOf(t).find(x=>x.id==id))||(anchor?{act:+anchor.act,when:anchor.when,place:anchor.place}:{act:actIdx!=null?actIdx:2,when:"D+"});
+ editing={t,id,insertAfterId};const anchor=insertAfterId!=null?D.events.find(x=>x.id===insertAfterId):null;const o=(id&&arrOf(t).find(x=>x.id==id))||(anchor?{act:+anchor.act,when:anchor.when,place:anchor.place,isPublic:anchor.isPublic}:{act:actIdx!=null?actIdx:2,when:"D+",isPublic:true});
  $("f").innerHTML=`<h3 style="margin:0">${t=="e"?"이벤트":t=="i"?"아이템":"인물"} ${id?"수정":"추가"}</h3>`+SCH[t].map(([k,l,ty])=>{
   const val=o[k]??"";
   if(t=="e"&&k==="actual")return actualBlock(l,val);
   if(ty=="ta")return `<label>${l}</label><textarea class="${k==="actual"?"actual-field":""}" name="${k}" rows="${k==="actual"?12:3}" placeholder="${k==="summary"?"사건의 핵심을 간단히 요약해 주세요.":k==="actual"?"이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.":""}">${esc(val)}</textarea>`;
-  if(ty=="cb")return `<label><input type="checkbox" name="${k}" ${val?"checked":""}> ${l}</label>`;
+  if(ty=="cb")return `<label><input type="checkbox" name="${k}" ${(k==="isPublic"?val!==false:val)?"checked":""}> ${l}</label>`;
   if(ty=="sel")return `<label>${l}</label><select name="${k}">${ACTS.map((a,i)=>`<option value="${i}" ${i==val?"selected":""}>${a}</option>`).join("")}</select>`;
   return `<label>${l}</label><input name="${k}" value="${esc(val)}">`}).join("")+
   `<div class="row" style="margin-top:12px"><button class="p" value="ok">저장</button><button value="cancel" formnovalidate>취소</button></div>`;
@@ -447,15 +441,14 @@ $("actRows").addEventListener("click",ev=>{const b=ev.target.closest("button");i
 });
 $("af").addEventListener("submit",ev=>{if(ev.submitter.value!=="ok")return;const inputs=[...document.querySelectorAll("[data-actname]")];const names=inputs.map(el=>el.value.trim()).filter(Boolean);if(!names.length){ev.preventDefault();alert("막 이름을 하나 이상 입력하세요.");return}ACTS.splice(0,ACTS.length,...names);D.events.forEach(e=>{e.act=Math.min(Math.max(0,+e.act||0),ACTS.length-1)});save();fillActFilter();render()});
 $("add").onclick=()=>openEd(tab=="tl"?"e":tab=="it"?"i":"c");
-// ===== 소설 내용 보기: [제목] 내용 형식으로 이어서 표시 =====
-let novAct=-1; // -1 = 전체, 0 이상 = 해당 막만
+
+let novAct=-1;
 const novelAll=()=>D.events.filter(e=>String(e.actual||"").trim());
 const novelList=()=>novelAll().filter(e=>novAct<0||+e.act===novAct);
-// 전체를 하나의 문서처럼 줄 단위로 만든다. (줄 번호 = 전체 복사 텍스트의 줄 번호와 동일)
 function novelLines(){
  const out=[];
  novelList().forEach((e,i)=>{
-  if(i)out.push({t:""}); // 사건 사이 빈 줄
+  if(i)out.push({t:""});
   out.push({t:`[${e.title}]`,h:true,id:e.id});
   String(e.actual).replace(/\r\n?/g,"\n").replace(/\n+$/,"").split("\n").forEach(t=>out.push({t}));
  });
@@ -477,7 +470,8 @@ function renderNovel(){
 }
 $("viewNovel").onclick=()=>openNovel();
 $("ndlg").addEventListener("cancel",ev=>{if(SHARE)ev.preventDefault()});
-// 공유 링크 복사: 지금 보고 있는 막(전체/특정 막)이 그대로 링크에 들어간다.
+$("ncloseBtn").onclick=()=>{$("ndlg").close()};
+
 $("nlink").onclick=async()=>{
  if(location.protocol==="file:"){alert("파일로 직접 연 상태에서는 공유 링크를 만들 수 없습니다.\nGitHub Pages 주소로 접속한 뒤 눌러 주세요.");return}
  const u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("novel","1");if(novAct>=0)u.searchParams.set("act",novAct);
@@ -489,7 +483,7 @@ $("ncopy").onclick=async()=>{const t=novelLines().map(l=>l.t).join("\n");const b
 document.addEventListener("click",ev=>{
  const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit],[data-nv]");if(!el)return;if(el.dataset.nv){openNovel(+el.dataset.nv);return}
  const d=el.dataset;
- if(d.tab){tab=d.tab;$("q").value=""} // 메뉴(탭)를 고를 때마다 검색 필드 초기화
+ if(d.tab){tab=d.tab;$("q").value=""}
  else if(d.tag){d.tag&&(ft.has(d.tag)?ft.delete(d.tag):ft.add(d.tag))}
  else if(d.showit){ev.preventDefault();tab="tl";$("view").value="act";$("q").value=d.showit}
  else if(d.showch){ev.preventDefault();tab="tl";$("view").value="char";$("q").value=d.showch}
@@ -508,18 +502,15 @@ document.addEventListener("click",ev=>{
  render();
 });
 $("q").oninput=render;$("fa").onchange=render;
-$("view").onchange=()=>{$("q").value="";render()}; // 보기 메뉴를 바꿀 때도 검색 필드 초기화
+$("view").onchange=()=>{$("q").value="";render()};
 $("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);render()};
-// GitHub 백업·설정·JSON 내보내기 및 data.json 가져오기 기능은 제거했습니다.
-// 초기화 버튼 비활성화: $("rst").onclick=()=>{if(confirm("초기 데이터로 되돌릴까요? 저장된 수정이 사라집니다.")){D={events:clone(SEEDE),chars:clone(SEEDC),items:clone(SEEDI)};save();render()}};
 
-// 로딩 표시: 공개 공유 페이지에서 소설을 불러올 때 사용합니다.
 let ldTimer=null;
-function ldShow(msg){$("ldm").textContent=msg||"소설 불러오는 중…";$("ldb").style.width="0%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
-function ldSet(p){const cur=parseFloat($("ldb").style.width)||0;if(p>cur)$("ldb").style.width=p+"%"}
-function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100%";setTimeout(()=>{$("ld").style.display="none"},delay)}
+function ldShow(msg){$("ldm").textContent=msg||"소설 불러오는 중…";$("ldb").style.width="0\%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
+function ldSet(p){const cur=parseFloat($("ldb").style.width)\vert{}\vert{}0;if(p>cur)$("ldb").style.width=p+"%"}
+function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100\%";setTimeout(()=>{$("ld").style.display="none"},delay)}
 document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄ 메뉴 펼치기":"⌃ 메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
-// ===== 공유 링크로 열었을 때: 소설 내용 보기만 표시 (저장·수정 불가) =====
+
 function shareFail(msg){
  ldHide();$("nsum").textContent="";$("nacts").innerHTML="";
  $("nbody").innerHTML='<p class="nv-empty">'+esc(msg)+'</p>';
@@ -531,7 +522,7 @@ function shareShow(){
  $("ndlg").querySelector("h3").textContent="📖 "+(D.title||DEFTITLE).replace(/^📖\s*/,"");
  openNovel();
 }
-async function shareLoad(){ // Firebase를 쓰지 않을 때: GitHub의 data.json을 읽는다
+async function shareLoad(){
  ldShow("소설 불러오는 중…");
  try{
   const r=await fetch("data.json?"+Date.now(),{cache:"no-store"});
@@ -543,15 +534,11 @@ async function shareLoad(){ // Firebase를 쓰지 않을 때: GitHub의 data.jso
  shareShow();
 }
 
-// ===== Firebase 서버 저장 (Firestore + 구글 로그인) =====
-// ▼ Firebase 콘솔 → 프로젝트 설정 → 내 앱(웹) 의 firebaseConfig 값을 여기에 붙여 넣으세요.
-//   (이 값은 공개되어도 되는 Firebase 웹 설정입니다.)
 const FBCFG={apiKey:"AIzaSyCx-8UCTJPOOvaBdLrf8KmMqPJGmutK7FE",authDomain:"yongppang-43589.firebaseapp.com",projectId:"yongppang-43589",storageBucket:"yongppang-43589.firebasestorage.app",messagingSenderId:"191234612811",appId:"1:191234612811:web:678899cbff4a100492f7ce"};
 const FBON=!!(FBCFG.apiKey&&FBCFG.projectId);
 const FBV="10.14.1",FBU=m=>`https://www.gstatic.com/firebasejs/${FBV}/firebase-${m}.js`;
-let FB=null,fbUser=null,fbTimer=null,fbErr="",fbBased=false,fbAsked=false,fbGot=new Set(),fbUnsub=[],SNAP={},BASE=new Map();
+let FB=null,fbUser=null,fbTimer=null,fbErr="",fbBased=false,fbAsked=false,fbGot=new Set(),fbUnsub=[],SNAP={},BASE=new Map(),isPubState=false;
 const COLS=["events","chars","items"];
-// 로그인 전에는 브라우저/서버의 개인 데이터를 읽지 않고 이 더미 데이터만 보여 줍니다.
 const makeDummyData=()=>({title:DEFTITLE,acts:clone(ACTS),events:clone(SEEDE),chars:clone(SEEDC),items:clone(SEEDI),_tagsRemoved:true});
 const stable=o=>JSON.stringify(o,(k,v)=>v&&typeof v==="object"&&!Array.isArray(v)?Object.keys(v).sort().reduce((a,x)=>(a[x]=v[x],a),{}):v);
 const cacheLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
@@ -565,7 +552,7 @@ async function fbInit(persist){
 }
 function fbErrText(e){
  const c=e&&e.code||"";
- if(c==="permission-denied")return "권한 없음 (허용된 구글 계정인지, 보안 규칙을 게시했는지 확인)";
+ if(c==="permission-denied")return "권한 없음";
  if(c==="unavailable")return "서버에 연결할 수 없음";
  return (e&&e.message)||"알 수 없는 오류";
 }
@@ -580,9 +567,8 @@ function fbStatus(){
   t=fbTimer?"☁ 저장 중…":pend?(navigator.onLine?"☁ 저장 중…":"☁ 오프라인 · 서버 반영 대기 중"):"☁ 서버와 동기화됨";
  }
  b.textContent=t;b.classList.toggle("p",!fbUser);
- b.title=fbUser?`${fbUser.email||""} · 클릭하면 로그아웃`:"구글 계정으로 로그인하면 PC·모바일이 같은 데이터를 씁니다";
+ b.title=fbUser?`${fbUser.email||""} · 클릭하면 로그아웃`:"구글 계정으로 로그인";
 }
-// save()가 호출될 때마다 1.2초 뒤 변경된 항목만 서버에 반영한다.
 window.fbHook=()=>{if(!FBON||SHARE)return;clearTimeout(fbTimer);fbTimer=setTimeout(fbFlush,1200);fbStatus()};
 function fbUniqueIds(){
  COLS.forEach(k=>{const seen=new Set();let mx=Math.max(0,...D[k].map(x=>+x.id||0));D[k].forEach(o=>{if(seen.has(o.id))o.id=++mx;seen.add(o.id)})});
@@ -590,14 +576,14 @@ function fbUniqueIds(){
 function fbFlush(){
  fbTimer=null;
  if(!fbUser||!FB)return fbStatus();
- if(!fbBased||fbGot.size<4){fbTimer=setTimeout(fbFlush,800);return} // 서버 상태를 받기 전에는 쓰지 않는다
+ if(!fbBased||fbGot.size<4){fbTimer=setTimeout(fbFlush,800);return}
  fbUniqueIds();
  const {db,fs}=FB,writes=[],ordOnly=[],seen=new Set();
  COLS.forEach(k=>D[k].forEach((o,i)=>{
   const key=k+"/"+o.id;seen.add(key);
   const data=JSON.parse(JSON.stringify(o)),s=stable(data),b=BASE.get(key);
   if(!b||b.s!==s)writes.push({key,ref:fs.doc(db,k,String(o.id)),data:{...data,ord:i},s,ord:i});
-  else if(b.ord!==i)ordOnly.push({key,ref:fs.doc(db,k,String(o.id)),ord:i,s}); // 순서만 바뀐 항목은 순서 값만 쓴다 (다른 기기의 내용 수정을 덮지 않기 위해)
+  else if(b.ord!==i)ordOnly.push({key,ref:fs.doc(db,k,String(o.id)),ord:i,s});
  }));
  const dels=[];BASE.forEach((b,key)=>{if(key!=="meta"&&!seen.has(key)){const [k,id]=key.split("/");dels.push({key,ref:fs.doc(db,k,id)})}});
  const meta={title:D.title||"",acts:ACTS.slice()},ms=stable(meta),mb=BASE.get("meta");
@@ -613,18 +599,13 @@ function fbFlush(){
  writes.forEach(w=>BASE.set(w.key,{s:w.s,ord:w.ord}));ordOnly.forEach(w=>BASE.set(w.key,{s:w.s,ord:w.ord}));dels.forEach(d=>BASE.delete(d.key));BASE.set("meta",{s:ms});
  fbStatus();
 }
-// 서버 내용을 화면 데이터(D)에 반영한다. 저장하지 않은 수정이 있을 때는 호출하지 않는다.
 function fbApply(first){
  const docs=k=>SNAP[k].docs.map(d=>d.data());
  const evs=docs("events"),chs=docs("chars"),its=docs("items"),meta=SNAP.meta.exists()?SNAP.meta.data():null;
  if(!evs.length&&!chs.length&&!its.length&&!meta){
-  // 서버가 비어 있으면 로그인 후 작업 화면은 빈 상태로 시작합니다.
-  // 로그인 전 미리보기용 더미 데이터는 서버 데이터로 취급하지 않습니다.
-  // 따라서 첫 저장 때 더미 항목 전체가 서버에 올라가는 일을 방지합니다.
   D={title:DEFTITLE,acts:ACTS.slice(),events:[],chars:[],items:[],_tagsRemoved:true};
   normalizeData();
   BASE=new Map();
-  // 기본 제목/막 이름을 기준값으로 잡아, 새 항목을 만들지 않았다면 아무것도 업로드하지 않습니다.
   BASE.set("meta",{s:stable({title:D.title||"",acts:ACTS.slice()})});
   fbBased=true;
   fillActFilter();render();cacheLocal();
@@ -636,7 +617,6 @@ function fbApply(first){
  const ord=a=>a.slice().sort((x,y)=>(x.ord??1e9)-(y.ord??1e9)).map(o=>{const c={...o};delete c.ord;return c});
  D={title:meta&&meta.title||"",acts:meta&&Array.isArray(meta.acts)&&meta.acts.length?meta.acts:ACTS.slice(),events:ord(evs),chars:ord(chs),items:ord(its),_tagsRemoved:true};
  normalizeData();
- // 비교 기준(BASE)은 화면에서 쓰는(정규화된) 데이터로 만든다. 서버 원본으로 만들면 빠진 필드 때문에 모든 항목이 '바뀐 것'으로 보여 다른 기기의 수정을 덮어쓰게 된다.
  BASE=new Map();const ordOf={};
  COLS.forEach(k=>SNAP[k].docs.forEach(d=>{ordOf[k+"/"+d.id]=d.data().ord}));
  COLS.forEach(k=>D[k].forEach(o=>BASE.set(k+"/"+o.id,{s:stable(JSON.parse(JSON.stringify(o))),ord:ordOf[k+"/"+o.id]})));
@@ -656,6 +636,7 @@ function fbListen(){
  const onErr=e=>{fbErr=fbErrText(e);fbStatus()};
  COLS.forEach(k=>fbUnsub.push(fs.onSnapshot(fs.collection(db,k),{includeMetadataChanges:true},s=>{SNAP[k]=s;fbGot.add(k);fbOnSnap()},onErr)));
  fbUnsub.push(fs.onSnapshot(fs.doc(db,"meta","main"),{includeMetadataChanges:true},s=>{SNAP.meta=s;fbGot.add("meta");fbOnSnap()},onErr));
+ checkPubStatus();
 }
 function fbUnlisten(){fbUnsub.forEach(f=>{try{f()}catch(e){}});fbUnsub=[];SNAP={};fbGot=new Set();fbBased=false;fbAsked=false;BASE=new Map()}
 async function fbLogin(){
@@ -664,34 +645,65 @@ async function fbLogin(){
  catch(e){
   const c=e&&e.code||"";
   if(c==="auth/popup-blocked"||c==="auth/operation-not-supported-in-this-environment"){try{await au.signInWithRedirect(auth,provider)}catch(e2){alert("로그인 실패: "+(e2.message||e2))}}
-  else if(c==="auth/unauthorized-domain")alert("이 주소가 Firebase에 등록되지 않았습니다.\nFirebase 콘솔 → Authentication → 설정 → 승인된 도메인에\n"+location.hostname+" 을(를) 추가하세요.");
   else if(c!=="auth/popup-closed-by-user"&&c!=="auth/cancelled-popup-request")alert("로그인 실패: "+(e.message||c));
  }
 }
-async function fbPublish(){
- if(!fbUser){alert("먼저 로그인하세요.");return}
- if(!navigator.onLine){alert("오프라인에서는 공유 내용을 업데이트할 수 없습니다.");return}
- const evs=D.events.map((e,i)=>({e,i})).filter(x=>String(x.e.actual||"").trim());
- if(!confirm(`공유 링크에 소설 내용이 공개됩니다.\n\n· 공개: 막 이름, 사건 제목, 실제 내용(소설 원문) ${evs.length}개 사건\n· 비공개: 요약, 인물·아이템 설정, 작가 메모\n\n지금 작성한 내용으로 공유 페이지를 업데이트할까요?`))return;
- const b=$("fbpub"),old=b.textContent;b.textContent="올리는 중…";b.disabled=true;
+
+async function checkPubStatus(){
+ if(!FB||!fbUser)return;
  try{
-  const {db,fs}=FB,cur=await fs.getDocs(fs.collection(db,"pubEvents")),keep=new Set(evs.map(x=>String(x.e.id)));
-  const ops=evs.map(x=>({t:"s",ref:fs.doc(db,"pubEvents",String(x.e.id)),data:{id:x.e.id,act:+x.e.act||0,title:x.e.title||"",actual:String(x.e.actual),ord:x.i}}));
-  cur.docs.forEach(d=>{if(!keep.has(d.id))ops.push({t:"d",ref:d.ref})});
-  ops.push({t:"s",ref:fs.doc(db,"pubMeta","main"),data:{title:D.title||"",acts:ACTS.slice(),updatedAt:Date.now()}});
-  for(let i=0;i<ops.length;i+=400){const wb=fs.writeBatch(db);ops.slice(i,i+400).forEach(o=>o.t==="s"?wb.set(o.ref,o.data):wb.delete(o.ref));await wb.commit()}
-  b.textContent="✅ 업데이트됨";setTimeout(()=>{b.textContent=old},2000);
- }catch(e){alert("공유 내용 업데이트 실패: "+fbErrText(e));b.textContent=old}
- b.disabled=false;
+  const {db,fs}=FB;
+  const docSnap=await fs.getDoc(fs.doc(db,"pubMeta","main"));
+  isPubState=docSnap.exists();
+  const b=$("fbpub");
+  b.textContent=isPubState?"🔒 비공개":"🌐 공개";
+ }catch(e){isPubState=false;}
 }
+
+async function fbTogglePublish(){
+ if(!fbUser){alert("먼저 로그인하세요.");return}
+ if(!navigator.onLine){alert("오프라인에서는 처리가 불가능합니다.");return}
+ const b=$("fbpub");
+ const {db,fs}=FB;
+ 
+ if(isPubState){
+  if(!confirm("현재 공개되어 있습니다. 비공개로 전환하여 공유를 내릴까요?"))return;
+  b.textContent="처리 중…";b.disabled=true;
+  try{
+   await fs.deleteDoc(fs.doc(db,"pubMeta","main"));
+   const es=await fs.getDocs(fs.collection(db,"pubEvents"));
+   const wb=fs.writeBatch(db);
+   es.docs.forEach(d=>wb.delete(d.ref));
+   await wb.commit();
+   isPubState=false;
+   b.textContent="🌐 공개";
+   alert("비공개로 전환되었습니다.");
+  }catch(e){alert("비공개 전환 실패: "+fbErrText(e));b.textContent="🔒 비공개"}
+  b.disabled=false;
+ }else{
+  const evs=D.events.filter(e=>String(e.actual||"").trim()&&e.isPublic);
+  if(!confirm(`공유 링크에 소설 내용이 공개됩니다.\n\n· 공개 대상 사건: ${evs.length}개\n지금 작성한 내용으로 공개하시겠습니까?`))return;
+  b.textContent="공개 중…";b.disabled=true;
+  try{
+   const cur=await fs.getDocs(fs.collection(db,"pubEvents")),keep=new Set(evs.map(x=>String(x.id)));
+   const ops=evs.map((x,i)=>({t:"s",ref:fs.doc(db,"pubEvents",String(x.id)),data:{id:x.id,act:+x.act||0,title:x.title||"",actual:String(x.actual),ord:i}}));
+   cur.docs.forEach(d=>{if(!keep.has(d.id))ops.push({t:"d",ref:d.ref})});
+   ops.push({t:"s",ref:fs.doc(db,"pubMeta","main"),data:{title:D.title||"",acts:ACTS.slice(),updatedAt:Date.now()}});
+   for(let i=0;i<ops.length;i+=400){const wb=fs.writeBatch(db);ops.slice(i,i+400).forEach(o=>o.t==="s"?wb.set(o.ref,o.data):wb.delete(o.ref));await wb.commit()}
+   isPubState=true;
+   b.textContent="🔒 비공개";
+   alert("공개되었습니다.");
+  }catch(e){alert("공개 실패: "+fbErrText(e));b.textContent="🌐 공개"}
+  b.disabled=false;
+ }
+}
+
 async function fbStart(){
- // GitHub 관련 기능과 초기화 버튼은 제거했습니다. 서버 데이터는 구글 로그인 후 Firestore에서만 읽습니다.
- // 초기화 버튼 요소(rst)는 HTML에서 주석 처리되어 있으므로 접근하지 않습니다.
  $("fbpub").hidden=false;
  fbStatus();
- try{await fbInit(true)}catch(e){fbErr="Firebase를 불러오지 못했습니다 (인터넷 확인)";fbStatus();return}
- $("fbst").onclick=async()=>{if(fbUser){if(confirm(`${fbUser.email||"계정"} 에서 로그아웃할까요?\n(이 기기의 데이터는 그대로 남고, 서버 동기화만 멈춥니다.)`))await FB.au.signOut(FB.auth)}else await fbLogin()};
- $("fbpub").onclick=fbPublish;
+ try{await fbInit(true)}catch(e){fbErr="Firebase 로드 실패";fbStatus();return}
+ $("fbst").onclick=async()=>{if(fbUser){if(confirm("로그아웃할까요?"))await FB.au.signOut(FB.auth)}else await fbLogin()};
+ $("fbpub").onclick=fbTogglePublish;
  window.addEventListener("online",fbStatus);window.addEventListener("offline",fbStatus);
  window.addEventListener("beforeunload",ev=>{if(fbTimer){ev.preventDefault();ev.returnValue=""}});
  FB.au.onAuthStateChanged(FB.auth,u=>{
@@ -699,13 +711,12 @@ async function fbStart(){
   if(u){fbListen()}
   else{
    fbUnlisten();
-   // 로그아웃하면 서버/개인 데이터 대신 더미 화면으로 되돌립니다.
    if(!SHARE){D=makeDummyData();normalizeData();fillActFilter();render();cacheLocal()}
   }
   fbStatus();
  });
 }
-// 공유 링크: 로그인 없이 공개 사본(pubMeta / pubEvents)만 읽는다.
+
 async function fbShare(){
  ldShow("소설 불러오는 중…");
  try{
@@ -719,16 +730,13 @@ async function fbShare(){
  }catch(e){shareFail("소설 데이터를 불러오지 못했습니다. ("+fbErrText(e)+")");return}
  shareShow();
 }
-// 공유 링크는 편집 화면을 렌더링하지 않고, 서버에서 공개된 소설만 불러옵니다.
-// 이 분기를 먼저 처리해 공유 모드에서 일반 화면의 렌더링 오류가 발생해도
-// 공유 소설을 불러오는 작업까지 막히지 않게 합니다.
+
 if(SHARE){
  normalizeData();
  fillActFilter();
  if(FBON)fbShare();
  else shareLoad();
 }else{
- // 일반 화면은 항상 더미 데이터로 시작합니다. 로그인 성공 후에만 Firestore 데이터로 교체됩니다.
  if(FBON){D=makeDummyData();normalizeData();fillActFilter()}
  render();
  if(FBON)fbStart();
