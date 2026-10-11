@@ -17,7 +17,7 @@ h1:hover{border-bottom-color:var(--bd)}h1:focus{border-bottom-color:var(--ac)}
 .tree-act.dabefore{box-shadow:-4px 0 0 0 var(--ac)}
 .tree-act.daafter{box-shadow:4px 0 0 0 var(--ac)}
 .tree-act.dragact{opacity:.35}
-.bar{position:sticky;top:0;background:var(--bg);z-index:20;width:100%;padding:8px 16px;border-bottom:1px solid var(--bd);box-shadow:0 4px 12px #0001}.bar.collapsed .row:not(:first-child){display:none}.bar.collapsed{padding-bottom:6px}.menu-toggle{white-space:nowrap}
+.bar{position:sticky;top:0;background:var(--bg);z-index:20;width:100%;padding:8px 16px;border-bottom:1px solid var(--bd);box-shadow:0 4px 12px #0001}.bar.collapsed .row.filters{display:none}.bar.collapsed{padding-bottom:6px}.menu-toggle{white-space:nowrap;flex:none;width:40px;padding:6px 0;font-size:16px;font-weight:700;line-height:1;text-align:center}
 /* 소설 내용 보기 버튼은 레이아웃 공간을 차지하지 않고 화면 우측 하단에 떠 있도록 배치 */
 #viewNovel.novel-fab{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:40;margin:0;padding:9px 14px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(108,92,231,.72);color:#fff;box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.82;transition:opacity .15s,background .15s}
 #viewNovel.novel-fab:hover,#viewNovel.novel-fab:focus-visible{opacity:1;background:rgba(108,92,231,.96)}
@@ -26,7 +26,7 @@ body.share #viewNovel{display:none}
 input,select,textarea,button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:5px 10px}
 button{cursor:pointer}button:hover{border-color:var(--ac)}button.p,button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 button.warn{border-color:var(--fs);color:var(--fs);background:#e5484d14}button.warn:hover{background:var(--fs);color:#fff;border-color:var(--fs)}
-#q{flex:1;min-width:140px}.chip{border-radius:99px;padding:1px 10px;font-size:12px}
+#q{flex:1;min-width:0}.chip{border-radius:99px;padding:1px 10px;font-size:12px}
 .tab{font-weight:700;border:none;border-bottom:3px solid transparent;border-radius:0;background:none}.tab.on{color:var(--ac);background:none;border-bottom-color:var(--ac)}
 main{width:100%;padding:12px 16px 60px}
 .pl{color:var(--sub);font-size:13px}
@@ -88,7 +88,7 @@ main{width:100%;padding:12px 16px 60px}
 /* 바로가기 바: 소설을 읽는 동안 위에 붙어 있으며, 지금 읽는 사건을 보여준다 */
 #neventnav:empty{display:none}
 #ndlg{--npad:20px}@media(max-width:560px){#ndlg{--npad:14px}}
-#neventnav{position:sticky;top:calc(var(--npad) * -1);z-index:20;margin:6px 0 10px;border:1px solid var(--blkbd);border-top-width:0;border-radius:0 0 10px 10px;background:var(--card);box-shadow:0 4px 14px #0002;overflow:hidden}
+#neventnav{position:sticky;top:calc(var(--npad) * -1);z-index:20;margin:6px 0 10px;border:1px solid var(--blkbd);border-radius:0;background:var(--card);box-shadow:0 4px 14px #0002;overflow:hidden}
 .nnav-bar{display:flex;align-items:center;gap:4px;padding:4px}
 .nnav-step{flex:none;width:36px;height:36px;padding:0;border-radius:8px;font-size:20px;line-height:1;font-weight:700;color:var(--ac)}
 .nnav-step:disabled{opacity:.3}
@@ -96,7 +96,7 @@ main{width:100%;padding:12px 16px 60px}
 .nnav-k{flex:none;font-size:11px;font-weight:700;color:var(--sub)}
 .nnav-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
 .nnav-n{flex:none;font-size:12px;color:var(--sub)}.nnav-c{flex:none;color:var(--ac)}
-.nnav-prog{height:3px;background:var(--bd)}.nnav-prog i{display:block;height:100%;width:0;background:var(--ac)}
+.nnav-prog{height:5px;background:var(--bd);border-radius:0}.nnav-prog i{display:block;height:100%;width:0;background:var(--ac);border-radius:0}
 .nnav-list{max-height:min(50vh,360px);overflow:auto;padding:6px;border-top:1px solid var(--bd)}
 .nnav-act{margin:8px 4px 4px;font-size:12px;font-weight:700;color:var(--sub)}
 .nnav-item{display:block;width:100%;margin:2px 0;padding:7px 10px;text-align:left;border-radius:8px;border-color:transparent;background:none}
@@ -220,9 +220,9 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
 <header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span class="pl" id="sub">수정본 · 사건 편집창에 ‘실제 내용 (소설 원문)’ 입력란 포함</span><span id="stat"></span><button id="themeBtn" type="button" style="flex:none;font-size:12px;padding:2px 10px;white-space:nowrap" title="화면 테마 선택 (자동 → 라이트 → 다크)"></button><span id="who" class="rolechip" hidden style="flex:none"></span><button id="fbst" hidden style="flex:none;font-size:12px;padding:2px 10px;white-space:nowrap"></button></header>
 <div class="bar">
  <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button><button class="tab" data-tab="it">아이템설정</button><button class="tab" data-tab="ac">막설정</button>
- <span style="flex:1"></span><button class="menu-toggle" id="menuToggle" aria-expanded="true">⌃ 메뉴 접기</button><button class="pill" id="add">+ 추가</button></div>
- <div class="row"><input id="q" placeholder="검색 (제목·내용·인물·태그·메모)">
- <select id="view"><option value="tree" selected>세로보기</option><option value="act">가로보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
+ <span style="flex:1"></span><button class="pill" id="add">+ 추가</button></div>
+ <div class="row"><button class="menu-toggle" id="menuToggle" aria-expanded="true" title="메뉴 접기" aria-label="메뉴 접기">⌃</button><input id="q" placeholder="검색 (제목·내용·인물·태그·메모)"></div>
+ <div class="row filters"><select id="view"><option value="tree" selected>세로보기</option><option value="act">가로보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체</option></select><button id="ffs">⭐ 중요만</button></div>
  <div class="row" id="tagbar"></div>
  <!-- 초기화 버튼 비활성화: <div class="row"><button id="rst">초기화</button></div> -->
@@ -546,7 +546,7 @@ function openEd(t,id,insertAfterId=null,actIdx=null){
   if(t==="e"&&(k==="chars"||k==="items"))return "";
   const wide=ty=="ta"||k==="actual";
   const val=o[k]??"";const inner=(()=>{
-  if(t=="e"&&k==="actual")return actualBlock(l,val);
+  if(t=="e"&&k==="actual")return actualBlock(l,val,o.chars,o.items);
   if(ty=="ta")return `<label>${l}</label><textarea class="${k==="actual"?"actual-field":""}" name="${k}" rows="${k==="actual"?12:1}" placeholder="${k==="actual"?"이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.":""}">${esc(val)}</textarea>`;
   if(ty=="cb")return `<label><input type="checkbox" name="${k}" ${val?"checked":""}> ${l}</label>`;
   if(ty=="sel")return `<label>${l}</label><select name="${k}">${ACTS.map((a,i)=>`<option value="${i}" ${i==val?"selected":""}>${a}</option>`).join("")}</select>`;
@@ -636,7 +636,7 @@ function nvUpdate(){
  const list=novelList(),heads=nvHeads(),dr=dlg.getBoundingClientRect();
  const bar=document.querySelector(".nnav-bar"),prog=document.querySelector(".nnav-prog");
  const barH=bar?bar.offsetHeight+(prog?prog.offsetHeight:0)+2:0;
- dlg.style.setProperty("--nbar-h",barH+"px");
+ dlg.style.setProperty("--nbar-h",barH+"px");dlg.style.setProperty("--npad",getComputedStyle(dlg).paddingTop);
  const max=dlg.scrollHeight-dlg.clientHeight,st=dlg.scrollTop;
  // 지금 읽는 사건 = 화면 위쪽 기준선을 지난 마지막 사건 제목
  const line=dr.top+barH+16;let idx=heads.length?0:-1;
@@ -740,7 +740,7 @@ let ldTimer=null;
 function ldShow(msg){$("ldm").textContent=msg||"소설 불러오는 중…";$("ldb").style.width="0%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
 function ldSet(p){const cur=parseFloat($("ldb").style.width)||0;if(p>cur)$("ldb").style.width=p+"%"}
 function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100%";setTimeout(()=>{$("ld").style.display="none"},delay)}
-document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄ 메뉴 펼치기":"⌃ 메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
+document.getElementById("menuToggle").addEventListener("click",()=>{const bar=document.querySelector(".bar");const collapsed=bar.classList.toggle("collapsed");const b=document.getElementById("menuToggle");b.textContent=collapsed?"⌄":"⌃";b.title=collapsed?"메뉴 펼치기":"메뉴 접기";b.setAttribute("aria-expanded",String(!collapsed));});
 // ===== 공유 링크로 열었을 때: 소설 내용 보기만 표시 (저장·수정 불가) =====
 function shareFail(msg){
  ldHide();$("nsum").textContent="";$("nacts").innerHTML="";
