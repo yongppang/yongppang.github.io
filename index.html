@@ -596,7 +596,8 @@ let NVUSER=false; // true = 사용자로 보기 (작성 완료된 사건만)
 const nvVis=e=>SHARE||!NVUSER||e.done; // 공유 링크의 데이터는 이미 완료된 사건만 들어 있다
 // 보이는 사건: 사용자(공유 링크 포함) = 완료(☑)된 사건 전부, 관리자 = 소설 내용이 작성된 사건
 const nvShown=e=>SHARE?true:NVUSER?!!e.done:!!String(e.actual||"").trim();
-const novelAll=()=>D.events.filter(nvShown);
+// 순서: 막 순서대로, 같은 막 안에서는 타임라인에 보이는 순서(저장된 순서) 그대로
+const novelAll=()=>D.events.map((e,i)=>[e,i]).filter(x=>nvShown(x[0])).sort((a,b)=>((+a[0].act||0)-(+b[0].act||0))||a[1]-b[1]).map(x=>x[0]);
 const novelList=()=>novelAll().filter(e=>novAct<0||+e.act===novAct);
 // 전체를 하나의 문서처럼 줄 단위로 만든다. (줄 번호 = 전체 복사 텍스트의 줄 번호와 동일)
 function novelLines(){
