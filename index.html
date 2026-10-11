@@ -17,6 +17,10 @@ h1:hover{border-bottom-color:var(--bd)}h1:focus{border-bottom-color:var(--ac)}
 .tree-act.daafter{box-shadow:4px 0 0 0 var(--ac)}
 .tree-act.dragact{opacity:.35}
 .bar{position:sticky;top:0;background:var(--bg);z-index:20;width:100%;padding:8px 16px;border-bottom:1px solid var(--bd);box-shadow:0 4px 12px #0001}.bar.collapsed .row:not(:first-child){display:none}.bar.collapsed{padding-bottom:6px}.menu-toggle{white-space:nowrap}
+/* 소설 내용 보기 버튼은 레이아웃 공간을 차지하지 않고 화면 우측 하단에 떠 있도록 배치 */
+#viewNovel.novel-fab{position:fixed;right:14px;bottom:max(10px,env(safe-area-inset-bottom));z-index:40;margin:0;padding:9px 14px;border:1px solid #6c5ce766;border-radius:999px;background:rgba(108,92,231,.72);color:#fff;box-shadow:0 4px 16px #0002;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.82;transition:opacity .15s,background .15s}
+#viewNovel.novel-fab:hover,#viewNovel.novel-fab:focus-visible{opacity:1;background:rgba(108,92,231,.96)}
+body.share #viewNovel{display:none}
 .row{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0;align-items:center}
 input,select,textarea,button{font:inherit;color:inherit;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:5px 10px}
 button{cursor:pointer}button:hover{border-color:var(--ac)}button.p,button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
@@ -113,7 +117,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
 <header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span class="pl" id="sub">수정본 · 사건 편집창에 ‘실제 내용 (소설 원문)’ 입력란 포함</span><span id="stat"></span><button id="fbst" hidden style="flex:none;font-size:12px;padding:2px 10px;white-space:nowrap"></button></header>
 <div class="bar">
  <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button><button class="tab" data-tab="it">아이템설정</button><button id="actsEdit">막 설정</button>
- <span style="flex:1"></span><button class="menu-toggle" id="menuToggle" aria-expanded="true">⌃ 메뉴 접기</button><button id="viewNovel">📖 소설내용보기</button><button class="p" id="add">+ 추가</button></div>
+ <span style="flex:1"></span><button class="menu-toggle" id="menuToggle" aria-expanded="true">⌃ 메뉴 접기</button><button class="p" id="add">+ 추가</button></div>
  <div class="row"><input id="q" placeholder="검색 (제목·내용·인물·태그·메모)">
  <select id="view"><option value="tree" selected>좌우 라인트리</option><option value="act">막별 보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
  <select id="fa"><option value="">전체 막</option></select><button id="ffs">⭐ 중요만</button></div>
@@ -121,6 +125,8 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
  <div class="row"><button id="rst">초기화</button></div>
 </div>
 <main id="list"></main>
+<!-- 화면 하단에 고정된 소설 읽기 버튼: 문서 흐름을 차지하지 않음 -->
+<button id="viewNovel" class="novel-fab" type="button">📖 소설내용보기</button>
 <dialog id="dlg"><form method="dialog" id="f"></form></dialog>
 <dialog id="adlg"><form method="dialog" id="af"><h3 style="margin:0">막 관리</h3><p class="pl">막 이름을 직접 수정하고, 순서를 바꾸거나 추가·삭제할 수 있습니다. 막을 삭제하면 해당 사건은 직전 막으로 이동합니다.</p><div id="actRows"></div><div class="row"><button type="button" id="actAdd">+ 막 추가</button><span style="flex:1"></span><button class="p" value="ok">적용</button><button value="cancel" formnovalidate>취소</button></div></form></dialog>
 <dialog id="ndlg"><form method="dialog" id="nf"><h3 style="margin:0">📖 소설 내용 보기</h3><p class="pl" id="nsum"></p><div class="nacts" id="nacts"></div><div id="nbody"></div><div class="row"><button type="button" id="ncopy" title="지금 화면에 보이는 소설 글을 텍스트로 복사">📋 내용 복사</button><button type="button" id="nlink" title="다른 사람에게 보여줄 주소(URL)를 복사">🔗 링크 복사</button><button type="button" id="fbpub" hidden title="공유 링크로 보이는 내용을 지금 작성한 내용으로 갱신">🌐 공유 내용 업데이트</button><span style="flex:1"></span><button class="p" id="nclose" value="close" formnovalidate>닫기</button></div></form></dialog>
