@@ -546,8 +546,8 @@ $("af").addEventListener("submit",ev=>{if(ev.submitter.value!=="ok")return;const
 $("add").onclick=()=>{if(tab=="ac"){ACTS.push(`${ACTS.length}막 · 새 막`);fillActFilter();save();render();return}openEd(tab=="tl"?"e":tab=="it"?"i":"c")};
 // ===== 소설 내용 보기: [제목] 내용 형식으로 이어서 표시 =====
 let novAct=-1; // -1 = 전체, 0 이상 = 해당 막만
-let NVUSER=false; // true = 사용자로 보기 (작성 완료된 사건만)
-const nvVis=e=>SHARE||!NVUSER||e.done; // 공유 링크의 데이터는 이미 완료된 사건만 들어 있다
+let NVUSER=false; // false = 관리자 보기(미완료 포함), true = 사용자 미리보기(완료 사건만)
+const nvVis=e=>{ if(SHARE) return !!e.done; if(NVUSER) return !!e.done; return true; }; // 관리자는 미완료 사건도 모두 볼 수 있음
 const novelAll=()=>D.events.filter(e=>nvVis(e)&&String(e.actual||"").trim());
 const novelList=()=>novelAll().filter(e=>novAct<0||+e.act===novAct);
 // 전체를 하나의 문서처럼 줄 단위로 만든다. (줄 번호 = 전체 복사 텍스트의 줄 번호와 동일)
