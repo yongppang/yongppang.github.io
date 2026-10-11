@@ -554,6 +554,19 @@ $("f").addEventListener("change",ev=>{
  s.value="";if(v)addToField(isC?"chars":"items",v);
 });
 function setFs(on){const w=$("actwrap");if(w)w.classList.toggle("fs",on);$("f").classList.toggle("isfs",!!on)}
+// 입력 중 방향키(↑↓)로 커서가 맨 위/맨 아래를 벗어나면 다른 칸·버튼으로 포커스가 넘어가는 것을 막는다.
+// (일부 모바일/태블릿 키보드는 방향키를 포커스 이동으로 처리한다.) 포커스가 빠져나가면 즉시 되돌리고 커서를 맨 위/맨 아래로 둔다.
+let arrowT=0,arrowKey="",arrowEl=null;
+$("f").addEventListener("keydown",ev=>{
+ if(ev.key!=="ArrowUp"&&ev.key!=="ArrowDown")return;
+ const t=ev.target;if(!t||(t.tagName!=="TEXTAREA"&&t.tagName!=="INPUT"))return;
+ arrowT=Date.now();arrowKey=ev.key;arrowEl=t;
+},true);
+$("f").addEventListener("focusout",ev=>{
+ const t=arrowEl;if(!t||ev.target!==t||Date.now()-arrowT>400)return;
+ const up=arrowKey==="ArrowUp";arrowEl=null;
+ setTimeout(()=>{if(!t.isConnected)return;t.focus({preventScroll:true});const p=up?0:t.value.length;try{t.setSelectionRange(p,p)}catch(e){}},0);
+});
 $("dlg").addEventListener("cancel",ev=>{const w=$("actwrap");if(w&&w.classList.contains("fs")){ev.preventDefault();setFs(false)}});
 function openEd(t,id,insertAfterId=null,actIdx=null){
  editing={t,id,insertAfterId};const anchor=insertAfterId!=null?D.events.find(x=>x.id===insertAfterId):null;const o=(id&&arrOf(t).find(x=>x.id==id))||(anchor?{act:+anchor.act,when:anchor.when,place:anchor.place}:{act:actIdx!=null?actIdx:2,when:"D+"});
