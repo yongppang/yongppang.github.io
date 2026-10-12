@@ -112,7 +112,11 @@ body.connecting main{visibility:hidden}
 .novel-edge-scroll.bottom{bottom:max(10px,env(safe-area-inset-bottom))}
 :root[data-theme=dark] .novel-edge-scroll{background:rgba(32,36,56,.5);color:#c9c1ff;border-color:#8d7fff88}
 
-.stf{color:var(--sub);font-size:17px}.stf.on{color:#f5a623}
+.stf{color:var(--sub);font-size:17px}.stf.on{color:#f5a623;font-size:22px;line-height:1;text-shadow:0 0 6px #f5a62399}
+.ev .card.fs{position:relative;border-width:4px!important;border-style:solid;box-shadow:0 0 0 3px rgba(245,166,35,.55),0 6px 16px rgba(245,166,35,.35)}
+.ev .card.fs h3{font-weight:800;font-size:17px}
+.ev .card.fs::before{content:"★ 중요";position:absolute;top:-11px;left:12px;background:#f5a623;color:#fff;font-size:11px;font-weight:800;padding:1px 8px;border-radius:10px;letter-spacing:.3px;z-index:1}
+:root[data-theme=dark] .ev .card.fs{box-shadow:0 0 0 3px rgba(255,200,87,.6),0 6px 18px rgba(255,200,87,.3)}
 .ev .card.s-empty{background:#f1f2f5;border-color:#d3d6dd;border-left-color:#b9bdc7;outline:0}
 .ev .card.s-text{background:#e4f7ec;border-color:#b5e3c9;border-left-color:#55c89a;outline:0}
 .ev .card.s-warn{background:#fff1e0;border-color:#f3cf9f;border-left-color:#f09a2b;outline:0}
