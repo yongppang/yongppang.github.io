@@ -112,6 +112,18 @@ body.connecting main{visibility:hidden}
 .novel-edge-scroll.bottom{bottom:max(10px,env(safe-area-inset-bottom))}
 :root[data-theme=dark] .novel-edge-scroll{background:rgba(32,36,56,.5);color:#c9c1ff;border-color:#8d7fff88}
 
+.stf{color:var(--sub);font-size:17px}.stf.on{color:#f5a623}
+.ev .card.s-empty{background:#f1f2f5;border-color:#d3d6dd;border-left-color:#b9bdc7;outline:0}
+.ev .card.s-text{background:#e4f7ec;border-color:#b5e3c9;border-left-color:#55c89a;outline:0}
+.ev .card.s-warn{background:#fff1e0;border-color:#f3cf9f;border-left-color:#f09a2b;outline:0}
+.ev .card.s-done{background:#e3eeff;border-color:#a9c6f5;border-left-color:#4a86e8;outline:0}
+.ev .card.fs.s-empty,.ev .card.fs.s-text,.ev .card.fs.s-warn,.ev .card.fs.s-done{border-width:3px;border-style:solid}
+.ev .card.fs.s-empty{border-color:#8e93a0}.card.fs.s-text{border-color:#2fa56f}.card.fs.s-warn{border-color:#e07d00}.card.fs.s-done{border-color:#2f6fdb}
+:root[data-theme=dark] .ev .card.s-empty{background:#262a36;border-color:#3a3f4e;border-left-color:#6b7183}
+:root[data-theme=dark] .ev .card.s-text{background:linear-gradient(135deg,#1f4a40 0%,#173a33 100%);border-color:#2f8a70;border-left-color:#3fd6a0;outline:0}
+:root[data-theme=dark] .ev .card.s-warn{background:#4a3519;border-color:#8a6122;border-left-color:#ffa94d}
+:root[data-theme=dark] .ev .card.s-done{background:#1d3358;border-color:#3b64a8;border-left-color:#6aa3ff;outline:0}
+:root[data-theme=dark] .ev .card.fs.s-empty{border-color:#9aa0b3}:root[data-theme=dark] .card.fs.s-text{border-color:#3fd6a0}:root[data-theme=dark] .card.fs.s-warn{border-color:#ffa94d}:root[data-theme=dark] .card.fs.s-done{border-color:#6aa3ff}
 .st{font-size:15px;margin-right:3px;cursor:pointer;flex:none;user-select:none;-webkit-user-select:none}
 .pill{padding:8px 14px!important;font-size:14px;border:1px solid #6c5ce766!important;border-radius:999px!important;background:rgba(255,255,255,.78)!important;color:var(--ac)!important;box-shadow:0 4px 16px #0002;opacity:.9}
 .pill:hover,.pill:focus-visible{opacity:1;background:rgba(255,255,255,.97)!important}
@@ -126,10 +138,13 @@ body.share #nview{display:none}
 dialog form{padding-bottom:40px}
 dialog .row.dacts{position:fixed;right:6px;bottom:auto;left:auto;top:50%;transform:translateY(-50%);margin:0!important;padding:0;background:none;flex-direction:column;align-items:flex-end;flex-wrap:nowrap;gap:6px;z-index:100;width:auto}
 dialog .row.dacts>span{display:none}
-dialog .row.dacts .pill{opacity:.92;background:rgba(255,255,255,.88)!important;border:1px solid #6c5ce7aa!important;box-shadow:0 2px 10px #0003;backdrop-filter:none;font-weight:700;transition:opacity .15s}
-dialog .row.dacts .pill:hover,dialog .row.dacts .pill:focus-visible,dialog .row.dacts .pill:active{opacity:1;background:rgba(255,255,255,.95)!important}
-:root[data-theme=dark] dialog .row.dacts .pill{background:rgba(32,36,56,.9)!important;border-color:#8d7fffcc!important}
-:root[data-theme=dark] dialog .row.dacts .pill:hover,:root[data-theme=dark] dialog .row.dacts .pill:focus-visible,:root[data-theme=dark] dialog .row.dacts .pill:active{background:rgba(48,54,88,.97)!important}
+/* 저장/취소: 배경 없이 가로 글자, 오른쪽 여백 칸에 놓아 편집 영역과 겹치지 않게 한다 */
+dialog .row.dacts .pill{background:rgba(255,255,255,.35)!important;opacity:1;box-shadow:none;backdrop-filter:none;writing-mode:horizontal-tb;white-space:nowrap;font-weight:700;color:var(--ac)!important;border:1px solid var(--ac)!important;padding:7px 12px!important;min-width:54px;text-align:center;transition:background .15s}
+dialog .row.dacts .pill:hover,dialog .row.dacts .pill:focus-visible,dialog .row.dacts .pill:active{background:#6c5ce722!important}
+:root[data-theme=dark] dialog .row.dacts .pill{background:rgba(24,27,44,.35)!important;color:#c9c1ff!important;border-color:#8d7fff!important}
+:root[data-theme=dark] dialog .row.dacts .pill:hover,:root[data-theme=dark] dialog .row.dacts .pill:focus-visible,:root[data-theme=dark] dialog .row.dacts .pill:active{background:#8d7fff33!important}
+/* 저장/취소: 배경은 투명, 글자·테두리만 또렷하게. 오른쪽 전용 자리(#f 오른쪽 여백)에 놓여 입력칸과 겹치지 않는다. */
+dialog .row.dacts{right:4px}
 /* 카드가 칸(막 열)을 넘지 않도록: 그리드/플렉스 아이템의 최소 폭 제한을 풀고 넘치는 글은 ...으로 줄임 */
 .ev>*,.tree-node,.tree-act{min-width:0}
 .ev .card{max-width:100%;overflow-wrap:anywhere}
@@ -139,6 +154,7 @@ dialog .row.dacts .pill:hover,dialog .row.dacts .pill:focus-visible,dialog .row.
 .tags{max-width:100%}.tags span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
 .fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}.fgrid .fld{min-width:0}.fgrid .w{grid-column:1/-1}
 dialog textarea:not(.actual-field){min-height:0;resize:vertical}
+#f:not(.isfs) textarea.actual-field{overflow-y:hidden;resize:none}
 .aclist{max-width:760px}.acrow{display:flex;align-items:center;gap:8px;margin:8px 0;padding:8px 12px;flex-wrap:nowrap}
 .acrow input{flex:1 1 auto;min-width:0;font-weight:700}.acrow button{flex:none;padding:4px 10px}.acrow .pl{white-space:nowrap;flex:none}
 .toast{position:fixed;left:50%;bottom:calc(max(10px,env(safe-area-inset-bottom)) + 70px);transform:translate(-50%,12px);z-index:1000;background:rgba(32,36,56,.94);color:#fff;padding:10px 20px;border-radius:999px;font-size:14px;font-weight:700;box-shadow:0 6px 20px #0004;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap}
@@ -197,7 +213,7 @@ table{border-collapse:collapse;width:100%;font-size:13px}td,th{border-bottom:1px
 .tw{overflow-x:auto}
 dialog{border:1px solid var(--bd);border-radius:0;background:var(--bg);color:var(--tx);width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:20px 24px;overflow:auto}
 dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:none;min-height:100%;display:flex;flex-direction:column}dialog form h3{font-size:21px;margin-bottom:12px!important}dialog label{display:block;font-size:14px;color:var(--sub);margin-top:12px}dialog input:not([type=checkbox]),dialog textarea,dialog select{width:100%;padding:10px 12px;font-size:16px}dialog textarea{min-height:110px;resize:vertical}dialog textarea.actual-field{min-height:45vh}dialog .row{margin-top:auto;padding-top:18px;position:sticky;bottom:0;background:var(--bg)}#tagbar{display:none!important}
-@media(max-width:560px){header{padding:8px 12px 2px}h1{font-size:18px}.bar{padding:8px 10px}.bar .row{gap:5px}main{padding:10px 10px 40px}.ev{grid-template-columns:1fr;gap:4px}.when{text-align:left;padding:0}.grid{grid-template-columns:1fr}dialog{padding:14px 12px}.tree-act{width:270px;flex-basis:270px}.tree-node .ev{grid-template-columns:1fr}.tree-node .when{text-align:left;padding:0}body.treeview main{padding:0}}
+@media(max-width:560px){header{padding:8px 12px 2px}header{flex-wrap:wrap;overflow:visible;gap:4px 8px;align-items:center}#ttl{flex:1 1 100%}#sub{flex:1 1 100%;white-space:normal;overflow:visible;text-overflow:clip;order:1}#stat,#themeBtn,#who,#fbst{order:2}h1{font-size:18px}.bar{padding:8px 10px}.bar .row{gap:5px}main{padding:10px 10px 40px}.ev{grid-template-columns:1fr;gap:4px}.when{text-align:left;padding:0}.grid{grid-template-columns:1fr}dialog{padding:14px 12px}.tree-act{width:270px;flex-basis:270px}.tree-node .ev{grid-template-columns:1fr}.tree-node .when{text-align:left;padding:0}body.treeview main{padding:0}}
 /* 메뉴 탭: 타임라인·인물설정·아이템설정·막 설정이 완전히 같은 모양 */
 .bar .row>.tab{padding:5px 12px;font-weight:700;border:none;border-bottom:3px solid transparent;border-radius:0;background:none;color:var(--tx)}
 .bar .row>.tab.on{color:var(--ac);border-bottom-color:var(--ac);background:none}
@@ -240,7 +256,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}dialog form{width:100%;max-width:non
 <div id="ld"><div class="t"><div class="b" id="ldb"></div></div><div class="m" id="ldm">data.json 불러오는 중…</div></div>
 <header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span class="pl" id="sub">수정본 · 사건 편집창에 ‘실제 내용 (소설 원문)’ 입력란 포함</span><span id="stat"></span><button id="themeBtn" type="button" style="flex:none;font-size:12px;padding:2px 10px;white-space:nowrap" title="화면 테마 선택 (자동 → 라이트 → 다크)"></button><span id="who" class="rolechip" hidden style="flex:none"></span><button id="fbst" hidden style="flex:none;font-size:12px;padding:2px 10px;white-space:nowrap"></button></header>
 <div class="bar collapsed">
- <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button><button class="tab" data-tab="it">아이템설정</button><button class="tab" data-tab="ac">막설정</button>
+ <div class="row"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물설정</button><button class="tab" data-tab="it">아이템설정</button><button class="tab" data-tab="ac">막설정</button><button class="tab" data-tab="tr">🗑 휴지통</button>
  <span style="flex:1"></span><button class="pill" id="add">+ 추가</button></div>
  <div class="row"><button class="menu-toggle" id="menuToggle" aria-expanded="false" title="메뉴 펼치기" aria-label="메뉴 접기/펼치기">⌄</button><input id="q" placeholder="검색 (제목·내용·인물·태그·메모)"></div>
  <div class="row filters"><select id="view"><option value="tree" selected>세로보기</option><option value="act">가로보기</option><option value="char">인물별 보기</option><option value="table">표 보기</option></select>
@@ -314,6 +330,8 @@ const normalizeData=()=>{
  if(!D||typeof D!=="object")D={events:[],chars:[]};
  if(!Array.isArray(D.events))D.events=[];
  if(!Array.isArray(D.chars))D.chars=[];
+ if(!Array.isArray(D.trash))D.trash=[];
+ D.trash=D.trash.filter(t=>t&&t.o&&["events","chars","items"].includes(t.k));
  if(!Array.isArray(D.items)){const seen=new Set();D.items=[];(D.events||[]).forEach(e=>String(e&&e.items||"").split(",").map(x=>x.trim()).filter(Boolean).forEach(n=>{if(!seen.has(n)){seen.add(n);D.items.push({id:D.items.length+1,name:n,desc:"",owner:"",memo:""})}}))}
  D.items=D.items.map((c,i)=>{if(!c||typeof c!=="object")c={name:safeText(c)};["name","desc","owner","memo"].forEach(k=>{c[k]=safeText(c[k],"")});c.id=Number(c.id)||i+1;return c});
  if(Array.isArray(D.acts)&&D.acts.length)setActs(D.acts);
@@ -360,13 +378,14 @@ $("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand(
 
 // 공개된 사건 id 집합 (로그인 후 Firestore pubEvents 에서 실시간으로 채워진다)
 let PUBMAP=new Map(),PUBGOT=false,PUBMETAS="";
-const stIcons=e=>`<span class="st" data-donetog="${e.id}" title="${e.done?"작성 완료 (클릭하면 미완료로)":"작성 미완료 (클릭하면 완료로)"}">${e.done?"☑️":"☐"}</span>`;
+const stCls=e=>{const t=!!String(e.actual||"").trim();return e.done?(t?"s-done":"s-warn"):t?"s-text":"s-empty"};
+const stIcons=e=>`<span class="st stf ${e.fs?"on":""}" data-fstog="${e.id}" title="${e.fs?"중요 (클릭하면 해제)":"중요하지 않음 (클릭하면 중요 표시)"}">${e.fs?"★":"☆"}</span><span class="st" data-donetog="${e.id}" title="${e.done?"작성 완료 (클릭하면 미완료로)":"작성 미완료 (클릭하면 완료로)"}">${e.done?"☑️":"☐"}</span>`;
 // 요약 대신 소설 내용(실제 내용)의 첫머리를 한 줄로 보여준다.
 const nvPrev=e=>{const t=String(e.actual||"").replace(/\s+/g," ").trim();return t?esc(t.length>50?t.slice(0,50)+"...":t):'<span class="pl">(소설 내용 없음)</span>'};
 function evHTML(e,mini,drag){
- return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
+ return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""} ${stCls(e)}">
  <div class="btns">${mini?stIcons(e):`${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}${stIcons(e)}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button>`}</div>
- <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${nvPrev(e)}</p>
+ <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${nvPrev(e)}</p>
  <div class="tags">${charList(e).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(charLbl(c))}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
  ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}${e.actual?`<div class="nvrow"><button type="button" class="nvbtn" data-nv="${e.id}">📖 보기</button></div>`:""}</div></div>`}
 function chHTML(c){
@@ -397,7 +416,15 @@ function render(){
  const oldWrap=document.querySelector(".tree-wrap"),sl=oldWrap?oldWrap.scrollLeft:0,st=oldWrap?oldWrap.scrollTop:0;
  let h="";
  $("add").textContent=tab=="ac"?"+ 막 추가":"+ 추가";
- if(tab=="ac"){
+ $("add").hidden=tab=="tr";
+ if(tab=="tr"){
+  const KL={events:"사건",chars:"인물",items:"아이템"},T=D.trash.slice().sort((a,b)=>b.at-a.at).filter(t=>hit(t.o,q,["title","name","actual","desc","memo"]));
+  const dt=at=>{const x=new Date(at);return `${x.getMonth()+1}/${x.getDate()} ${String(x.getHours()).padStart(2,"0")}:${String(x.getMinutes()).padStart(2,"0")}`};
+  h=`<p class="pl" style="margin:4px 0 8px">삭제한 항목이 여기에 보관됩니다. 휴지통에서 삭제하면 <b>영구 삭제</b>되어 복원할 수 없습니다.</p>`+
+   (D.trash.length?`<div class="row" style="margin-bottom:8px"><button class="pill" data-tr="empty">휴지통 비우기</button></div>`:"")+
+   (T.length?T.map(t=>`<div class="card"><div class="row"><span class="pl">${KL[t.k]} · ${dt(t.at)}</span><span style="flex:1"></span><button class="pill" data-tr="restore" data-at="${t.at}" data-k="${t.k}">복원</button><button class="pill" data-tr="purge" data-at="${t.at}" data-k="${t.k}">영구삭제</button></div><b>${esc(t.o.title||t.o.name||"(이름 없음)")}</b></div>`).join(""):`<p class="pl">휴지통이 비어 있습니다.</p>`);
+  $("stat").textContent=`휴지통 ${D.trash.length}개`;
+ }else if(tab=="ac"){
   h=`<div class="aclist">${ACTS.map((a,i)=>`<div class="acrow card"><button data-aact="up" data-ai="${i}" ${i===0?"disabled":""}>▲</button><button data-aact="dn" data-ai="${i}" ${i===ACTS.length-1?"disabled":""}>▼</button><button data-aact="del" data-ai="${i}">✕</button><input data-an="${i}" value="${esc(a)}"><span class="pl">${D.events.filter(e=>+e.act===i&&e.done).length}/${D.events.filter(e=>+e.act===i).length}개</span></div>`).join("")}</div>`;
   $("stat").textContent=`막 ${ACTS.length}개`;
  }else if(tab=="it"){
@@ -577,6 +604,9 @@ function setFs(on){const w=$("actwrap");if(w)w.classList.toggle("fs",on);$("f").
 let lnMirror=null,lnRaf=0;
 function updLn(){
  const ta=document.querySelector("#f textarea.actual-field");if(!ta)return;
+ // 일반 편집: 입력칸 자체는 스크롤하지 않고 내용만큼 늘려, 화면(대화상자) 스크롤 하나만 쓰게 한다.
+ if($("f").classList.contains("isfs")){if(ta.style.height)ta.style.height=""}
+ else{const dl=$("dlg"),sy=dl.scrollTop;ta.style.height="auto";ta.style.height=ta.scrollHeight+"px";dl.scrollTop=sy}
  const g=ta.parentElement.querySelector(".edln"),inn=g.firstChild,cs=getComputedStyle(ta);
  if(!lnMirror){lnMirror=document.createElement("div");document.body.appendChild(lnMirror)}
  const m=lnMirror;
@@ -883,12 +913,23 @@ document.addEventListener("click",ev=>{
   if(k==="del"){if(ACTS.length<=1){alert("막은 최소 1개 이상 있어야 합니다.");return}if(!confirm(`「${ACTS[i]}」을 삭제할까요? 이 막의 사건은 이전 막으로 이동합니다.`))return;ACTS.splice(i,1);D.events.forEach(e=>{if(+e.act===i)e.act=Math.max(0,i-1);else if(+e.act>i)e.act--});fillActFilter();save();render()}
   else if(moveAct(i,k==="up"?i-1:i+2)){save();render()}
   return}
+ const fg=ev.target.closest("[data-fstog]");
+ if(fg){const e=D.events.find(x=>x.id==fg.dataset.fstog);if(e){e.fs=!e.fs;save();render()}return}
  const tg=ev.target.closest("[data-donetog]");
  if(tg){const e=D.events.find(x=>x.id==tg.dataset.donetog);
   if(e){e.done=!e.done;save();render()}
   return}
- const el=ev.target.closest("[data-a],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit],[data-nv]");if(!el)return;if(el.dataset.nv){openNovel(+el.dataset.nv);return}
+ const el=ev.target.closest("[data-a],[data-tr],[data-tab],[data-tag],[data-ch],[data-it],[data-showch],[data-showit],[data-nv]");if(!el)return;if(el.dataset.nv){openNovel(+el.dataset.nv);return}
  const d=el.dataset;
+ if(d.tr){
+  const ix=D.trash.findIndex(t=>String(t.at)===d.at&&t.k===d.k);
+  if(d.tr==="empty"){if(D.trash.length&&confirm(`휴지통의 ${D.trash.length}개 항목을 모두 영구 삭제할까요? 복원할 수 없습니다.`)){D.trash=[];save()}}
+  else if(ix>=0){
+   const t=D.trash[ix],nm=t.o.title||t.o.name||"항목";
+   if(d.tr==="purge"){if(!confirm(`「${nm}」을(를) 영구 삭제할까요? 복원할 수 없습니다.`))return;D.trash.splice(ix,1);save()}
+   else if(d.tr==="restore"){const arr=D[t.k],o=t.o;if(arr.some(x=>x.id===o.id))o.id=Math.max(0,...arr.map(x=>+x.id||0))+1;arr.push(o);D.trash.splice(ix,1);save()}
+  }
+  render();return}
  if(d.tab){tab=d.tab;$("q").value=""} // 메뉴(탭)를 고를 때마다 검색 필드 초기화
  else if(d.tag){d.tag&&(ft.has(d.tag)?ft.delete(d.tag):ft.add(d.tag))}
  else if(d.showit){ev.preventDefault();tab="tl";$("view").value="act";$("q").value=d.showit}
@@ -900,7 +941,7 @@ document.addEventListener("click",ev=>{
   if(d.a=="ed"){openEd(d.t,d.i);return}
   if(d.a=="ins"){openEd("e",null,+d.i);return}
   if(d.a=="insact"){openEd("e",null,null,+d.act);return}
-  if(d.a=="del"){if(!confirm(`「${arr[i].title||arr[i].name}」을(를) 삭제할까요? 삭제 후에는 복구할 수 없습니다.`))return;arr.splice(i,1)}
+  if(d.a=="del"){if(!confirm(`「${arr[i].title||arr[i].name}」을(를) 휴지통으로 옮길까요?`))return;const [rm]=arr.splice(i,1);D.trash.push({k:d.t=="e"?"events":d.t=="i"?"items":"chars",at:Date.now(),o:rm})}
   if(d.a=="up"&&i>0)[arr[i-1],arr[i]]=[arr[i],arr[i-1]];
   if(d.a=="dn"&&i<arr.length-1)[arr[i+1],arr[i]]=[arr[i],arr[i+1]];
   save();
@@ -1014,6 +1055,11 @@ function fbFlushMain(){
   if(!b||b.s!==s)writes.push({key,ref:fs.doc(db,k,String(o.id)),data:{...data,ord:i},s,ord:i});
   else if(b.ord!==i)ordOnly.push({key,ref:fs.doc(db,k,String(o.id)),ord:i,s}); // 순서만 바뀐 항목은 순서 값만 쓴다 (다른 기기의 내용 수정을 덮지 않기 위해)
  }));
+ D.trash.forEach(t=>{
+  const id="t"+t.at+"_"+t.o.id,key=t.k+"/"+id;seen.add(key);
+  const data={...JSON.parse(JSON.stringify(t.o)),_tr:t.at},s=stable(data),b=BASE.get(key);
+  if(!b||b.s!==s)writes.push({key,ref:fs.doc(db,t.k,id),data,s,ord:undefined});
+ });
  const dels=[];BASE.forEach((b,key)=>{if(key!=="meta"&&!seen.has(key)){const [k,id]=key.split("/");dels.push({key,ref:fs.doc(db,k,id)})}});
  const meta={title:D.title||"",acts:ACTS.slice()},ms=stable(meta),mb=BASE.get("meta");
  const metaChanged=!mb||mb.s!==ms;
@@ -1031,12 +1077,13 @@ function fbFlushMain(){
 // 서버 내용을 화면 데이터(D)에 반영한다. 저장하지 않은 수정이 있을 때는 호출하지 않는다.
 function fbApply(first){
  const docs=k=>SNAP[k].docs.map(d=>d.data());
- const evs=docs("events"),chs=docs("chars"),its=docs("items"),meta=SNAP.meta.exists()?SNAP.meta.data():null;
- if(!evs.length&&!chs.length&&!its.length&&!meta){
+ const isTr=o=>o&&o._tr!=null,trs=[];COLS.forEach(k=>SNAP[k].docs.forEach(d=>{const o=d.data();if(isTr(o)){const c={...o};delete c._tr;delete c.ord;trs.push({k,at:o._tr,o:c,key:k+"/"+d.id})}}));
+ const evs=docs("events").filter(o=>!isTr(o)),chs=docs("chars").filter(o=>!isTr(o)),its=docs("items").filter(o=>!isTr(o)),meta=SNAP.meta.exists()?SNAP.meta.data():null;
+ if(!evs.length&&!chs.length&&!its.length&&!trs.length&&!meta){
   // 서버가 비어 있으면 로그인 후 작업 화면은 빈 상태로 시작합니다.
   // 로그인 전 미리보기용 더미 데이터는 서버 데이터로 취급하지 않습니다.
   // 따라서 첫 저장 때 더미 항목 전체가 서버에 올라가는 일을 방지합니다.
-  D={title:DEFTITLE,acts:ACTS.slice(),events:[],chars:[],items:[],_tagsRemoved:true};
+  D={title:DEFTITLE,acts:ACTS.slice(),events:[],chars:[],items:[],trash:[],_tagsRemoved:true};
   normalizeData();
   BASE=new Map();
   // 기본 제목/막 이름을 기준값으로 잡아, 새 항목을 만들지 않았다면 아무것도 업로드하지 않습니다.
@@ -1045,16 +1092,17 @@ function fbApply(first){
   fillActFilter();render();cacheLocal();
   return;
  }
- const sig=()=>stable({t:D.title,a:ACTS,e:D.events,c:D.chars,i:D.items});
+ const sig=()=>stable({t:D.title,a:ACTS,e:D.events,c:D.chars,i:D.items,r:D.trash});
  const before=sig();
  if(first){try{localStorage.setItem("novel-backup-before-sync",JSON.stringify(D))}catch(e){}}
  const ord=a=>a.slice().sort((x,y)=>(x.ord??1e9)-(y.ord??1e9)).map(o=>{const c={...o};delete c.ord;return c});
- D={title:meta&&meta.title||"",acts:meta&&Array.isArray(meta.acts)&&meta.acts.length?meta.acts:ACTS.slice(),events:ord(evs),chars:ord(chs),items:ord(its),_tagsRemoved:true};
+ D={title:meta&&meta.title||"",acts:meta&&Array.isArray(meta.acts)&&meta.acts.length?meta.acts:ACTS.slice(),events:ord(evs),chars:ord(chs),items:ord(its),trash:trs.map(t=>({k:t.k,at:t.at,o:t.o})),_tagsRemoved:true};
  normalizeData();
  // 비교 기준(BASE)은 화면에서 쓰는(정규화된) 데이터로 만든다. 서버 원본으로 만들면 빠진 필드 때문에 모든 항목이 '바뀐 것'으로 보여 다른 기기의 수정을 덮어쓰게 된다.
  BASE=new Map();const ordOf={};
  COLS.forEach(k=>SNAP[k].docs.forEach(d=>{ordOf[k+"/"+d.id]=d.data().ord}));
  COLS.forEach(k=>D[k].forEach(o=>BASE.set(k+"/"+o.id,{s:stable(JSON.parse(JSON.stringify(o))),ord:ordOf[k+"/"+o.id]})));
+ trs.forEach(t=>{const tt=D.trash.find(x=>x.k===t.k&&x.at===t.at);if(tt)BASE.set(t.key,{s:stable(JSON.parse(JSON.stringify({...tt.o,_tr:tt.at}))),ord:undefined,tr:1})});
  if(meta)BASE.set("meta",{s:stable({title:D.title||"",acts:ACTS.slice()})});
  let stale=false;SNAP.events.docs.forEach(d=>{if("summary" in d.data()){stale=true;BASE.set("events/"+d.id,{s:"",ord:ordOf["events/"+d.id]})}});
  fbBased=true;
