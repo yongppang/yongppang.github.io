@@ -147,7 +147,7 @@ body.share header,body.share .bar,body.share main,body.share #nclose{display:non
 .fsoff{display:none}
 .insbar{margin:4px 0}.insdet{margin:4px 0}.insdet summary{cursor:pointer;font-size:14px;color:var(--sub);padding:2px 0;user-select:none}.insdet summary:hover{color:var(--ac)}.insrow{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
 .insrow .ins{padding:3px 10px;font-size:13px;font-weight:700}
-.actbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.actbar{display:flex;flex-wrap:nowrap;gap:6px;margin:8px 0;align-items:center}.actbar button{flex:1 1 auto;white-space:nowrap;padding:6px 6px;font-size:13px}
 .pick{width:auto;max-width:220px;padding:8px 10px;font-size:14px}
 .actwrap.fs{position:fixed;inset:0;z-index:50;background:var(--bg);padding:10px 14px 0;display:flex;flex-direction:column}
 .actwrap.fs .spbody{max-height:38vh;overflow:auto}
@@ -516,10 +516,10 @@ document.addEventListener("pointercancel",ev=>endAct(ev,true));
 // ===== 실제 내용 입력창: 등장인물/아이템 선택 칩을 원문 위에 배치 =====
 function actualBlock(l,val,charsVal,itemsVal){
  return `<div class="actwrap" id="actwrap"><div class="acthead"><label>${l}</label></div>
+ <div class="actbar"><button type="button" id="fsOn">⛶ 화면 가득 편집</button><button type="button" id="goChars">⚙ 등장인물 설정</button><button type="button" id="goItems">⚙ 아이템 설정</button></div>
  <details class="story-pickers" id="spick"><summary><b>👤 등장인물 · ◇ 주요 아이템</b> <span class="pl" id="pksum"></span></summary><div class="spbody"><label>👤 등장인물</label><input name="chars" value="${esc(charsVal||"")}" placeholder="등장인물 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-chars">${pkChips("chars",split(charsVal||""))}</div>
  <label>◇ 주요 아이템</label><input name="items" value="${esc(itemsVal||"")}" placeholder="아이템 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(itemsVal||""))}</div></div></details>
- <div class="edwrap"><div class="edln" aria-hidden="true"><div class="edln-in"></div></div><textarea class="actual-field" name="actual" rows="12" placeholder="이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.">${esc(val)}</textarea></div>
- <div class="actbar"><button type="button" id="fsOn">⛶ 화면 가득 편집</button><button type="button" id="goChars">⚙ 등장인물 설정</button><button type="button" id="goItems">⚙ 아이템 설정</button></div></div>`;
+ <div class="edwrap"><div class="edln" aria-hidden="true"><div class="edln-in"></div></div><textarea class="actual-field" name="actual" rows="12" placeholder="이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.">${esc(val)}</textarea></div></div>`;
 }
 const addToField=(name,n)=>{const inp=$("f")[name];if(!inp)return;const a=split(inp.value);if(!a.includes(n)){a.push(n);inp.value=a.join(",")}refreshPk(name)};
 // ===== 등장인물/아이템 선택 칩 + 새 이름 추가 =====
@@ -612,7 +612,7 @@ $("f").addEventListener("keydown",ev=>{
 $("dlg").addEventListener("cancel",ev=>{const w=$("actwrap");if(w&&w.classList.contains("fs")){ev.preventDefault();setFs(false)}});
 function openEd(t,id,insertAfterId=null,actIdx=null){
  editing={t,id,insertAfterId};const anchor=insertAfterId!=null?D.events.find(x=>x.id===insertAfterId):null;const o=(id&&arrOf(t).find(x=>x.id==id))||(anchor?{act:+anchor.act,when:anchor.when,place:anchor.place}:{act:actIdx!=null?actIdx:2,when:"D+"});
- $("f").innerHTML=`<h3 style="margin:0">${t=="e"?"이벤트":t=="i"?"아이템":"인물"} ${id?"수정":"추가"}</h3><div class="fgrid">`+SCH[t].map(([k,l,ty])=>{
+ $("f").innerHTML=`<h3 style="margin:0">${t=="e"?"이벤트":t=="i"?"아이템":"인물"} ${id?"수정":"추가"}</h3><div class="fgrid">`+(t==="e"?[...SCH.e.filter(f=>f[0]!=="actual"),SCH.e.find(f=>f[0]==="actual")]:SCH[t]).map(([k,l,ty])=>{ // 사건: 소설 원문(긴 글)은 맨 아래로
   if(t==="e"&&(k==="chars"||k==="items"))return "";
   const wide=ty=="ta"||k==="actual";
   const val=o[k]??"";const inner=(()=>{
