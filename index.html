@@ -71,7 +71,7 @@ body.connecting main{visibility:hidden}
 .clk{cursor:pointer}h3.clk:hover{color:var(--ac)}p.clk:hover{background:#6c5ce712;border-radius:6px}
 /* 소설 내용 보기 */
 .nv-h{margin:22px 0 4px;font-size:18px;font-weight:700;color:var(--ac)}.nv-b{white-space:pre-wrap;line-height:1.9;font-size:16px}.nv-empty{color:var(--sub)}
-.nvbtn{margin:6px 0;font-size:13px;padding:3px 10px;color:var(--ac);border-style:dashed}
+.nvrow{margin-top:8px}.nvbtn{margin:0;font-size:13px;padding:3px 10px;color:var(--ac);border-style:dashed}
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
 .nv-code{margin-top:8px;border:1px solid var(--bd);border-radius:8px;background:#f6f4ff;padding:8px 0;font-size:15px;line-height:1.8}
 .nl{display:flex;align-items:flex-start}.nl:hover{background:#6c5ce70d}
@@ -353,9 +353,9 @@ const nvPrev=e=>{const t=String(e.actual||"").replace(/\s+/g," ").trim();return 
 function evHTML(e,mini,drag){
  return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<small>#${e.id}</small></div><div class="card ${e.fs?"fs":""} ${e.done?"done":""}">
  <div class="btns">${mini?stIcons(e):`${drag?`<button class="dh" data-i="${e.id}" title="드래그해서 다른 막/위치로 이동">⠿</button>`:""}${stIcons(e)}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button>`}</div>
- <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${nvPrev(e)}</p>${e.actual?`<button type="button" class="nvbtn" data-nv="${e.id}">📖 실제 소설 내용 보기</button>`:""}
+ <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${e.fs?"⭐ ":""}${esc(e.title)}</h3><div class="pl">📍 ${esc(e.place)}</div><p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}" title="클릭하면 수정">${nvPrev(e)}</p>
  <div class="tags">${charList(e).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(charLbl(c))}</span>`).join("")}${split(e.items).map(c=>`<span class="it" data-it="${esc(c)}" title="아이템 설정으로 이동">◇ ${esc(c)}</span>`).join("")}${split(e.tags).map(c=>`<span class="tg" data-tag="${esc(c)}">#${esc(c)}</span>`).join("")}</div>
- ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}</div></div>`}
+ ${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}${e.actual?`<div class="nvrow"><button type="button" class="nvbtn" data-nv="${e.id}">📖 보기</button></div>`:""}</div></div>`}
 function chHTML(c){
  const n=D.events.filter(e=>evHas(e,c.name)).length;
  const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
