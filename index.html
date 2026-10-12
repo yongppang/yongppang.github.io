@@ -875,6 +875,7 @@ function yAtIdx(ta,n){
 }
 function edGoLine(n,col=0){ // 편집창에서 원문의 n번째 줄(0부터)로 커서와 화면을 옮긴다
  const ta=document.querySelector("#f textarea.actual-field");if(!ta)return;
+ updLn(); // 입력칸 높이를 먼저 확정한 뒤 위치를 계산한다
  const lines=ta.value.split("\n");n=Math.min(Math.max(0,n),lines.length-1);
  let idx=0;for(let i=0;i<n;i++)idx+=lines[i].length+1;
  idx+=Math.min(Math.max(0,col),lines[n].length);
@@ -890,10 +891,14 @@ let nvCaret=null;
 function nvCaretNow(){
  const sel=getSelection();if(!sel||!sel.rangeCount)return null;
  const r=sel.getRangeAt(0),nb=$("nbody");if(!nb.contains(r.startContainer))return null;
- let el=r.startContainer.nodeType===1?r.startContainer:r.startContainer.parentElement;
- const nl=el&&el.closest(".nl");if(!nl)return null;
+ let sc=r.startContainer,so=r.startOffset;
+ if(sc.nodeType===1&&sc.childNodes[so]){sc=sc.childNodes[so];so=0} // 요소 단위로 잡힌 선택(줄 전체 선택 등)은 그 안쪽 첫 글자로 본다
+ let el=sc.nodeType===1?sc:sc.parentElement;
+ let nl=el&&el.closest(".nl");if(!nl){const f=el&&el.querySelector&&el.querySelector(".nl");if(!f)return null;nl=f}
  const lt=nl.querySelector(".lt");let off=0;
- if(lt&&lt.contains(r.startContainer)){const pre=document.createRange();pre.selectNodeContents(lt);pre.setEnd(r.startContainer,r.startOffset);off=pre.toString().length}
+ if(lt&&lt.contains(sc)){const pre=document.createRange();pre.selectNodeContents(lt);pre.setEnd(sc,so);off=pre.toString().length}
+ // 줄 끝에서 시작해 다음 줄까지 드래그한 선택은 다음 줄 시작으로 본다
+ if(!sel.isCollapsed&&lt&&off>0&&off>=lt.textContent.length&&nl.nextElementSibling&&nl.nextElementSibling.classList.contains("nl")){nl=nl.nextElementSibling;off=0}
  if(nl.classList.contains("nh"))off=0;
  return {nl,off};
 }
