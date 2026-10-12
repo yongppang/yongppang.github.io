@@ -126,9 +126,9 @@ body.share #nview{display:none}
 dialog form{padding-bottom:40px}
 dialog .row.dacts{position:fixed;right:6px;bottom:auto;left:auto;top:50%;transform:translateY(-50%);margin:0!important;padding:0;background:none;flex-direction:column;align-items:flex-end;flex-wrap:nowrap;gap:6px;z-index:100;width:auto}
 dialog .row.dacts>span{display:none}
-dialog .row.dacts .pill{opacity:.5;background:rgba(255,255,255,.3)!important;box-shadow:none;backdrop-filter:none;transition:opacity .15s}
+dialog .row.dacts .pill{opacity:.92;background:rgba(255,255,255,.88)!important;border:1px solid #6c5ce7aa!important;box-shadow:0 2px 10px #0003;backdrop-filter:none;font-weight:700;transition:opacity .15s}
 dialog .row.dacts .pill:hover,dialog .row.dacts .pill:focus-visible,dialog .row.dacts .pill:active{opacity:1;background:rgba(255,255,255,.95)!important}
-:root[data-theme=dark] dialog .row.dacts .pill{background:rgba(32,36,56,.35)!important}
+:root[data-theme=dark] dialog .row.dacts .pill{background:rgba(32,36,56,.9)!important;border-color:#8d7fffcc!important}
 :root[data-theme=dark] dialog .row.dacts .pill:hover,:root[data-theme=dark] dialog .row.dacts .pill:focus-visible,:root[data-theme=dark] dialog .row.dacts .pill:active{background:rgba(48,54,88,.97)!important}
 /* 카드가 칸(막 열)을 넘지 않도록: 그리드/플렉스 아이템의 최소 폭 제한을 풀고 넘치는 글은 ...으로 줄임 */
 .ev>*,.tree-node,.tree-act{min-width:0}
@@ -141,6 +141,8 @@ dialog .row.dacts .pill:hover,dialog .row.dacts .pill:focus-visible,dialog .row.
 dialog textarea:not(.actual-field){min-height:0;resize:vertical}
 .aclist{max-width:760px}.acrow{display:flex;align-items:center;gap:8px;margin:8px 0;padding:8px 12px;flex-wrap:nowrap}
 .acrow input{flex:1 1 auto;min-width:0;font-weight:700}.acrow button{flex:none;padding:4px 10px}.acrow .pl{white-space:nowrap;flex:none}
+.toast{position:fixed;left:50%;bottom:calc(max(10px,env(safe-area-inset-bottom)) + 70px);transform:translate(-50%,12px);z-index:1000;background:rgba(32,36,56,.94);color:#fff;padding:10px 20px;border-radius:999px;font-size:14px;font-weight:700;box-shadow:0 6px 20px #0004;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 .btns{flex-wrap:nowrap;align-items:center}.btns button{white-space:nowrap}.btns .st{margin-left:4px}
 body.share header,body.share .bar,body.share main,body.share #nclose{display:none}
 .nacts{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}.nacts button{font-size:13px;padding:4px 12px;font-weight:700}.nacts button small{font-weight:400;opacity:.8;margin-left:3px}
@@ -689,6 +691,14 @@ function openEd(t,id,insertAfterId=null,actIdx=null){
   `</div><div class="row dacts">${t=="e"?`<button type="button" class="pill" id="fsOff">원래보기</button>`:""}<button class="pill" value="ok">저장</button><button class="pill" value="cancel" formnovalidate>취소</button></div>`;
  $("f").classList.remove("isfs");$("dlg").showModal();$("dlg").style.setProperty("--epad",getComputedStyle($("dlg")).paddingTop);pkSum();updLn();
 }
+// 잠깐 떴다 사라지는 알림. 열려 있는 대화창(소설 보기 등) 위에서도 보이도록 그 안에 붙인다.
+function toast(msg,ms=1800){
+ document.querySelectorAll(".toast").forEach(x=>x.remove());
+ const host=[...document.querySelectorAll("dialog[open]")].pop()||document.body;
+ const el=document.createElement("div");el.className="toast";el.setAttribute("role","status");el.textContent=msg;host.appendChild(el);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("show")));
+ setTimeout(()=>{el.classList.remove("show");setTimeout(()=>el.remove(),300)},ms);
+}
 $("f").addEventListener("submit",ev=>{
  if(ev.submitter.value!="ok")return;const {t,id}=editing,f=$("f"),arr=arrOf(t),d={};
  SCH[t].forEach(([k,,ty])=>d[k]=ty=="cb"?f[k].checked:ty=="sel"?+f[k].value:f[k].value);
@@ -699,6 +709,7 @@ $("f").addEventListener("submit",ev=>{
  }
  if(id)Object.assign(arr.find(x=>x.id==id),d);else {const fresh={id:Math.max(0,...arr.map(x=>x.id))+1,...d};if(t==="e"&&editing.insertAfterId!=null){const at=arr.findIndex(x=>x.id===editing.insertAfterId);arr.splice(at<0?arr.length:at+1,0,fresh)}else arr.push(fresh)}
  save();render();
+ setTimeout(()=>toast("저장했습니다."),0); // 편집창이 닫힌 뒤에 표시
 });
 function drawActRows(){
  const host=$("actRows");host.innerHTML=ACTS.map((a,i)=>`<div class="row" data-actrow="${i}" style="border-bottom:1px solid var(--bd);padding:5px 0"><input data-actname="${i}" value="${esc(a)}" style="flex:1;min-width:170px"><button type="button" data-actmove="up" data-idx="${i}" ${i===0?"disabled":""}>←</button><button type="button" data-actmove="dn" data-idx="${i}" ${i===ACTS.length-1?"disabled":""}>→</button><button type="button" class="danger" data-actdel="${i}">삭제</button></div>`).join("");
