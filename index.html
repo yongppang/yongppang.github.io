@@ -157,6 +157,12 @@ details.story-pickers{display:block;padding:8px 10px}.story-pickers>summary{curs
 .story-pickers .spbody{display:flex;flex-direction:column;gap:5px;margin-top:8px}.spbody>label{font-size:13px;font-weight:700;margin-top:3px}.spbody>input{width:100%;min-width:0}
 .actwrap.fs .acthead label{margin:0}
 .actwrap.fs .fsoff{display:inline-block;font-size:14px;padding:5px 12px}
+/* 등장인물/아이템 + 진행 표시: 스크롤해도 위에 붙어 따라다닌다 (소설 보기의 바로가기와 같은 방식) */
+.edsticky{position:sticky;top:calc(var(--epad,0px) * -1);z-index:30;margin:8px 0 6px;border:1px solid var(--blkbd);border-radius:0;background:var(--card);box-shadow:0 4px 14px #0002}
+.edsticky details.story-pickers{margin:0;border:0;border-radius:0;background:none;padding:6px 10px}
+.edsticky .spbody{max-height:min(45vh,320px);overflow:auto}
+.edmeta{padding:0 10px 3px;font-size:12px;color:var(--sub);text-align:right;white-space:nowrap}
+.edprog{height:5px;background:var(--bd)}.edprog i{display:block;height:100%;width:0;background:var(--ac)}
 .edwrap{display:flex;align-items:stretch;border:2px solid var(--ac);border-radius:8px;background:#faf9ff;overflow:hidden}
 .edwrap textarea.actual-field{flex:1 1 auto;min-width:0;border:0!important;border-radius:0;background:transparent!important;line-height:1.7;margin:0}
 .edwrap textarea.actual-field:focus{outline:none;box-shadow:none}
@@ -517,8 +523,8 @@ document.addEventListener("pointercancel",ev=>endAct(ev,true));
 function actualBlock(l,val,charsVal,itemsVal){
  return `<div class="actwrap" id="actwrap"><div class="acthead"><label>${l}</label></div>
  <div class="actbar"><button type="button" id="fsOn">⛶ 화면 가득 편집</button><button type="button" id="goChars">⚙ 등장인물 설정</button><button type="button" id="goItems">⚙ 아이템 설정</button></div>
- <details class="story-pickers" id="spick"><summary><b>👤 등장인물 · ◇ 주요 아이템</b> <span class="pl" id="pksum"></span></summary><div class="spbody"><label>👤 등장인물</label><input name="chars" value="${esc(charsVal||"")}" placeholder="등장인물 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-chars">${pkChips("chars",split(charsVal||""))}</div>
- <label>◇ 주요 아이템</label><input name="items" value="${esc(itemsVal||"")}" placeholder="아이템 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(itemsVal||""))}</div></div></details>
+ <div class="edsticky" id="edsticky"><details class="story-pickers" id="spick"><summary><b>👤 등장인물 · ◇ 주요 아이템</b> <span class="pl" id="pksum"></span></summary><div class="spbody"><label>👤 등장인물</label><input name="chars" value="${esc(charsVal||"")}" placeholder="등장인물 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-chars">${pkChips("chars",split(charsVal||""))}</div>
+ <label>◇ 주요 아이템</label><input name="items" value="${esc(itemsVal||"")}" placeholder="아이템 이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(itemsVal||""))}</div></div></details><div class="edmeta" id="edmeta"></div><div class="edprog"><i id="edprogI"></i></div></div>
  <div class="edwrap"><div class="edln" aria-hidden="true"><div class="edln-in"></div></div><textarea class="actual-field" name="actual" rows="12" placeholder="이 사건의 실제 소설 원문을 붙여 넣거나 작성하세요.">${esc(val)}</textarea></div></div>`;
 }
 const addToField=(name,n)=>{const inp=$("f")[name];if(!inp)return;const a=split(inp.value);if(!a.includes(n)){a.push(n);inp.value=a.join(",")}refreshPk(name)};
@@ -576,10 +582,21 @@ function updLn(){
  inn.textContent=out.replace(/\n$/,"");
  g.style.font=cs.font;g.style.lineHeight=cs.lineHeight;g.style.minWidth=(String(lines.length).length+1.6)+"ch";
  inn.style.paddingTop=cs.paddingTop;inn.style.transform=`translateY(${-ta.scrollTop}px)`;
+ updEdProg();
 }
+function updEdProg(){
+ const ta=document.querySelector("#f textarea.actual-field"),bar=$("edprogI"),meta=$("edmeta");if(!ta||!bar||!meta)return;
+ const len=ta.value.length,max=ta.scrollHeight-ta.clientHeight;
+ const caret=(ta.selectionStart??0),line=ta.value.slice(0,caret).split("\n").length,total=ta.value.split("\n").length;
+ // 글이 입력칸보다 길면 스크롤 위치, 아니면 커서 위치를 기준으로 채운다.
+ const pct=max>2?Math.min(100,ta.scrollTop/max*100):(len?caret/len*100:0);
+ bar.style.width=pct+"%";
+ meta.textContent=`줄 ${line}/${total} · ${Math.round(pct)}% · ${len.toLocaleString()}자`;
+}
+document.addEventListener("selectionchange",()=>{if(document.activeElement&&document.activeElement.matches&&document.activeElement.matches("textarea.actual-field"))updEdProg()});
 const updLnSoon=()=>{if(!lnRaf)lnRaf=requestAnimationFrame(()=>{lnRaf=0;updLn()})};
 $("f").addEventListener("input",ev=>{if(ev.target.matches&&ev.target.matches("textarea.actual-field"))updLnSoon()});
-$("f").addEventListener("scroll",ev=>{const t=ev.target;if(t.matches&&t.matches("textarea.actual-field")){const i=t.parentElement.querySelector(".edln-in");if(i)i.style.transform=`translateY(${-t.scrollTop}px)`}},true);
+$("f").addEventListener("scroll",ev=>{const t=ev.target;if(t.matches&&t.matches("textarea.actual-field")){const i=t.parentElement.querySelector(".edln-in");if(i)i.style.transform=`translateY(${-t.scrollTop}px)`;updEdProg()}},true);
 addEventListener("resize",updLnSoon);
 // 입력 중 ↑↓ 방향키: 커서가 맨 윗줄/맨 아랫줄이면 다른 칸으로 포커스가 넘어가지 않고 글의 맨 앞/맨 끝으로만 이동한다.
 // (줄바꿈으로 접힌 화면상의 줄까지 계산해, 글 중간에서는 평소처럼 위아래로 움직인다.)
@@ -622,7 +639,7 @@ function openEd(t,id,insertAfterId=null,actIdx=null){
   if(ty=="sel")return `<label>${l}</label><select name="${k}">${ACTS.map((a,i)=>`<option value="${i}" ${i==val?"selected":""}>${a}</option>`).join("")}</select>`;
   return `<label>${l}</label><input name="${k}" value="${esc(val)}">`})();return `<div class="fld${wide?" w":""}">${inner}</div>`}).join("")+
   `</div><div class="row dacts">${t=="e"?`<button type="button" class="pill" id="fsOff">원래보기</button>`:""}<button class="pill" value="ok">저장</button><button class="pill" value="cancel" formnovalidate>취소</button></div>`;
- $("f").classList.remove("isfs");$("dlg").showModal();pkSum();updLn();
+ $("f").classList.remove("isfs");$("dlg").showModal();$("dlg").style.setProperty("--epad",getComputedStyle($("dlg")).paddingTop);pkSum();updLn();
 }
 $("f").addEventListener("submit",ev=>{
  if(ev.submitter.value!="ok")return;const {t,id}=editing,f=$("f"),arr=arrOf(t),d={};
