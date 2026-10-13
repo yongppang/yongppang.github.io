@@ -843,8 +843,10 @@ function renderNovel(){
  nvCur=-1;
  $("nsum").textContent=asUser?`에피소드 ${L.length}개`:`${L.length}/${D.events.length}개 · 완료 ${D.events.filter(e=>e.done).length}`;
  $("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자":asUser?"👤 사용자 보기":"🛠 관리자";
- $("nview").textContent=asUser?"🛠 관리자로 보기":"👁 사용자로 보기";
- $("ncopy").style.display=asUser?"none":"";$("nedit").style.display=(!asUser&&isAdminNow())?"":"none";$("nbody").classList.toggle("nocopy",asUser);
+ const adminAllowed=isAdminNow(),loginNeeded=FBON&&!SHARE&&!fbUser,accessDenied=FBON&&!SHARE&&!!fbUser&&!adminAllowed;
+ $("nview").textContent=loginNeeded?"🔑 로그인하기":accessDenied?"🔐 관리자 권한 없음":asUser?"🛠 관리자 보기":"👁 사용자로 보기";
+ $("nview").disabled=accessDenied;
+ $("ncopy").style.display=asUser?"none":"";$("nedit").style.display=(!asUser&&adminAllowed)?"":"none";$("nbody").classList.toggle("nocopy",asUser);
  $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}${l.chapter?" nchapter":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 내용이 없습니다.</p>';
  nvUpdate();
 }
@@ -905,7 +907,15 @@ $("nedit").onclick=()=>{
  nvEditing=true;closeNMenu();openEd("e",+id);
  nvCaret=null;requestAnimationFrame(()=>requestAnimationFrame(()=>edGoLine(lineInEv,col)));
 };
-$("nview").onclick=()=>{NVUSER=!NVUSER;renderNovel();$("nbody").scrollTop=0;closeNMenu()};
+$("nview").onclick=async()=>{
+ if(!SHARE&&FBON&&!isAdminNow()){
+  if(fbUser){alert("현재 Google 계정에는 관리자 권한이 없습니다. 관리자 계정으로 로그인해 주세요.");return}
+  closeNMenu();
+  try{if(!FB)await fbInit(true);await fbLogin()}catch(e){alert("로그인을 시작할 수 없습니다. 인터넷 연결을 확인해 주세요.")}
+  return;
+ }
+ NVUSER=!NVUSER;renderNovel();$("nbody").scrollTop=0;closeNMenu();
+};
 $("ndlg").addEventListener("cancel",ev=>{if(SHARE)ev.preventDefault()});
 $("nlink").onclick=async()=>{
  if(location.protocol==="file:"){alert("파일로 직접 연 상태에서는 공유 링크를 만들 수 없습니다.\n웹 주소로 접속한 뒤 눌러 주세요.");return}
@@ -1128,7 +1138,11 @@ function fbOnSnap(){
  if(!fbBased)fbApply(true);
  else if(!fbTimer)fbApply(false);
  if(!fbTimer)fbSyncPub();
- if(fbBased)connDone();
+ if(fbBased){
+  connDone();
+  // 로그인 직후 소설 보기 창이 열려 있다면 관리자 데이터가 도착한 화면으로 갱신
+  if($("ndlg").open){const st=$("nbody").scrollTop;renderNovel();$("nbody").scrollTop=st}
+ }
  fbStatus();
 }
 function fbListen(){
