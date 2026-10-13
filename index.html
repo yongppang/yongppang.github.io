@@ -31,7 +31,11 @@ h1:hover{border-bottom-color:var(--bd)}h1:focus{border-bottom-color:var(--ac)}
 #stat{margin-left:auto;color:var(--sub);font-size:12px;white-space:nowrap}
 header button{font-size:12px;padding:2px 10px;white-space:nowrap}
 .bar{position:sticky;top:0;z-index:20;background:var(--bg);padding:2px 14px 8px;border-bottom:1px solid var(--bd)}
-.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tabs{display:flex;gap:2px;align-items:center;overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.bar-toggle{margin-left:auto;flex:none;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;padding:0;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--sub);box-shadow:0 1px 2px #00000008}
+.bar-toggle svg{width:18px;height:18px;display:block;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.bar-toggle:hover{color:var(--ac);border-color:var(--ac)}
+#toolRows{display:block}.bar.tools-collapsed #toolRows{display:none}
 .tab{flex:none;white-space:nowrap;padding:7px 12px;font-weight:700;border:0;border-bottom:3px solid transparent;border-radius:0;background:none;color:var(--tx)}
 .tab.on{background:none;color:var(--ac);border-color:transparent;border-bottom-color:var(--ac)}
 .tools{display:flex;gap:6px;align-items:center;margin-top:6px}
@@ -56,9 +60,9 @@ body.booting header,body.booting .bar,body.booting main{visibility:hidden}
 .card{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:12px;padding:9px 12px;box-shadow:0 1px 2px #0000000d;overflow-wrap:anywhere;min-width:0}
 .card.fs{border-color:#f5a623}
 .card.s-empty{border-left-color:#b9bdc7}.card.s-text{border-left-color:#55c89a}.card.s-warn{border-left-color:#f09a2b}.card.s-done{border-left-color:#4a86e8}
-/* 사용자 지정 색상: 라이트 모드에서는 부드러운 색조, 다크 모드에서는 더 선명한 색조로 표시 */
+/* 사용자 지정 색상: 두 테마에서 같은 색조를 유지하고 다크 모드에서는 20%만 은은하게 적용 */
 .card[style*="--user-block-color"]{background:color-mix(in srgb,var(--user-block-color) 24%,var(--card))}
-:root[data-theme=dark] .card[style*="--user-block-color"]{background:color-mix(in srgb,var(--user-block-color) 38%,var(--card))}
+:root[data-theme=dark] .card[style*="--user-block-color"]{background:color-mix(in srgb,var(--user-block-color) 20%,var(--card))}
 /* 타임라인 에피소드 블럭은 외곽선을 한 줄로 통일 */
 .ev>.card{border:1px solid var(--bd)}.ev>.card.fs{border-color:#f5a623}
 .card h3{margin:0;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -184,15 +188,22 @@ dialog.cfm{max-width:320px;width:calc(100% - 40px);height:fit-content;margin:aut
 .nnav-item.on{background:var(--blk);border-color:var(--blkbd);color:var(--ac);font-weight:700}
 #nmenu{position:absolute;right:8px;top:100%;margin-top:2px;min-width:210px;background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:0 12px 24px #0003;padding:8px;display:flex;flex-direction:column;gap:6px}
 #nmenu button{text-align:left}#nmenu .nmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}#nmenu .nfont{display:flex;gap:6px}
-#nbody{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:8px max(0px,calc((100% - 820px)/2)) 48px}
+#nbody{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:16px max(0px,calc((100% - 820px)/2)) 48px;background:var(--bg)}
 #nbody.nocopy,#nbody.nocopy *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-.nv-code{font-family:var(--wf);font-size:var(--wsz);line-height:1.8}.nv-empty{color:var(--sub);padding:20px 14px}
-.nl{display:flex;align-items:flex-start}.nl:hover{background:#6c5ce70d}
-.nl .ln{flex:none;width:var(--w);box-sizing:content-box;text-align:right;padding:0 10px 0 8px;margin-right:12px;border-right:1px solid var(--bd);color:#9aa0b3;font:12px/1.9 ui-monospace,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none}
-.nl .lt{flex:1;min-width:0;white-space:pre-wrap;word-break:break-word;padding-right:12px}
-.nl.nh .lt{font-weight:800;color:var(--ac)}
-.nl.nchapter{margin-top:18px;padding-top:12px;border-top:2px solid var(--bd)}.nl.nchapter .lt{color:var(--ac);font-weight:800;font-size:1.08em}
+.nv-empty{color:var(--sub);padding:20px 14px}
+/* 책 페이지처럼 보이는 읽기 화면 */
+.book-page{width:100%;max-width:820px;min-height:calc(100% - 1px);margin:0 auto;padding:clamp(28px,5vw,64px) clamp(20px,6.8vw,76px) 88px;background:var(--paper);color:var(--tx);border:1px solid color-mix(in srgb,var(--bd) 70%,transparent);border-radius:3px;box-shadow:0 5px 24px #00000010;font-family:var(--wf);font-size:var(--wsz);line-height:2.05;}
+:root[data-theme=dark] .book-page{box-shadow:0 8px 28px #00000025;border-color:#ffffff0b}
+.book-chapter{position:relative;text-align:center;margin:18px 0 42px;padding:16px 0 15px;font-size:1.18em;line-height:1.6;letter-spacing:.12em;font-weight:700;color:var(--ac)}
+.book-chapter:before{content:"";display:block;width:54px;height:1px;margin:0 auto 20px;background:var(--bd)}
+.book-chapter:after{content:"❦";display:block;margin:15px auto 0;font-size:.78em;line-height:1;color:var(--sub);letter-spacing:0}
+.book-episode{display:block;margin:34px 0 18px;padding:0;text-align:center;font-size:1.06em;line-height:1.65;font-weight:700;letter-spacing:.025em;scroll-margin-top:16px;color:var(--tx)}
+.book-episode .lt{display:inline;padding:0;border:0}
+.book-p{display:block;margin:0 0 .7em;padding:0;text-align:left;text-indent:1em;line-height:2.05;letter-spacing:.015em;white-space:normal;overflow-wrap:anywhere;word-break:normal;color:var(--tx)}
+.book-p .lt{display:inline;min-width:0;padding:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.book-p.book-gap{height:.72em;margin:0;text-indent:0;line-height:.72em}
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
+@media(max-width:560px){#nbody{padding:8px 0 28px}.book-page{padding:30px 23px 66px;border-left:0;border-right:0;box-shadow:none}.book-chapter{margin:12px 0 32px}.book-episode{margin:28px 0 14px}.book-p{line-height:2.0;margin-bottom:.68em}}
 body.share #nview{display:none}
 
 /* ===== 블럭 정렬 및 색상 ===== */
@@ -244,9 +255,11 @@ body.treeview .tree-node .card > .st.star {
 <div id="ld"><div class="t"><div class="b" id="ldb"></div></div><div class="m" id="ldm">불러오는 중…</div></div>
 <header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span id="stat"></span><button id="themeBtn" type="button" title="화면 테마"></button><span id="who" class="rolechip" hidden></span><button id="fbst" type="button" hidden></button></header>
 <div class="bar">
- <div class="tabs"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물</button><button class="tab" data-tab="it">아이템</button><button class="tab" data-tab="ac">장</button><button class="tab" data-tab="tr">🗑 휴지통</button><button class="tab" data-tab="st">⚙ 설정</button></div>
- <div class="tools"><input id="q" placeholder="검색"><button id="viewNovel" type="button">📖 읽기</button><button id="add" type="button" class="p">＋ 추가</button></div>
- <div class="tools" id="filters"><select id="view"><option value="tree" selected>보드</option><option value="act">목록</option><option value="char">인물별</option><option value="table">표</option></select><select id="fa"><option value="">전체 장</option></select><button id="ffs" type="button" title="중요 표시한 것만">⭐</button></div>
+ <div class="tabs"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물</button><button class="tab" data-tab="it">아이템</button><button class="tab" data-tab="ac">장</button><button class="tab" data-tab="tr">🗑 휴지통</button><button class="tab" data-tab="st">⚙ 설정</button><button id="toolsToggle" class="bar-toggle" type="button" aria-expanded="true" aria-controls="toolRows" title="검색·보기 메뉴 접기" aria-label="검색·보기 메뉴 접기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button></div>
+ <div id="toolRows">
+  <div class="tools"><input id="q" placeholder="⌕  검색"><button id="viewNovel" type="button">📖 소설보기</button><button id="add" type="button" class="p">＋ 추가</button></div>
+  <div class="tools" id="filters"><select id="view"><option value="tree" selected>보드</option><option value="act">목록</option><option value="char">인물별</option><option value="table">표</option></select><select id="fa"><option value="">전체 장</option></select><button id="ffs" type="button" title="중요 표시한 것만">⭐</button></div>
+ </div>
 </div>
 <main id="list"></main>
 <dialog id="dlg" class="full"><form method="dialog" id="f"></form></dialog>
@@ -398,7 +411,7 @@ function render(){
  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab==tab));
  const tabLabels={tl:`타임라인 · ${D.events.length}`,ch:`인물 · ${D.chars.length}`,it:`아이템 · ${D.items.length}`};
  document.querySelectorAll(".tab[data-tab]").forEach(b=>{if(tabLabels[b.dataset.tab])b.textContent=tabLabels[b.dataset.tab]});
- {const tb=document.querySelector('.tab[data-tab="tr"]');if(tb)tb.textContent=`🗑 휴지통${D.trash&&D.trash.length?" "+D.trash.length:""}`}
+ {const tb=document.querySelector('.tab[data-tab="tr"]');if(tb)tb.textContent=`🗑 휴지통 · ${(D.trash||[]).length}`}
  document.body.classList.toggle("treeview",tab=="tl"&&v=="tree");
  applyTitle();
  const oldWrap=document.querySelector(".tree-wrap"),sl=oldWrap?oldWrap.scrollLeft:0,st=oldWrap?oldWrap.scrollTop:0;
@@ -854,7 +867,18 @@ function renderNovel(){
  $("nview").textContent=loginNeeded?"🔑 로그인하기":accessDenied?"🔐 관리자 권한 없음":asUser?"🛠 관리자 보기":"👁 사용자로 보기";
  $("nview").disabled=accessDenied;
  $("ncopy").style.display=asUser?"none":"";$("nedit").style.display=(!asUser&&adminAllowed)?"":"none";$("nbody").classList.toggle("nocopy",asUser);
- $("nbody").innerHTML=lines.length?`<div class="nv-code" style="--w:${String(lines.length).length+1}ch">${lines.map((l,i)=>`<div class="nl${l.h?" nh":""}${l.chapter?" nchapter":""}"${l.id!=null?` data-e="${l.id}"`:""}><span class="ln">${i+1}</span><span class="lt">${l.t?esc(l.t):"&nbsp;"}</span></div>`).join("")}</div>`:'<p class="nv-empty">아직 작성된 내용이 없습니다.</p>';
+ if(lines.length){
+  let html='<article class="book-page">',inEpisode=false,pendingBlanks=0;
+  lines.forEach(l=>{
+   if(l.chapter){inEpisode=false;pendingBlanks=0;html+=`<div class="book-chapter">${esc(l.t)}</div>`;return}
+   if(l.h){inEpisode=true;pendingBlanks=0;const label=String(l.t||"").replace(/^\[/,"").replace(/\]$/,"");html+=`<h2 class="nl nh book-episode" data-e="${esc(String(l.id))}"><span class="lt">${esc(label)}</span></h2>`;return}
+   if(!inEpisode)return;
+   if(!String(l.t||"").trim()){pendingBlanks++;return}
+   while(pendingBlanks>0){html+='<p class="nl book-p book-gap"><span class="lt">&nbsp;</span></p>';pendingBlanks--}
+   html+=`<p class="nl book-p"><span class="lt">${esc(l.t)}</span></p>`;
+  });
+  $("nbody").innerHTML=html+'</article>';
+ }else $("nbody").innerHTML='<p class="nv-empty">아직 작성된 내용이 없습니다.</p>';
  nvUpdate();
 }
 $("viewNovel").onclick=()=>openNovel();
@@ -1009,6 +1033,19 @@ function applyTheme(){const m=themeMode(),d=m==="dark"||(m==="auto"&&matchMedia(
 $("themeBtn").onclick=()=>{const n=THEMES[(THEMES.indexOf(themeMode())+1)%3];try{localStorage.setItem("novel-theme",n)}catch(e){}applyTheme()};
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyTheme)}catch(e){}
 applyTheme();
+// 검색·보기 도구줄은 접고 펼칠 수 있으며 마지막 상태를 기억합니다.
+function setToolRowsOpen(open){
+ const bar=document.querySelector(".bar"),btn=$("toolsToggle");
+ bar.classList.toggle("tools-collapsed",!open);
+ btn.setAttribute("aria-expanded",String(open));
+ btn.setAttribute("aria-label",open?"검색·보기 메뉴 접기":"검색·보기 메뉴 펼치기");
+ btn.title=open?"검색·보기 메뉴 접기":"검색·보기 메뉴 펼치기";
+ btn.innerHTML=open?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+ try{localStorage.setItem("novel-tools-open",open?"1":"0")}catch(e){}
+}
+let toolsOpen=true;try{toolsOpen=localStorage.getItem("novel-tools-open")!=="0"}catch(e){}
+setToolRowsOpen(toolsOpen);
+$("toolsToggle").addEventListener("click",()=>setToolRowsOpen(document.querySelector(".bar").classList.contains("tools-collapsed")));
 $("q").oninput=render;$("fa").onchange=render;
 $("view").onchange=()=>{$("q").value="";render()};
 $("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);render()};
