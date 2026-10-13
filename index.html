@@ -60,8 +60,16 @@ body.connecting main{visibility:hidden}
 .btns button{border:0;background:none;padding:2px 6px;font-size:13px;color:var(--sub);white-space:nowrap}
 .btns button:hover{color:var(--ac)}.btns button[data-a=del]:hover{color:var(--fs)}
 .btns .dh{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ac);font-size:16px;padding:0 8px}
-.st{font-size:15px;cursor:pointer;user-select:none;-webkit-user-select:none;padding:0 3px}
-.stf{color:var(--sub);font-size:17px}.stf.on{color:#f5a623;font-size:20px;line-height:1}
+.st{cursor:pointer;user-select:none;-webkit-user-select:none;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px}
+.st.star svg{width:18px;height:18px;fill:none;stroke:var(--sub);stroke-width:1.8;stroke-linejoin:round}
+.st.star.on svg{fill:#f5a623;stroke:#f5a623}
+.st.cbx:before{content:"";width:18px;height:18px;border:2px solid var(--sub);border-radius:6px;background:var(--card);box-sizing:border-box;transition:background .12s,border-color .12s}
+.st.cbx.on:before{background:var(--ac);border-color:var(--ac)}
+.st.cbx.on:after{content:"";position:absolute;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.st.cbx{position:relative}
+.chk input[type=checkbox]{appearance:none;-webkit-appearance:none;width:20px;height:20px;padding:0;margin:0;border:2px solid var(--sub);border-radius:6px;background:var(--card);display:inline-grid;place-content:center;cursor:pointer;flex:none}
+.chk input[type=checkbox]:checked{background:var(--ac);border-color:var(--ac)}
+.chk input[type=checkbox]:checked::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
 .tags{margin-top:3px}.tags span{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;background:var(--blk);border-radius:6px;padding:0 7px;margin:2px 4px 2px 0;font-size:12px;cursor:pointer}
 .tags .it{background:none;border:1px dashed var(--blkbd);color:var(--sub)}
 .memo{border-top:1px dashed var(--bd);margin-top:5px;padding-top:3px;color:var(--sub);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -114,8 +122,8 @@ dialog.full[open]{display:flex;flex-direction:column}
 dialog.full::backdrop{background:rgba(0,0,0,.5)}
 dialog.full>form{flex:1;min-height:0;display:flex;flex-direction:column;margin:0}
 .eh,.ef{display:flex;align-items:center;gap:8px;flex:none;background:var(--card);padding:8px max(14px,calc((100% - 820px)/2))}
-.eh{border-bottom:1px solid var(--bd)}.eh b{font-size:15px}
-.eh button{font-size:12px;padding:2px 9px;border-radius:999px;color:var(--sub)}
+.eh{border-bottom:1px solid var(--bd)}.eh b{font-size:15px;white-space:nowrap}
+.eh button{flex:none;white-space:nowrap;font-size:12px;padding:3px 10px;border-radius:999px;color:var(--sub)}
 .ef{border-top:1px solid var(--bd);padding-bottom:max(8px,env(safe-area-inset-bottom))}
 .ef .btn{padding:11px 16px;font-weight:700;white-space:nowrap}.ef .btn.p{flex:1}
 .eb{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:12px max(14px,calc((100% - 820px)/2)) 28px}
@@ -132,7 +140,11 @@ details[open]>summary{border-bottom:1px dashed var(--bd);margin-bottom:4px}
 .spbody{padding-bottom:8px}
 .pkrow{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
 .chip{border-radius:999px;padding:2px 12px;font-size:13px}
-.edwrap{border:1px solid var(--bd);border-radius:14px;background:var(--paper);margin:8px 0}
+.edwrap{display:flex;align-items:stretch;overflow:hidden;border:1px solid var(--bd);border-radius:14px;background:var(--paper);margin:4px 0 8px}
+.eb .edwrap textarea.actual-field{flex:1 1 0;min-width:0;width:auto}
+.edln{flex:none;text-align:right;white-space:pre;color:var(--sub);background:#6c5ce711;border-right:1px dashed var(--bd);padding:16px 8px 16px 6px;font:12px ui-monospace,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none;pointer-events:none}
+.cur{margin:8px 0}.cur .nbh{padding:2px 4px}.cur.closed .edwrap{display:none}
+.cur .nbh button{border:0;background:none;color:var(--ac);padding:0 2px;font-size:12px}
 .edwrap:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px #6c5ce722}
 .eb textarea.actual-field{display:block;border:0;background:transparent;resize:none;overflow:hidden;min-height:42vh;font-family:var(--wf);font-size:var(--wsz);line-height:1.95;padding:16px 18px;outline:none;color:var(--tx)}
 /* 앞·뒤 에피소드 미리보기 */
@@ -279,7 +291,7 @@ $("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand(
 
 let PUBMAP=new Map(),PUBGOT=false,PUBMETAS="";
 const stCls=e=>{const t=!!String(e.actual||"").trim();return e.done?(t?"s-done":"s-warn"):t?"s-text":"s-empty"};
-const stIcons=e=>`<span class="st stf ${e.fs?"on":""}" data-fstog="${e.id}" title="중요">${e.fs?"★":"☆"}</span><span class="st" data-donetog="${e.id}" title="작성 완료">${e.done?"☑️":"☐"}</span>`;
+const stIcons=e=>`<span class="st star ${e.fs?"on":""}" data-fstog="${e.id}" title="중요"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.9-4.7 4.5 1.2 6.4L12 17.4l-5.7 3.1 1.2-6.4-4.7-4.5 6.4-.9z"/></svg></span><span class="st cbx ${e.done?"on":""}" data-donetog="${e.id}" title="완료"></span>`;
 const nvPrev=e=>{const t=String(e.actual||"").replace(/\s+/g," ").trim();return t?esc(t.length>50?t.slice(0,50)+"...":t):'<span class="pl">✍️ 눌러서 쓰기</span>'};
 function evHTML(e,mini,drag){
  const tg=charList(e).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(charLbl(c))}</span>`).join("")+split(e.items).map(c=>`<span class="it" data-it="${esc(c)}">◇ ${esc(c)}</span>`).join("");
@@ -492,23 +504,42 @@ function pkToggle(k,n){
  if(names.some(x=>a.includes(x)))a=a.filter(x=>!names.includes(x));else a.push(n);
  fe(k).value=a.join(",");refreshPk(k)}
 const growTa=el=>{const b=$("fbody"),sy=b?b.scrollTop:0;el.style.height="auto";el.style.height=Math.max(el.scrollHeight+2,el.classList.contains("actual-field")?0:44)+"px";if(b)b.scrollTop=sy};
-const growAll=()=>$("f").querySelectorAll("textarea").forEach(growTa);
-function updCnt(){const ta=fe("actual"),c=$("cnt");if(!ta||!c)return;const n=ta.value.length;c.textContent=`${n.toLocaleString()}자 · 공백제외 ${ta.value.replace(/\s/g,"").length.toLocaleString()}`}
+const growAll=()=>{$("f").querySelectorAll("textarea").forEach(growTa);updLnSoon()};
+// 원문 줄 번호: 글의 줄 기준, 화면에서 접힌 줄은 번호 없이 이어짐
+let lnMirror=null,lnRaf=0;
+const updLnSoon=()=>{if(!lnRaf)lnRaf=requestAnimationFrame(()=>{lnRaf=0;updLn()})};
+function updLn(){
+ const ta=fe("actual");if(!ta||!ta.offsetParent)return;
+ const g=ta.parentElement.querySelector(".edln"),cs=getComputedStyle(ta);
+ if(!lnMirror){lnMirror=document.createElement("div");document.body.appendChild(lnMirror)}
+ const m=lnMirror;
+ m.style.cssText=`position:fixed;left:-99999px;top:0;visibility:hidden;white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;box-sizing:border-box;border:0;width:${ta.clientWidth}px;padding:0 ${cs.paddingRight} 0 ${cs.paddingLeft};font:${cs.font};letter-spacing:${cs.letterSpacing};line-height:${cs.lineHeight};tab-size:${cs.tabSize}`;
+ const lines=ta.value.split("\n");
+ m.innerHTML=lines.map(()=>"<div></div>").join("");
+ [...m.children].forEach((d,i)=>{d.textContent=lines[i]||"\u200b"});
+ const lh=parseFloat(cs.lineHeight)||parseFloat(cs.fontSize)*1.95;
+ let out="";[...m.children].forEach((d,i)=>{const c=Math.max(1,Math.round(d.offsetHeight/lh));out+=(i+1)+"\n".repeat(c)});
+ g.textContent=out.replace(/\n$/,"");
+ g.style.lineHeight=cs.lineHeight;g.style.paddingTop=cs.paddingTop;g.style.minWidth=(String(lines.length).length+1.6)+"ch";
+}
+function setCur(open){const c=$("cur");if(!c)return;c.classList.toggle("closed",!open);$("curx").textContent=open?"접기":"펼치기";if(open)growAll()}
 function updEvSum(){
  const sm=$("evsum"),a=fe("act");if(!sm||!a)return;
- sm.innerHTML=`📋 정보 <span class="pl">· ${[esc(ACTS[+a.value]||""),esc(fe("when").value.trim()),esc(fe("place").value.trim())].filter(Boolean).join(" · ")}${fe("fs").checked?" · ★":""}${fe("done").checked?" · ☑":""}</span>`;
+ sm.innerHTML=`📋 정보 <span class="pl">· ${[esc(ACTS[+a.value]||""),esc(fe("when").value.trim()),esc(fe("place").value.trim())].filter(Boolean).join(" · ")}${fe("fs").checked?" · 중요":""}${fe("done").checked?" · 완료":""}</span>`;
 }
 $("f").addEventListener("input",ev=>{
  const t=ev.target,n=t.name;
  if(n==="chars"||n==="items")refreshPk(n);
  if(t.matches&&t.matches("textarea"))growTa(t);
- if(n==="actual")updCnt();
+ if(n==="actual")updLnSoon();
+ if(n==="title"&&$("curt"))$("curt").textContent=t.value||"제목 없음";
  updEvSum();
 });
 $("f").addEventListener("change",updEvSum);
 $("f").addEventListener("keydown",ev=>{if(ev.key==="Enter"&&ev.target.tagName==="INPUT"&&ev.target.type!=="checkbox")ev.preventDefault()});
 $("f").addEventListener("click",ev=>{
  const pk=ev.target.closest("[data-pk]");if(pk){pkToggle(pk.dataset.pk,pk.dataset.v);return}
+ if(ev.target.closest("#curx")){setCur($("cur").classList.contains("closed"));return}
  const go=ev.target.closest("[data-nbgo]");
  if(go){const id=+go.dataset.nbgo;if(edDirty()&&!confirm("저장하지 않은 변경이 있습니다.\n저장하지 않고 이동할까요?"))return;const wasNv=nvEditing;EDSNAP="";$("dlg").close("cancel");setTimeout(()=>{openEd("e",id);nvEditing=wasNv},50);return}
  const nb=ev.target.closest(".nb");
@@ -547,20 +578,21 @@ $("dlg").addEventListener("close",()=>{
 });
 $("dlg").addEventListener("cancel",ev=>{if(edDirty()){ev.preventDefault();edConfirmDiscard()}});
 
-const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<span class="pl" id="cnt"></span><button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>취소</button><button class="btn p" value="ok">저장</button></div>`;
+const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>취소</button><button class="btn p" value="ok">저장</button></div>`;
 function episodeForm(o,isNew,nb){
  return `<div class="titlefld"><input name="title" value="${esc(o.title)}" placeholder="에피소드 제목"></div>
  <details class="evmeta" id="evmeta" ${isNew?"open":""}><summary id="evsum"></summary><div class="fgrid">
   <div><label>장</label><select name="act">${ACTS.map((a,i)=>`<option value="${i}" ${i==o.act?"selected":""}>${esc(a)}</option>`).join("")}</select></div>
   <div><label>시점</label><input name="when" value="${esc(o.when)}"></div>
   <div class="w"><label>장소</label><input name="place" value="${esc(o.place)}"></div>
-  <div class="w chk"><label><input type="checkbox" name="fs" ${o.fs?"checked":""}> ⭐ 중요</label><label title="체크한 에피소드만 공유 링크에 보입니다"><input type="checkbox" name="done" ${o.done?"checked":""}> ☑ 작성 완료</label></div>
+  <div class="w chk"><label><input type="checkbox" name="fs" ${o.fs?"checked":""}> 중요</label><label title="체크한 에피소드만 공유 링크에 보입니다"><input type="checkbox" name="done" ${o.done?"checked":""}> 완료</label></div>
   <div class="w"><label>메모</label><textarea name="memo" rows="1">${esc(o.memo)}</textarea></div></div></details>
  <details class="story-pickers" id="spick"><summary><b>👤 등장인물 · ◇ 아이템</b> <span class="pl" id="pksum"></span></summary><div class="spbody">
   <label>👤 등장인물</label><input name="chars" value="${esc(o.chars)}" placeholder="이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-chars">${pkChips("chars",split(o.chars))}</div>
   <label>◇ 아이템</label><input name="items" value="${esc(o.items)}" placeholder="이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(o.items))}</div></div></details>
  ${nbHTML("prev",nb.prev)}
- <div class="edwrap"><textarea class="actual-field" name="actual" placeholder="이 에피소드의 내용을 쓰세요.">${esc(o.actual)}</textarea></div>
+ <div class="cur" id="cur"><div class="nbh"><span>✍️ 현재 에피소드 · <b id="curt">${esc(o.title||"제목 없음")}</b></span><button type="button" id="curx">접기</button></div>
+ <div class="edwrap"><div class="edln" aria-hidden="true"></div><textarea class="actual-field" name="actual" placeholder="이 에피소드의 내용을 쓰세요.">${esc(o.actual)}</textarea></div></div>
  ${nbHTML("next",nb.next)}`;
 }
 function simpleForm(t,o){
@@ -584,7 +616,7 @@ function openEd(t,id,insertAfterId=null,actIdx=null){
  $("f").innerHTML=shell(`${nm} ${id?"수정":"추가"}`,t==="e"?episodeForm(o,!id,neighbors(+o.act)):simpleForm(t,o),t==="e"&&id&&nextEvId(id)!=null,t==="e");
  wsLabel();
  $("dlg").showModal();
- if(t==="e"){updEvSum();pkSum();updCnt()}
+ if(t==="e"){updEvSum();pkSum()}
  growAll();edSnap();
  if(!id){const fi=fe(t==="e"?"title":"name");if(fi)fi.focus()}
 }
@@ -721,7 +753,7 @@ function mirrorY(ta,n){
 }
 let mirrorEl=null;
 function edGoLine(n,col=0){ // 원문의 n번째 줄(0부터)로 커서와 화면을 옮긴다
- const ta=fe("actual");if(!ta)return;growTa(ta);
+ const ta=fe("actual");if(!ta)return;setCur(true);growTa(ta);
  const lines=ta.value.split("\n");n=Math.min(Math.max(0,n),lines.length-1);
  let idx=0;for(let i=0;i<n;i++)idx+=lines[i].length+1;
  idx+=Math.min(Math.max(0,col),lines[n].length);
