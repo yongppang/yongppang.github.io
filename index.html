@@ -207,6 +207,7 @@ dialog.cfm{max-width:320px;width:calc(100% - 40px);height:fit-content;margin:aut
 .book-p .lt{display:block;min-width:0;padding:0;white-space:pre-wrap;overflow-wrap:anywhere}
 .book-p .lt:empty:after{content:"\00a0"}
 .book-p.book-gap{background:transparent}
+.speech-word.speaking-word{text-decoration-line:underline;text-decoration-style:solid;text-decoration-color:var(--ac);text-decoration-thickness:2px;text-underline-offset:.16em;background:color-mix(in srgb,var(--ac) 12%,transparent);border-radius:2px}
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
 @media(max-width:560px){#nbody{padding:8px 0 28px}.book-page{padding:30px 14px 66px;border-left:0;border-right:0;box-shadow:none}.book-chapter{margin:12px 0 32px}.book-episode{margin:28px 0 14px}.book-p{grid-template-columns:2em minmax(0,1fr);gap:0 .55em;line-height:2.0;padding:.12em .25em}.book-p .line-no{font-size:10px;line-height:2.8}}
 body.share #nview{display:none}
@@ -802,7 +803,7 @@ function novelLines(){
   if(i)out.push({t:""});
   out.push({t:`[${e.title}]`,h:true,id:e.id});
   const body=String(e.actual||"").replace(/\r\n?/g,"\n");
-  if(body.length)body.split("\n").forEach(t=>out.push({t}));else out.push({t:"(아직 작성된 내용이 없습니다)"});
+  if(body.length)body.split("\n").forEach((t,speechLine)=>out.push({t,id:e.id,speechLine}));else out.push({t:"(아직 작성된 내용이 없습니다)"});
  });
  return out;
 }
@@ -863,6 +864,11 @@ function nvUpdate(){
 const nvSchedule=()=>{if(!nvRaf)nvRaf=requestAnimationFrame(nvUpdate)};
 $("nbody").addEventListener("scroll",nvSchedule,{passive:true});
 addEventListener("resize",nvSchedule);
+function speechWordMarkup(text){
+ const raw=String(text??"");let html="",cursor=0;const re=/\S+/g;let m;
+ while((m=re.exec(raw))){html+=esc(raw.slice(cursor,m.index));const start=m.index,end=start+m[0].length;html+=`<span class="speech-word" data-word-start="${start}" data-word-end="${end}">${esc(m[0])}</span>`;cursor=end;}
+ return html+esc(raw.slice(cursor));
+}
 function renderNovel(){
  const L=novelList(),lines=novelLines(),asUser=SHARE||NVUSER;lastAct=-2;document.body.classList.toggle("usernovel",asUser);
  const dis=L.length?"":"disabled";
@@ -878,19 +884,20 @@ function renderNovel(){
   let html='<article class="book-page">',inEpisode=false,pendingBlanks=0,lineNo=0,rowNo=0;
   lines.forEach(l=>{
    if(l.chapter){inEpisode=false;pendingBlanks=0;html+=`<div class="book-chapter">${esc(l.t)}</div>`;return}
-   if(l.h){inEpisode=true;pendingBlanks=0;lineNo=0;rowNo=0;const label=String(l.t||"").replace(/^\[/," ").replace(/\]$/," ").trim();html+=`<h2 class="nl nh book-episode" data-e="${esc(String(l.id))}"><span class="lt">${esc(label)}</span></h2>`;return}
+   if(l.h){inEpisode=true;pendingBlanks=0;lineNo=0;rowNo=0;const label=String(l.t||"").replace(/^\[/," ").replace(/\]$/," ").trim();html+=`<h2 class="nl nh book-episode" data-e="${esc(String(l.id))}" data-speech-e="${esc(String(l.id))}" data-speech-line="-1"><span class="lt">${speechWordMarkup(label)}</span></h2>`;return}
    if(!inEpisode)return;
    lineNo++;rowNo++;
    const rowClass=rowNo%2===0?'row-even':'row-odd';
    const lineText=String(l.t??"");
-   html+=`<p class="nl book-p ${rowClass}${lineText===""?' book-gap':''}"><span class="line-no" aria-hidden="true">${lineNo}</span><span class="lt">${lineText===""?'&nbsp;':esc(lineText)}</span></p>`;
+   const speechAttrs=l.id!=null&&l.speechLine!=null?` data-speech-e="${esc(String(l.id))}" data-speech-line="${l.speechLine}"`:"";
+   html+=`<p class="nl book-p ${rowClass}${lineText===""?' book-gap':''}"${speechAttrs}><span class="line-no" aria-hidden="true">${lineNo}</span><span class="lt">${lineText===""?'&nbsp;':speechWordMarkup(lineText)}</span></p>`;
   });
   $("nbody").innerHTML=html+'</article>';
  }else $("nbody").innerHTML='<p class="nv-empty">아직 작성된 내용이 없습니다.</p>';
  nvUpdate();
 }
-// ===== 소설 음성 읽기 =====
-let speechQueue=[],speechIndex=0,speechActive=false,speechPaused=false,speechToken=0;
+// ===== 소설 음성 읽기: 현재 단어 표시 및 자동 포커스 =====
+let speechQueue=[],speechIndex=0,speechActive=false,speechPaused=false,speechToken=0,currentSpeechWord=null;
 function koreanVoices(){return (window.speechSynthesis?.getVoices?.()||[]).filter(v=>/^ko([_-]|$)/i.test(v.lang)||/한국|Korean/i.test(v.name))}
 function chooseReadingVoice(){
  const voices=koreanVoices();if(!voices.length)return null;
@@ -900,35 +907,75 @@ function chooseReadingVoice(){
  const likely=voices.filter(v=>(gender==="female"?femaleWords:maleWords).test(v.name));
  return likely[0]||voices.find(v=>/google|microsoft|samsung/i.test(v.name))||voices[0];
 }
-function speechPieces(text){
- const out=[];
- String(text||"").replace(/\r\n?/g,"\n").split("\n").forEach(line=>{
-  const t=line.trim();if(!t)return
-  // Keep chunks short enough for browser speech engines; split at sentence punctuation where possible.
-  let rest=t;
-  while(rest.length>180){let cut=Math.max(rest.lastIndexOf(". ",180),rest.lastIndexOf("! ",180),rest.lastIndexOf("? ",180),rest.lastIndexOf("다. ",180),rest.lastIndexOf("요. ",180));if(cut<40)cut=180;else if(rest[cut]===" ")cut++;
-   out.push(rest.slice(0,cut).trim());rest=rest.slice(cut).trim();}
-  if(rest)out.push(rest);
- });return out;
+function speechPieces(text,eventId,lineIndex){
+ const raw=String(text??"");if(!raw.trim())return [];
+ const out=[];let pos=0;
+ while(pos<raw.length){
+  while(pos<raw.length&&/\s/.test(raw[pos]))pos++;
+  if(pos>=raw.length)break;
+  let end=Math.min(raw.length,pos+180);
+  if(end<raw.length){
+   const segment=raw.slice(pos,end);let punct=-1;
+   for(let i=40;i<segment.length;i++)if(/[。！？.!?]/.test(segment[i])&&(i===segment.length-1||/\s/.test(segment[i+1])))punct=i;
+   if(punct>=40)end=pos+punct+1;
+   else{const space=segment.lastIndexOf(" ");if(space>=40)end=pos+space;}
+  }
+  const piece=raw.slice(pos,end).trimEnd();
+  if(piece)out.push({text:piece,eventId:String(eventId),lineIndex:String(lineIndex),startOffset:pos});
+  pos+=piece.length;
+  if(!piece)break;
+ }
+ return out;
 }
-function stopSpeech(){speechToken++;speechActive=false;speechPaused=false;speechQueue=[];speechIndex=0;if(window.speechSynthesis)speechSynthesis.cancel();const b=$("nspeak");if(b)b.textContent="🔊 음성 재생";}
+function clearSpeechHighlight(){
+ if(currentSpeechWord)currentSpeechWord.classList.remove("speaking-word");
+ currentSpeechWord=null;
+}
+function focusSpeechWord(word){
+ if(!word)return;
+ if(currentSpeechWord&&currentSpeechWord!==word)currentSpeechWord.classList.remove("speaking-word");
+ currentSpeechWord=word;word.classList.add("speaking-word");
+ const sc=$("nbody"),wr=word.getBoundingClientRect(),sr=sc.getBoundingClientRect(),margin=54;
+ if(wr.top<sr.top+margin||wr.bottom>sr.bottom-margin){
+  const target=sc.scrollTop+(wr.top-sr.top)-(sc.clientHeight-wr.height)/2;
+  sc.scrollTo({top:Math.max(0,target),behavior:"smooth"});
+ }
+}
+function highlightSpeechPosition(item,charIndex){
+ if(!item||!$("nbody"))return;
+ const rows=[...$("nbody").querySelectorAll("[data-speech-e][data-speech-line]")];
+ const row=rows.find(el=>el.dataset.speechE===String(item.eventId)&&el.dataset.speechLine===String(item.lineIndex));
+ if(!row)return;
+ const words=[...row.querySelectorAll(".speech-word")];if(!words.length)return;
+ const pos=item.startOffset+Math.max(0,Number(charIndex)||0);
+ let word=words.find(w=>pos>=Number(w.dataset.wordStart)&&pos<Number(w.dataset.wordEnd));
+ if(!word)word=words.find(w=>Number(w.dataset.wordStart)>=pos)||words[words.length-1];
+ focusSpeechWord(word);
+}
+function stopSpeech(){speechToken++;speechActive=false;speechPaused=false;speechQueue=[];speechIndex=0;if(window.speechSynthesis)speechSynthesis.cancel();clearSpeechHighlight();const b=$("nspeak");if(b)b.textContent="🔊 음성 재생";const p=$("npause");if(p)p.textContent="⏸ 일시정지";}
 function speakNext(token){
  if(token!==speechToken||!speechActive||speechPaused)return;
  if(speechIndex>=speechQueue.length){stopSpeech();return}
  const part=speechQueue[speechIndex++];
- if(!part){setTimeout(()=>speakNext(token),350);return}
- const u=new SpeechSynthesisUtterance(part);u.lang="ko-KR";const v=chooseReadingVoice();if(v)u.voice=v;u.rate=1;u.pitch=1;
+ if(!part||!part.text){setTimeout(()=>speakNext(token),180);return}
+ const u=new SpeechSynthesisUtterance(part.text);u.lang="ko-KR";const v=chooseReadingVoice();if(v)u.voice=v;u.rate=1;u.pitch=1;
+ u.onstart=()=>{if(token===speechToken)highlightSpeechPosition(part,0)};
+ u.onboundary=ev=>{if(token===speechToken&&Number.isFinite(ev.charIndex))highlightSpeechPosition(part,ev.charIndex)};
  u.onend=()=>speakNext(token);u.onerror=()=>speakNext(token);speechSynthesis.speak(u);
 }
 function startSpeech(){
  if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){alert("이 브라우저는 음성 읽기를 지원하지 않습니다.");return}
  stopSpeech();const token=speechToken;speechQueue=[];
- novelList().forEach((e,i)=>{if(i)speechQueue.push("");speechQueue.push(String(e.title||"제목 없음"));speechPieces(String(e.actual||"")).forEach(t=>speechQueue.push(t));});
+ novelList().forEach(e=>{
+  const title=String(e.title||"제목 없음");speechQueue.push(...speechPieces(title,e.id,-1));
+  const body=String(e.actual||"").replace(/\r\n?/g,"\n");
+  body.split("\n").forEach((line,lineIndex)=>speechQueue.push(...speechPieces(line,e.id,lineIndex)));
+ });
  speechIndex=0;speechActive=true;speechPaused=false;$("nspeak").textContent="🔊 다시 시작";speechSynthesis.cancel();speakNext(token);
 }
 $("nspeak").addEventListener("click",startSpeech);
 $("npause").addEventListener("click",()=>{if(!speechActive)return;if(speechPaused){speechPaused=false;speechSynthesis.resume();$("npause").textContent="⏸ 일시정지"}else{speechPaused=true;speechSynthesis.pause();$("npause").textContent="▶ 이어 듣기"}});
-$("nstop").addEventListener("click",()=>{stopSpeech();$("npause").textContent="⏸ 일시정지"});
+$("nstop").addEventListener("click",stopSpeech);
 $("ndlg").addEventListener("close",stopSpeech);
 if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>{};
 $("viewNovel").onclick=()=>openNovel();
