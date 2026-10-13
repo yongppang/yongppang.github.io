@@ -143,8 +143,9 @@ details[open]>summary{border-bottom:1px dashed var(--bd);margin-bottom:4px}
 .edwrap{display:flex;align-items:stretch;overflow:hidden;border:1px solid var(--bd);border-radius:14px;background:var(--paper);margin:4px 0 8px}
 .eb .edwrap textarea.actual-field{flex:1 1 0;min-width:0;width:auto}
 .edln{flex:none;text-align:right;white-space:pre;color:var(--sub);background:#6c5ce711;border-right:1px dashed var(--bd);padding:16px 8px 16px 6px;font:12px ui-monospace,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none;pointer-events:none}
-.cur{margin:8px 0}.cur .nbh{padding:2px 4px}.cur.closed .edwrap{display:none}
-.cur .nbh button{border:0;background:none;color:var(--ac);padding:0 2px;font-size:12px}
+.nb.cur{border:2px solid var(--ac);background:var(--card);color:var(--tx);padding:8px 10px}
+.nb.cur .nbh{color:var(--ac);font-weight:700}.nb.cur .nbh b{color:var(--tx)}
+.nb.cur .edwrap{margin:6px 0 0}.nb.cur.closed .edwrap{display:none}
 .edwrap:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px #6c5ce722}
 .eb textarea.actual-field{display:block;border:0;background:transparent;resize:none;overflow:hidden;min-height:42vh;font-family:var(--wf);font-size:var(--wsz);line-height:1.95;padding:16px 18px;outline:none;color:var(--tx)}
 /* 앞·뒤 에피소드 미리보기 */
@@ -485,7 +486,7 @@ function nbHTML(kind,e){
  const pv=kind==="prev",txt=String(e.actual||"").replace(/\r\n?/g,"\n").split("\n").filter(x=>x.trim());
  const lines=pv?txt.slice(-3):txt.slice(0,3);
  const ps=a=>a.length?a.map(x=>`<p>${esc(x)}</p>`).join(""):'<p>(아직 내용 없음)</p>';
- return `<div class="nb ${kind}"><div class="nbh"><span>${pv?"◀ 앞 에피소드":"뒤 에피소드 ▶"} · <b>${esc(e.title||"제목 없음")}</b></span><button type="button" data-nbgo="${e.id}">${pv?"‹ 앞글 편집":"뒷글 편집 ›"}</button><button type="button" data-nbx>전체 보기</button></div><div class="nbt short" data-nbgo="${e.id}" title="눌러서 이 에피소드로 이동">${ps(lines)}</div><div class="nbt full">${ps(txt)}</div></div>`;
+ return `<div class="nb ${kind}"><div class="nbh"><span>${pv?"◀ 앞 에피소드":"뒤 에피소드 ▶"} · <b>${esc(e.title||"제목 없음")}</b></span><button type="button" data-nbx>펼치기</button></div><div class="nbt short" data-nbgo="${e.id}" title="눌러서 이 에피소드로 이동">${ps(lines)}</div><div class="nbt full">${ps(txt)}</div></div>`;
 }
 function pkChips(k,sel){
  const src=k=="chars"?D.chars:D.items,known=new Set(),btn=(n,label,on,isNew,tip)=>`<button type="button" class="chip pk ${on?"on":""}" data-pk="${k}" data-v="${esc(n)}" title="${esc(tip||"")}">${isNew?"＋ ":""}${label}</button>`;
@@ -545,7 +546,7 @@ $("f").addEventListener("click",ev=>{
  const go=ev.target.closest("[data-nbgo]");
  if(go){const id=+go.dataset.nbgo;if(edDirty()&&!confirm("저장하지 않은 변경이 있습니다.\n저장하지 않고 이동할까요?\n(취소 후 저장을 먼저 눌러 주세요)"))return;const wasNv=nvEditing;EDSNAP="";$("dlg").close("cancel");setTimeout(()=>{openEd("e",id);nvEditing=wasNv},50);return}
  const nb=ev.target.closest(".nb");
- if(nb&&(ev.target.closest("[data-nbx]")||ev.target.closest("[data-nbx2]"))){const o=nb.classList.toggle("open");nb.querySelector("[data-nbx]").textContent=o?"접기":"전체 보기";return}
+ if(nb&&(ev.target.closest("[data-nbx]")||ev.target.closest("[data-nbx2]"))){const o=nb.classList.toggle("open");nb.querySelector("[data-nbx]").textContent=o?"접기":"펼치기";return}
 });
 addEventListener("resize",()=>{if($("dlg").open)growAll()});
 $("dlg").addEventListener("toggle",ev=>{if(ev.target.id==="evmeta"&&ev.target.open)growAll()},true);
@@ -593,7 +594,7 @@ function episodeForm(o,isNew,nb){
   <label>👤 등장인물</label><input name="chars" value="${esc(o.chars)}" placeholder="이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-chars">${pkChips("chars",split(o.chars))}</div>
   <label>◇ 아이템</label><input name="items" value="${esc(o.items)}" placeholder="이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(o.items))}</div></div></details>
  ${nbHTML("prev",nb.prev)}
- <div class="cur" id="cur"><div class="nbh"><span>✍️ 현재 에피소드 · <b id="curt">${esc(o.title||"제목 없음")}</b></span><button type="button" id="curx">접기</button></div>
+ <div class="nb cur" id="cur"><div class="nbh"><span>✍️ 현재 에피소드 · <b id="curt">${esc(o.title||"제목 없음")}</b></span><button type="button" id="curx">접기</button></div>
  <div class="edwrap"><div class="edln" aria-hidden="true"></div><textarea class="actual-field" name="actual" placeholder="이 에피소드의 내용을 쓰세요.">${esc(o.actual)}</textarea></div></div>
  ${nbHTML("next",nb.next)}`;
 }
