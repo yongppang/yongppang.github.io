@@ -46,6 +46,8 @@ body.treeview main{flex:1;min-height:0;padding:0}
 body.treeview .tree-wrap{height:100%}
 body.share header,body.share .bar,body.share main{display:none}
 body.connecting main{visibility:hidden}
+/* Firebase 데이터 확인 전에는 관리자 화면을 숨기고, 관리자 데이터 로딩 완료 후에만 표시 */
+body.booting header,body.booting .bar,body.booting main{visibility:hidden}
 #ld{position:fixed;left:0;right:0;top:0;z-index:300;display:none}
 #ld .t{height:4px;background:#0002}#ld .b{height:100%;width:0;background:var(--ac);transition:width .25s}
 #ld .m{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:3px 14px;font-size:12px;color:var(--sub);white-space:nowrap}
@@ -233,7 +235,7 @@ body.treeview .tree-node .card > .st.star {
 }
 </style>
 </head>
-<body>
+<body class="booting">
 <div id="ld"><div class="t"><div class="b" id="ldb"></div></div><div class="m" id="ldm">불러오는 중…</div></div>
 <header><h1 id="ttl" contenteditable="true" spellcheck="false" title="클릭해서 제목 수정"></h1><span id="stat"></span><button id="themeBtn" type="button" title="화면 테마"></button><span id="who" class="rolechip" hidden></span><button id="fbst" type="button" hidden></button></header>
 <div class="bar">
@@ -1010,8 +1012,8 @@ $("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);rend
 let ldTimer=null;
 function ldShow(msg){$("ldm").textContent=msg||"불러오는 중…";$("ldb").style.width="0\%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
 let connOn=false,connTimer=null;
-function connShow(){connOn=true;ldShow("접속 중입니다…");document.body.classList.add("connecting");clearTimeout(connTimer);connTimer=setTimeout(connDone,15000)}
-function connDone(){if(!connOn)return;connOn=false;clearTimeout(connTimer);document.body.classList.remove("connecting");ldHide()}
+function connShow(){connOn=true;ldShow("불러오기");document.body.classList.add("connecting");clearTimeout(connTimer);connTimer=setTimeout(connDone,15000)}
+function connDone(){connOn=false;clearTimeout(connTimer);document.body.classList.remove("connecting");ldHide()}
 function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100\%";setTimeout(()=>{$("ld").style.display="none"},delay)}
 
 // ===== 공유 링크 (읽기 전용) =====
@@ -1139,6 +1141,7 @@ function fbOnSnap(){
  else if(!fbTimer)fbApply(false);
  if(!fbTimer)fbSyncPub();
  if(fbBased){
+  if(isAdminNow()){document.body.classList.remove("booting");document.body.classList.add("adminready")}
   connDone();
   // 로그인 직후 소설 보기 창이 열려 있다면 관리자 데이터가 도착한 화면으로 갱신
   if($("ndlg").open){const st=$("nbody").scrollTop;renderNovel();$("nbody").scrollTop=st}
@@ -1187,8 +1190,10 @@ async function fbStart(){
   fbUser=u;fbErr="";
   if(u){
    PUB=false;NVUSER=false;
+   ldShow("불러오기");document.body.classList.add("connecting");
    fbListen();
   }else{
+   document.body.classList.remove("adminready");document.body.classList.add("booting");
    connDone();
    fbUnlisten();
    if(!SHARE){
@@ -1222,6 +1227,7 @@ if(SHARE){
   PUB=true;NVUSER=true;
   fbStart();
  }else{
+  document.body.classList.remove("booting");document.body.classList.add("adminready");
   render();
  }
 }
