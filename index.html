@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap">
 <title>소설 관리</title>
 <script>(function(){try{var m=localStorage.getItem("novel-theme")||"auto";var d=m==="dark"||(m==="auto"&&window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",d?"dark":"light")}catch(e){}})()</script>
 <style>
-:root{color-scheme:light;--bg:#f5f6fa;--card:#fff;--blk:#efecff;--blkbd:#d3cdf6;--tx:#1f2330;--sub:#6a7083;--bd:#dfe2ea;--ac:#6c5ce7;--fs:#e5484d;--paper:#fffdf8;--wf:"Noto Serif KR","Nanum Myeongjo","Apple SD Gothic Neo","Malgun Gothic",serif;--wsz:17px}
-:root[data-wf=sans]{--wf:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
+:root{color-scheme:light;--bg:#f5f6fa;--card:#fff;--blk:#efecff;--blkbd:#d3cdf6;--tx:#1f2330;--sub:#6a7083;--bd:#dfe2ea;--ac:#6c5ce7;--fs:#e5484d;--paper:#fffdf8;--wf:"Noto Serif KR","Noto Serif CJK KR","Source Han Serif K","Nanum Myeongjo","나눔명조","Batang","바탕","AppleMyungjo",serif;--wsz:17px}
+:root[data-wf=sans]{--wf:"Pretendard","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif}
 :root[data-theme=dark]{color-scheme:dark;--bg:#10121a;--card:#1a1d2b;--blk:#232848;--blkbd:#3b427a;--tx:#e9ebf5;--sub:#9ba2bc;--bd:#2d3248;--ac:#8d7fff;--fs:#ff6d73;--paper:#161a28}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -51,7 +52,7 @@ body.connecting main{visibility:hidden}
 
 /* ===== 카드 ===== */
 .card{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:12px;padding:9px 12px;box-shadow:0 1px 2px #0000000d;overflow-wrap:anywhere;min-width:0}
-.card.fs{box-shadow:0 0 0 2px #f5a62380}
+.card.fs{border-color:#f5a623}
 .card.s-empty{border-left-color:#b9bdc7}.card.s-text{border-left-color:#55c89a}.card.s-warn{border-left-color:#f09a2b}.card.s-done{border-left-color:#4a86e8}
 .card h3{margin:0;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .card p{margin:4px 0}.card p.onel{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
@@ -93,7 +94,7 @@ body.connecting main{visibility:hidden}
 /* ===== 보드(세로 보기) ===== */
 .tree-wrap{overflow:auto;overscroll-behavior:contain;scroll-snap-type:x proximity}
 .tree{display:flex;align-items:flex-start;gap:12px;min-width:max-content;padding:12px 14px 28px}
-.tree-act{width:296px;flex:0 0 296px;background:var(--blk);border:1px solid var(--blkbd);border-radius:16px;padding:0 10px 10px;scroll-snap-align:start;scroll-margin-left:12px;min-width:0}
+.tree-act{width:236px;flex:0 0 236px;background:var(--blk);border:1px solid var(--blkbd);border-radius:16px;padding:0 8px 8px;scroll-snap-align:start;scroll-margin-left:12px;min-width:0}
 .acthd{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 8px;padding:10px 2px 8px}
 .tree-act h2{margin:0;font-size:15px;display:flex;align-items:center;gap:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .ah{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ac);font-weight:400}
@@ -186,6 +187,28 @@ dialog.cfm{max-width:320px;width:calc(100% - 40px);height:fit-content;margin:aut
 .nl.nchapter{margin-top:18px;padding-top:12px;border-top:2px solid var(--bd)}.nl.nchapter .lt{color:var(--ac);font-weight:800;font-size:1.08em}
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
 body.share #nview{display:none}
+
+/* ===== 추가 수정 ===== */
+.card{position:relative}
+.ico{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;pointer-events:none}
+.btns button .ico{display:block}
+.fsbadge{position:absolute;top:-9px;right:10px;width:20px;height:20px;border-radius:50%;background:#f5a623;display:grid;place-items:center;box-shadow:0 1px 3px #0003;pointer-events:none}
+.fsbadge svg{width:12px;height:12px;fill:#fff;stroke:#fff;stroke-width:1.5;stroke-linejoin:round}
+.wpl{display:none}
+.tree-node .wpl{display:inline}
+.tree-node .plc,.tree-node .memo,.tree-node .nvrow{display:none}
+.tree-node .btns [data-a=up],.tree-node .btns [data-a=dn]{display:none}
+.tree-node .card{padding:6px 8px}
+.tree-node .card h3{font-size:14px}
+.tree-node .card p.onel{font-size:12px;margin:2px 0}
+.tree-node .tags{white-space:nowrap;overflow:hidden;margin-top:1px}
+.tree-node .tags span{font-size:11px;margin:0 3px 0 0;padding:0 5px}
+.tree-node .when{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tree-node .btns{margin:-3px 0 0 -4px}
+.tree-node .st{width:24px;height:24px}
+.tree-insert{margin:0 0 4px}
+.card.flash{animation:cflash .9s ease-in-out 4}
+@keyframes cflash{0%,100%{box-shadow:0 0 0 0 #6c5ce700;background:var(--card)}50%{box-shadow:0 0 0 3px var(--ac),0 0 16px 4px #6c5ce799;background:var(--blk)}}
 </style>
 </head>
 <body>
@@ -207,6 +230,8 @@ body.share #nview{display:none}
    <button type="button" id="ncopy">📋 내용 복사</button>
    <button type="button" id="nlink">🔗 링크 복사</button>
    <div class="nfont"><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button><button type="button" id="wfBtn"></button></div>
+   <button type="button" id="ntheme"></button>
+   <button type="button" id="nlogin" hidden></button>
   </div></div>
  <div id="nbody"></div>
 </form></dialog>
@@ -238,9 +263,24 @@ const split=s=>String(s||"").split(",").map(x=>x.trim()).filter(Boolean);
 const clone=x=>JSON.parse(JSON.stringify(x));
 const SHARE=new URLSearchParams(location.search).has("novel");
 if(SHARE)document.body.classList.add("share");
+let PUB=SHARE; // 읽기 전용 공개 보기 (공유 링크이거나, 로그인하지 않은 방문자)
+const ICON_TRASH='<svg class="ico" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+ ICON_PEN='<svg class="ico" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM14 7l3 3"/></svg>',
+ FSBADGE='<span class="fsbadge" title="중요"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.9-4.7 4.5 1.2 6.4L12 17.4l-5.7 3.1 1.2-6.4-4.7-4.5 6.4-.9z"/></svg></span>';
+// 편집 후 보드에서 반짝여 보여 줄 에피소드
+const EDITED=new Set();let navHop=false;
+function flashEdited(){
+ if(!EDITED.size)return;const ids=[...EDITED];EDITED.clear();
+ if($("ndlg").open)return;
+ requestAnimationFrame(()=>ids.forEach((id,i)=>{
+  const c=document.querySelector(`#list .ev[data-eid="${id}"] .card`);if(!c)return;
+  if(i===0)c.scrollIntoView({block:"center",inline:"center",behavior:"smooth"});
+  c.classList.remove("flash");void c.offsetWidth;c.classList.add("flash");setTimeout(()=>c.classList.remove("flash"),3800);
+ }));
+}
 let D;try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!D||!D.events){D={events:clone(SEEDE),chars:clone(SEEDC)}}
-const save=()=>{if(SHARE)return;D.acts=clone(ACTS);try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}if(window.fbHook)window.fbHook()};
+const save=()=>{if(PUB)return;D.acts=clone(ACTS);try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}if(window.fbHook)window.fbHook()};
 let tab="tl",onlyFs=false,editing=null;
 if(!D._tagsRemoved){[...D.events,...D.chars].forEach(o=>o.tags="");D._tagsRemoved=true;try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
 const safeText=(v,fallback="")=>{
@@ -298,9 +338,9 @@ const stIcons=e=>`<span class="st star ${e.fs?"on":""}" data-fstog="${e.id}" tit
 const nvPrev=e=>{const t=String(e.actual||"").replace(/\s+/g," ").trim();return t?esc(t.length>50?t.slice(0,50)+"...":t):'<span class="pl">✍️ 눌러서 쓰기</span>'};
 function evHTML(e,mini,drag){
  const tg=charList(e).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(charLbl(c))}</span>`).join("")+split(e.items).map(c=>`<span class="it" data-it="${esc(c)}">◇ ${esc(c)}</span>`).join("");
- return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}</div><div class="card ${e.fs?"fs":""} ${stCls(e)}">
- <div class="btns">${drag?`<button type="button" class="dh" data-i="${e.id}" title="드래그해서 이동">⠿</button>`:""}${stIcons(e)}${mini?"":`<span class="sp"></span><button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}">✕</button>`}</div>
- <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}">${esc(e.title)||'<span class="pl">제목 없음</span>'}</h3>${e.place?`<div class="pl">📍 ${esc(e.place)}</div>`:""}<p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}">${nvPrev(e)}</p>
+ return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<span class="wpl">${e.place?` · ${esc(e.place)}`:""}</span></div><div class="card ${e.fs?"fs":""} ${stCls(e)}">${e.fs?FSBADGE:""}
+ <div class="btns">${drag?`<button type="button" class="dh" data-i="${e.id}" title="드래그해서 이동">⠿</button>`:""}${stIcons(e)}${mini?"":`<span class="sp"></span>${drag?`<button type="button" data-a="wr" data-t="e" data-i="${e.id}" title="이어쓰기">${ICON_PEN}</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}" title="휴지통으로">${ICON_TRASH}</button>`}</div>
+ <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}">${esc(e.title)||'<span class="pl">제목 없음</span>'}</h3>${e.place?`<div class="pl plc">📍 ${esc(e.place)}</div>`:""}<p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}">${nvPrev(e)}</p>
  ${tg?`<div class="tags">${tg}</div>`:""}${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}
  <div class="nvrow"><button type="button" class="wr" data-a="wr" data-t="e" data-i="${e.id}">✍️ ${e.actual?"이어쓰기":"쓰기"}</button>${e.actual?`<button type="button" data-nv="${e.id}">📖 보기</button>`:""}</div></div></div>`}
 function chHTML(c){
@@ -308,14 +348,14 @@ function chHTML(c){
  const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
  const one=[c.personality,c.background,c.arc,c.relations,c.look].find(x=>String(x||"").trim());
  const has=["look","personality","background","arc","relations"].some(k=>c[k])||c.memo;
- return `<div class="card cmp"><div class="cmphd"><h3 class="clk" data-a="ed" data-t="c" data-i="${c.id}">${esc(c.name)}${aliasLbl(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3><div class="btns"><button data-a="del" data-t="c" data-i="${c.id}">✕</button></div></div>
+ return `<div class="card cmp"><div class="cmphd"><h3 class="clk" data-a="ed" data-t="c" data-i="${c.id}">${esc(c.name)}${aliasLbl(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3><div class="btns"><button data-a="del" data-t="c" data-i="${c.id}" title="휴지통으로">${ICON_TRASH}</button></div></div>
  ${one?`<div class="csum">${esc(String(one).replace(/\s+/g," "))}</div>`:`<div class="csum pl">✍️ 눌러서 적기</div>`}
  <div class="cmpft"><a href="#" data-showch="${esc(c.name)}">타임라인 ${n}건</a></div>
  ${has?`<details class="cdet"><summary>자세히</summary>${kv("look","외모")}${kv("personality","성격")}${kv("background","배경")}${kv("arc","변화")}${kv("relations","관계")}${c.memo?`<div class="memo">📝 ${esc(c.memo)}</div>`:""}</details>`:""}</div>`}
 function itHTML(c){
  const n=D.events.filter(e=>split(e.items).includes(c.name)).length;
  const own=split(c.owner).map(nm=>D.chars.some(x=>x.name===nm)?`<a href="#" data-ch="${esc(nm)}">${esc(nm)}</a>`:esc(nm)).join(", ");
- return `<div class="card cmp"><div class="cmphd"><h3 class="clk" data-a="ed" data-t="i" data-i="${c.id}">◇ ${esc(c.name)}</h3><div class="btns"><button data-a="del" data-t="i" data-i="${c.id}">✕</button></div></div>
+ return `<div class="card cmp"><div class="cmphd"><h3 class="clk" data-a="ed" data-t="i" data-i="${c.id}">◇ ${esc(c.name)}</h3><div class="btns"><button data-a="del" data-t="i" data-i="${c.id}" title="휴지통으로">${ICON_TRASH}</button></div></div>
  ${c.desc?`<div class="csum">${esc(String(c.desc).replace(/\s+/g," "))}</div>`:`<div class="csum pl">✍️ 눌러서 적기</div>`}
  <div class="cmpft"><a href="#" data-showit="${esc(c.name)}">타임라인 ${n}건</a>${c.owner?`<span class="pl">👤 ${own}</span>`:""}</div>
  ${c.memo?`<details class="cdet"><summary>메모</summary><div class="memo">📝 ${esc(c.memo)}</div></details>`:""}</div>`}
@@ -343,7 +383,7 @@ function render(){
   <div class="card"><h3 style="margin:0 0 6px">💾 백업 / 복원</h3><div class="rowb"><button data-bk="json">📥 전체 백업(.json)</button><button data-bk="txt">📄 원문(.txt)</button>${isAdminNow()?`<button data-bk="import">📤 백업 불러오기</button>`:""}</div></div></div>`;
   $("stat").textContent="설정";
  }else if(tab=="ac"){
-  h=`<div class="aclist">${ACTS.map((a,i)=>`<div class="acrow card"><button data-aact="up" data-ai="${i}" ${i===0?"disabled":""}>▲</button><button data-aact="dn" data-ai="${i}" ${i===ACTS.length-1?"disabled":""}>▼</button><button data-aact="del" data-ai="${i}">✕</button><input data-an="${i}" value="${esc(a)}"><span class="pl">${D.events.filter(e=>+e.act===i&&e.done).length}/${D.events.filter(e=>+e.act===i).length}</span></div>`).join("")}</div>`;
+  h=`<div class="aclist">${ACTS.map((a,i)=>`<div class="acrow card"><button data-aact="up" data-ai="${i}" ${i===0?"disabled":""}>▲</button><button data-aact="dn" data-ai="${i}" ${i===ACTS.length-1?"disabled":""}>▼</button><button data-aact="del" data-ai="${i}" title="삭제">${ICON_TRASH}</button><input data-an="${i}" value="${esc(a)}"><span class="pl">${D.events.filter(e=>+e.act===i&&e.done).length}/${D.events.filter(e=>+e.act===i).length}</span></div>`).join("")}</div>`;
   $("stat").textContent=`장 ${ACTS.length}개`;
  }else if(tab=="it"){
   const L=D.items.filter(c=>hit(c,q,["name","desc","owner","memo"]));
@@ -551,7 +591,7 @@ $("f").addEventListener("click",ev=>{
  const pk=ev.target.closest("[data-pk]");if(pk){pkToggle(pk.dataset.pk,pk.dataset.v);return}
  if(ev.target.closest("#curx")){setCur($("cur").classList.contains("closed"));return}
  const go=ev.target.closest("[data-nbgo]");
- if(go){const id=+go.dataset.nbgo;if(edDirty()&&!confirm("저장하지 않은 변경이 있습니다.\n저장하지 않고 이동할까요?\n(취소 후 저장을 먼저 눌러 주세요)"))return;const wasNv=nvEditing,toEnd=!!go.closest(".nb.prev");EDSNAP="";$("dlg").close("cancel");
+ if(go){const id=+go.dataset.nbgo;if(edDirty()&&!confirm("저장하지 않은 변경이 있습니다.\n저장하지 않고 이동할까요?\n(취소 후 저장을 먼저 눌러 주세요)"))return;const wasNv=nvEditing,toEnd=!!go.closest(".nb.prev");EDSNAP="";navHop=true;$("dlg").close("cancel");
   setTimeout(()=>{openEd("e",id);nvEditing=wasNv;if(toEnd)requestAnimationFrame(()=>requestAnimationFrame(()=>{const ta=fe("actual");if(ta)edGoLine(ta.value.split("\n").length-1,1e9)}))},50);return}
  if(ev.target.closest("#curp")){setCur(true);return}
 });
@@ -583,6 +623,7 @@ function edConfirmDiscard(){
 $("f").addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest('button[value="cancel"]');if(!b)return;if(edDirty()){ev.preventDefault();edConfirmDiscard()}},true);
 $("dlg").addEventListener("close",()=>{
  clearTimeout(edDrTimer);if(editing)edDraftClear(editing.t,editing.id);EDSNAP="";EDDRAFT=false;
+ if(navHop)navHop=false;else flashEdited();
  if(!nvEditing)return;nvEditing=false;
  const d=$("ndlg");if(!d.open)return;const sc=$("nbody"),st=sc.scrollTop;renderNovel();sc.scrollTop=st;nvUpdate();
 });
@@ -652,6 +693,7 @@ $("f").addEventListener("submit",ev=>{
  else{rec={id:Math.max(0,...arr.map(x=>x.id))+1,...d};if(t==="e"&&editing.insertAfterId!=null){const at=arr.findIndex(x=>x.id===editing.insertAfterId);arr.splice(at<0?arr.length:at+1,0,rec)}else arr.push(rec)}
  // 새로 만든 항목은 이제부터 "수정" 상태 — 다시 저장하면 같은 항목이 갱신된다
  edDraftClear(t,id);edDraftClear(t,rec.id);editing.id=rec.id;editing.insertAfterId=null;
+ if(t==="e")EDITED.add(rec.id);
  const hb=$("f").querySelector(".eh b");if(hb)hb.textContent=`${{e:"에피소드",i:"아이템",c:"인물"}[t]} 수정`;
  save();render();EDSNAP=edSig();
  if(t==="e"){refreshPk("chars");refreshPk("items");EDSNAP=edSig()}
@@ -662,7 +704,7 @@ $("f").addEventListener("submit",ev=>{
 // 글꼴/글자 크기 (원문 입력칸 · 읽기 공통)
 function applyWrite(){let fam="serif",z=17;try{fam=localStorage.getItem("novel-wf")||"serif";z=+localStorage.getItem("novel-wsz")||17}catch(e){}
  document.documentElement.dataset.wf=fam;document.documentElement.style.setProperty("--wsz",Math.min(26,Math.max(13,z))+"px")}
-function wsLabel(){const b=$("wfBtn");if(b)b.textContent=document.documentElement.dataset.wf==="sans"?"고딕":"명조"}
+function wsLabel(){document.querySelectorAll("#wfBtn").forEach(b=>{b.textContent=document.documentElement.dataset.wf==="sans"?"고딕":"명조"})}
 applyWrite();wsLabel();
 document.addEventListener("click",ev=>{
  const b0=ev.target.closest&&ev.target.closest("#wfBtn,#wsM,#wsP,[data-w]");if(!b0)return;
@@ -676,7 +718,7 @@ $("add").onclick=()=>{if(tab=="ac"){ACTS.push(`${ACTS.length}장 · 새 장`);fi
 
 // ===== 읽기 =====
 let NVUSER=false;
-const nvShown=e=>SHARE?true:NVUSER?!!e.done:!!String(e.actual||"").trim();
+const nvShown=e=>PUB?true:NVUSER?!!e.done:!!String(e.actual||"").trim();
 const novelList=()=>D.events.map((e,i)=>[e,i]).filter(x=>nvShown(x[0])).sort((a,b)=>((+a[0].act||0)-(+b[0].act||0))||a[1]-b[1]).map(x=>x[0]);
 function novelLines(){
  const out=[];let lastAct=-1;
