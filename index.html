@@ -485,7 +485,7 @@ function nbHTML(kind,e){
  const pv=kind==="prev",txt=String(e.actual||"").replace(/\r\n?/g,"\n").split("\n").filter(x=>x.trim());
  const lines=pv?txt.slice(-3):txt.slice(0,3);
  const ps=a=>a.length?a.map(x=>`<p>${esc(x)}</p>`).join(""):'<p>(아직 내용 없음)</p>';
- return `<div class="nb ${kind}"><div class="nbh"><span>${pv?"◀ 앞 에피소드":"뒤 에피소드 ▶"} · <b>${esc(e.title||"제목 없음")}</b></span><button type="button" data-nbgo="${e.id}">${pv?"‹ 앞글 편집":"뒷글 편집 ›"}</button><button type="button" data-nbx>전체 보기</button></div><div class="nbt short" data-nbx2>${ps(lines)}</div><div class="nbt full">${ps(txt)}</div></div>`;
+ return `<div class="nb ${kind}"><div class="nbh"><span>${pv?"◀ 앞 에피소드":"뒤 에피소드 ▶"} · <b>${esc(e.title||"제목 없음")}</b></span><button type="button" data-nbgo="${e.id}">${pv?"‹ 앞글 편집":"뒷글 편집 ›"}</button><button type="button" data-nbx>전체 보기</button></div><div class="nbt short" data-nbgo="${e.id}" title="눌러서 이 에피소드로 이동">${ps(lines)}</div><div class="nbt full">${ps(txt)}</div></div>`;
 }
 function pkChips(k,sel){
  const src=k=="chars"?D.chars:D.items,known=new Set(),btn=(n,label,on,isNew,tip)=>`<button type="button" class="chip pk ${on?"on":""}" data-pk="${k}" data-v="${esc(n)}" title="${esc(tip||"")}">${isNew?"＋ ":""}${label}</button>`;
@@ -543,7 +543,7 @@ $("f").addEventListener("click",ev=>{
  const pk=ev.target.closest("[data-pk]");if(pk){pkToggle(pk.dataset.pk,pk.dataset.v);return}
  if(ev.target.closest("#curx")){setCur($("cur").classList.contains("closed"));return}
  const go=ev.target.closest("[data-nbgo]");
- if(go){const id=+go.dataset.nbgo;if(edDirty()&&!confirm("저장하지 않은 변경이 있습니다.\n저장하지 않고 이동할까요?"))return;const wasNv=nvEditing;EDSNAP="";$("dlg").close("cancel");setTimeout(()=>{openEd("e",id);nvEditing=wasNv},50);return}
+ if(go){const id=+go.dataset.nbgo;if(edDirty()&&!confirm("저장하지 않은 변경이 있습니다.\n저장하지 않고 이동할까요?\n(취소 후 저장을 먼저 눌러 주세요)"))return;const wasNv=nvEditing;EDSNAP="";$("dlg").close("cancel");setTimeout(()=>{openEd("e",id);nvEditing=wasNv},50);return}
  const nb=ev.target.closest(".nb");
  if(nb&&(ev.target.closest("[data-nbx]")||ev.target.closest("[data-nbx2]"))){const o=nb.classList.toggle("open");nb.querySelector("[data-nbx]").textContent=o?"접기":"전체 보기";return}
 });
@@ -580,7 +580,7 @@ $("dlg").addEventListener("close",()=>{
 });
 $("dlg").addEventListener("cancel",ev=>{if(edDirty()){ev.preventDefault();edConfirmDiscard()}});
 
-const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>취소</button><button class="btn p" value="ok">저장</button></div>`;
+const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>닫기</button><button class="btn p" value="ok">저장</button></div>`;
 function episodeForm(o,isNew,nb){
  return `<div class="titlefld"><input name="title" value="${esc(o.title)}" placeholder="에피소드 제목"></div>
  <details class="evmeta" id="evmeta" ${isNew?"open":""}><summary id="evsum"></summary><div class="fgrid">
@@ -630,17 +630,25 @@ function toast(msg,ms=1800){
  setTimeout(()=>{el.classList.remove("show");setTimeout(()=>el.remove(),300)},ms);
 }
 $("f").addEventListener("submit",ev=>{
- const sv=ev.submitter&&ev.submitter.value;if(sv!="ok")return;const {t,id}=editing,arr=arrOf(t),d={};
+ const sv=ev.submitter&&ev.submitter.value;if(sv!="ok")return;
+ ev.preventDefault(); // 저장해도 편집창을 닫지 않는다
+ const {t,id}=editing,arr=arrOf(t),d={};
  SCH[t].forEach(([k,,ty])=>{const el=fe(k);d[k]=ty=="cb"?el.checked:ty=="sel"?+el.value:el.value});
  if(t==="e"){
   const nid=a=>Math.max(0,...a.map(x=>x.id))+1;
   split(d.chars).forEach(n=>{if(!D.chars.some(c=>c.name===n||split(c.aliases).includes(n)))D.chars.push({id:nid(D.chars),name:n,role:"",aliases:"",age:"",look:"",personality:"",background:"",arc:"",relations:"",tags:"",memo:""})});
   split(d.items).forEach(n=>{if(!D.items.some(c=>c.name===n))D.items.push({id:nid(D.items),name:n,desc:"",owner:"",memo:""})});
  }
- if(id)Object.assign(arr.find(x=>x.id==id),d);
- else{const fresh={id:Math.max(0,...arr.map(x=>x.id))+1,...d};if(t==="e"&&editing.insertAfterId!=null){const at=arr.findIndex(x=>x.id===editing.insertAfterId);arr.splice(at<0?arr.length:at+1,0,fresh)}else arr.push(fresh)}
- save();render();
- setTimeout(()=>toast("저장했습니다."),50);
+ let rec;
+ if(id){rec=arr.find(x=>x.id==id);Object.assign(rec,d)}
+ else{rec={id:Math.max(0,...arr.map(x=>x.id))+1,...d};if(t==="e"&&editing.insertAfterId!=null){const at=arr.findIndex(x=>x.id===editing.insertAfterId);arr.splice(at<0?arr.length:at+1,0,rec)}else arr.push(rec)}
+ // 새로 만든 항목은 이제부터 "수정" 상태 — 다시 저장하면 같은 항목이 갱신된다
+ edDraftClear(t,id);edDraftClear(t,rec.id);editing.id=rec.id;editing.insertAfterId=null;
+ const hb=$("f").querySelector(".eh b");if(hb)hb.textContent=`${{e:"에피소드",i:"아이템",c:"인물"}[t]} 수정`;
+ save();render();EDSNAP=edSig();
+ if(t==="e"){refreshPk("chars");refreshPk("items");EDSNAP=edSig()}
+ if(nvEditing&&$("ndlg").open){const sc=$("nbody"),st=sc.scrollTop;renderNovel();sc.scrollTop=st;nvUpdate()}
+ toast("저장되었습니다.");
 });
 
 // 글꼴/글자 크기 (원문 입력칸 · 읽기 공통)
