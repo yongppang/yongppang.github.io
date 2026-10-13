@@ -143,11 +143,8 @@ details[open]>summary{border-bottom:1px dashed var(--bd);margin-bottom:4px}
 .edwrap{display:flex;align-items:stretch;overflow:hidden;border:1px solid var(--bd);border-radius:14px;background:var(--paper);margin:4px 0 8px}
 .eb .edwrap textarea.actual-field{flex:1 1 0;min-width:0;width:auto}
 .edln{flex:none;text-align:right;white-space:pre;color:var(--sub);background:#6c5ce711;border-right:1px dashed var(--bd);padding:16px 8px 16px 6px;font:12px ui-monospace,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none;pointer-events:none}
-.nb.cur{border:2px solid var(--ac);background:var(--card);color:var(--tx);padding:8px 10px}
-.nb.cur .nbh{color:var(--ac);font-weight:700}.nb.cur .nbh b{color:var(--tx)}
-.nb.cur .edwrap{margin:6px 0 0}.nb.cur.closed .edwrap{display:none}
-.nb.cur .curp{display:none;cursor:pointer;color:var(--sub);-webkit-mask-image:linear-gradient(to top,transparent,#000 60%);mask-image:linear-gradient(to top,transparent,#000 60%)}
-.nb.cur.closed .curp{display:block}
+.cur{margin:8px 0}.cur .nbh{padding:2px 4px}.cur.closed .edwrap{display:none}
+.cur .nbh button{border:0;background:none;color:var(--ac);padding:0 2px;font-size:12px}
 .edwrap:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px #6c5ce722}
 .eb textarea.actual-field{display:block;border:0;background:transparent;resize:none;overflow:hidden;min-height:42vh;font-family:var(--wf);font-size:var(--wsz);line-height:1.95;padding:16px 18px;outline:none;color:var(--tx)}
 /* 앞·뒤 에피소드 미리보기 */
@@ -488,7 +485,7 @@ function nbHTML(kind,e){
  const pv=kind==="prev",txt=String(e.actual||"").replace(/\r\n?/g,"\n").split("\n").filter(x=>x.trim());
  const lines=pv?txt.slice(-3):txt.slice(0,3);
  const ps=a=>a.length?a.map(x=>`<p>${esc(x)}</p>`).join(""):'<p>(아직 내용 없음)</p>';
- return `<div class="nb ${kind}"><div class="nbh"><span>${pv?"◀ 앞 에피소드":"뒤 에피소드 ▶"} · <b>${esc(e.title||"제목 없음")}</b></span></div><div class="nbt short" data-nbgo="${e.id}" title="눌러서 이 에피소드로 이동">${ps(lines)}</div></div>`;
+ return `<div class="nb ${kind}"><div class="nbh"><span>${pv?"◀ 앞 에피소드":"뒤 에피소드 ▶"} · <b>${esc(e.title||"제목 없음")}</b></span><button type="button" data-nbgo="${e.id}">${pv?"‹ 앞글 편집":"뒷글 편집 ›"}</button><button type="button" data-nbx>전체 보기</button></div><div class="nbt short" data-nbx2>${ps(lines)}</div><div class="nbt full">${ps(txt)}</div></div>`;
 }
 function pkChips(k,sel){
  const src=k=="chars"?D.chars:D.items,known=new Set(),btn=(n,label,on,isNew,tip)=>`<button type="button" class="chip pk ${on?"on":""}" data-pk="${k}" data-v="${esc(n)}" title="${esc(tip||"")}">${isNew?"＋ ":""}${label}</button>`;
@@ -516,7 +513,6 @@ function updLn(){
  const g=ta.parentElement.querySelector(".edln"),cs=getComputedStyle(ta);
  if(!lnMirror){lnMirror=document.createElement("div");document.body.appendChild(lnMirror)}
  const m=lnMirror;
- g.style.minWidth=(String(ta.value.split("\n").length).length+1.6)+"ch";g.style.lineHeight=cs.lineHeight;g.style.paddingTop=cs.paddingTop; // 번호 칸 폭을 먼저 확정해야 입력칸 폭이 정해진다
  m.style.cssText=`position:fixed;left:-99999px;top:0;visibility:hidden;white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;box-sizing:border-box;border:0;width:${ta.clientWidth}px;padding:0 ${cs.paddingRight} 0 ${cs.paddingLeft};font:${cs.font};letter-spacing:${cs.letterSpacing};line-height:${cs.lineHeight};tab-size:${cs.tabSize}`;
  const lines=ta.value.split("\n");
  m.innerHTML=lines.map(()=>"<div></div>").join("");
@@ -524,15 +520,9 @@ function updLn(){
  const lh=parseFloat(cs.lineHeight)||parseFloat(cs.fontSize)*1.95;
  let out="";[...m.children].forEach((d,i)=>{const c=Math.max(1,Math.round(d.offsetHeight/lh));out+=(i+1)+"\n".repeat(c)});
  g.textContent=out.replace(/\n$/,"");
- growTa(ta); // 폭이 확정된 뒤 높이를 다시 맞춘다 (끝부분이 잘리지 않게)
+ g.style.lineHeight=cs.lineHeight;g.style.paddingTop=cs.paddingTop;g.style.minWidth=(String(lines.length).length+1.6)+"ch";
 }
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if($("dlg").open)growAll()});
-function updCurPrev(){
- const ta=fe("actual"),p=$("curp");if(!ta||!p)return;
- const ls=ta.value.replace(/\r\n?/g,"\n").split("\n").filter(x=>x.trim()).slice(0,3);
- p.innerHTML=ls.length?ls.map(x=>`<p>${esc(x)}</p>`).join(""):'<p>(아직 내용 없음 · 눌러서 쓰기)</p>';
-}
-function setCur(open){const c=$("cur");if(!c)return;if(!open)updCurPrev();c.classList.toggle("closed",!open);$("curx").textContent=open?"접기":"펼치기";if(open)growAll()}
+function setCur(open){const c=$("cur");if(!c)return;c.classList.toggle("closed",!open);$("curx").textContent=open?"접기":"펼치기";if(open)growAll()}
 function updEvSum(){
  const sm=$("evsum"),a=fe("act");if(!sm||!a)return;
  sm.innerHTML=`📋 정보 <span class="pl">· ${[esc(ACTS[+a.value]||""),esc(fe("when").value.trim()),esc(fe("place").value.trim())].filter(Boolean).join(" · ")}${fe("fs").checked?" · 중요":""}${fe("done").checked?" · 완료":""}</span>`;
@@ -551,8 +541,9 @@ $("f").addEventListener("click",ev=>{
  const pk=ev.target.closest("[data-pk]");if(pk){pkToggle(pk.dataset.pk,pk.dataset.v);return}
  if(ev.target.closest("#curx")){setCur($("cur").classList.contains("closed"));return}
  const go=ev.target.closest("[data-nbgo]");
- if(go){const id=+go.dataset.nbgo;if(edDirty()&&!confirm("저장하지 않은 변경이 있습니다.\n저장하지 않고 이동할까요?\n(취소 후 저장을 먼저 눌러 주세요)"))return;const wasNv=nvEditing;EDSNAP="";$("dlg").close("cancel");setTimeout(()=>{openEd("e",id);nvEditing=wasNv},50);return}
- if(ev.target.closest("#curp")){setCur(true);return}
+ if(go){const id=+go.dataset.nbgo;if(edDirty()&&!confirm("저장하지 않은 변경이 있습니다.\n저장하지 않고 이동할까요?"))return;const wasNv=nvEditing;EDSNAP="";$("dlg").close("cancel");setTimeout(()=>{openEd("e",id);nvEditing=wasNv},50);return}
+ const nb=ev.target.closest(".nb");
+ if(nb&&(ev.target.closest("[data-nbx]")||ev.target.closest("[data-nbx2]"))){const o=nb.classList.toggle("open");nb.querySelector("[data-nbx]").textContent=o?"접기":"전체 보기";return}
 });
 addEventListener("resize",()=>{if($("dlg").open)growAll()});
 $("dlg").addEventListener("toggle",ev=>{if(ev.target.id==="evmeta"&&ev.target.open)growAll()},true);
@@ -587,7 +578,7 @@ $("dlg").addEventListener("close",()=>{
 });
 $("dlg").addEventListener("cancel",ev=>{if(edDirty()){ev.preventDefault();edConfirmDiscard()}});
 
-const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>닫기</button><button class="btn p" value="ok">저장</button></div>`;
+const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>취소</button><button class="btn p" value="ok">저장</button></div>`;
 function episodeForm(o,isNew,nb){
  return `<div class="titlefld"><input name="title" value="${esc(o.title)}" placeholder="에피소드 제목"></div>
  <details class="evmeta" id="evmeta" ${isNew?"open":""}><summary id="evsum"></summary><div class="fgrid">
@@ -600,8 +591,8 @@ function episodeForm(o,isNew,nb){
   <label>👤 등장인물</label><input name="chars" value="${esc(o.chars)}" placeholder="이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-chars">${pkChips("chars",split(o.chars))}</div>
   <label>◇ 아이템</label><input name="items" value="${esc(o.items)}" placeholder="이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(o.items))}</div></div></details>
  ${nbHTML("prev",nb.prev)}
- <div class="nb cur" id="cur"><div class="nbh"><span>✍️ 현재 에피소드 · <b id="curt">${esc(o.title||"제목 없음")}</b></span><button type="button" id="curx">접기</button></div>
- <div class="edwrap"><div class="edln" aria-hidden="true"></div><textarea class="actual-field" name="actual" placeholder="이 에피소드의 내용을 쓰세요.">${esc(o.actual)}</textarea></div><div class="nbt short curp" id="curp" title="눌러서 펼치기"></div></div>
+ <div class="cur" id="cur"><div class="nbh"><span>✍️ 현재 에피소드 · <b id="curt">${esc(o.title||"제목 없음")}</b></span><button type="button" id="curx">접기</button></div>
+ <div class="edwrap"><div class="edln" aria-hidden="true"></div><textarea class="actual-field" name="actual" placeholder="이 에피소드의 내용을 쓰세요.">${esc(o.actual)}</textarea></div></div>
  ${nbHTML("next",nb.next)}`;
 }
 function simpleForm(t,o){
@@ -637,25 +628,17 @@ function toast(msg,ms=1800){
  setTimeout(()=>{el.classList.remove("show");setTimeout(()=>el.remove(),300)},ms);
 }
 $("f").addEventListener("submit",ev=>{
- const sv=ev.submitter&&ev.submitter.value;if(sv!="ok")return;
- ev.preventDefault(); // 저장해도 편집창을 닫지 않는다
- const {t,id}=editing,arr=arrOf(t),d={};
+ const sv=ev.submitter&&ev.submitter.value;if(sv!="ok")return;const {t,id}=editing,arr=arrOf(t),d={};
  SCH[t].forEach(([k,,ty])=>{const el=fe(k);d[k]=ty=="cb"?el.checked:ty=="sel"?+el.value:el.value});
  if(t==="e"){
   const nid=a=>Math.max(0,...a.map(x=>x.id))+1;
   split(d.chars).forEach(n=>{if(!D.chars.some(c=>c.name===n||split(c.aliases).includes(n)))D.chars.push({id:nid(D.chars),name:n,role:"",aliases:"",age:"",look:"",personality:"",background:"",arc:"",relations:"",tags:"",memo:""})});
   split(d.items).forEach(n=>{if(!D.items.some(c=>c.name===n))D.items.push({id:nid(D.items),name:n,desc:"",owner:"",memo:""})});
  }
- let rec;
- if(id){rec=arr.find(x=>x.id==id);Object.assign(rec,d)}
- else{rec={id:Math.max(0,...arr.map(x=>x.id))+1,...d};if(t==="e"&&editing.insertAfterId!=null){const at=arr.findIndex(x=>x.id===editing.insertAfterId);arr.splice(at<0?arr.length:at+1,0,rec)}else arr.push(rec)}
- // 새로 만든 항목은 이제부터 "수정" 상태 — 다시 저장하면 같은 항목이 갱신된다
- edDraftClear(t,id);edDraftClear(t,rec.id);editing.id=rec.id;editing.insertAfterId=null;
- const hb=$("f").querySelector(".eh b");if(hb)hb.textContent=`${{e:"에피소드",i:"아이템",c:"인물"}[t]} 수정`;
- save();render();EDSNAP=edSig();
- if(t==="e"){refreshPk("chars");refreshPk("items");EDSNAP=edSig()}
- if(nvEditing&&$("ndlg").open){const sc=$("nbody"),st=sc.scrollTop;renderNovel();sc.scrollTop=st;nvUpdate()}
- toast("저장되었습니다.");
+ if(id)Object.assign(arr.find(x=>x.id==id),d);
+ else{const fresh={id:Math.max(0,...arr.map(x=>x.id))+1,...d};if(t==="e"&&editing.insertAfterId!=null){const at=arr.findIndex(x=>x.id===editing.insertAfterId);arr.splice(at<0?arr.length:at+1,0,fresh)}else arr.push(fresh)}
+ save();render();
+ setTimeout(()=>toast("저장했습니다."),50);
 });
 
 // 글꼴/글자 크기 (원문 입력칸 · 읽기 공통)
