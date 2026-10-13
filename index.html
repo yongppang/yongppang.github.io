@@ -125,7 +125,7 @@ body.booting header,body.booting .bar,body.booting main{visibility:hidden}
 .acrow input{flex:1 1 auto;min-width:0;font-weight:700}.acrow button{flex:none;padding:4px 10px}.acrow .pl{white-space:nowrap}
 .setgrid{display:grid;gap:12px;max-width:640px}.setgrid .row,.rowb{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .setsample{margin:10px 0 0;padding:10px 12px;border-radius:10px;background:var(--paper);border:1px solid var(--bd);font-family:var(--wf);font-size:var(--wsz);line-height:1.9}
-.toast{position:fixed;left:50%;bottom:calc(max(10px,env(safe-area-inset-bottom)) + 80px);transform:translate(-50%,12px);z-index:1000;background:rgba(32,36,56,.94);color:#fff;padding:10px 20px;border-radius:999px;font-size:14px;font-weight:700;box-shadow:0 6px 20px #0004;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:calc(max(10px,env(safe-area-inset-bottom)) + 80px);transform:translate(-50%,12px);z-index:2147483647;background:rgba(32,36,56,.96);color:#fff;padding:10px 20px;border-radius:999px;font-size:14px;font-weight:700;box-shadow:0 6px 20px #0004;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* ===== 전체 화면 대화창 (편집 / 읽기 공통 뼈대: 위 · 가운데(스크롤) · 아래) ===== */
@@ -199,11 +199,16 @@ dialog.cfm{max-width:320px;width:calc(100% - 40px);height:fit-content;margin:aut
 .book-chapter:after{content:"❦";display:block;margin:15px auto 0;font-size:.78em;line-height:1;color:var(--sub);letter-spacing:0}
 .book-episode{display:block;margin:34px 0 18px;padding:0;text-align:center;font-size:1.06em;line-height:1.65;font-weight:700;letter-spacing:.025em;scroll-margin-top:16px;color:var(--tx)}
 .book-episode .lt{display:inline;padding:0;border:0}
-.book-p{display:block;margin:0 0 .7em;padding:0;text-align:left;text-indent:1em;line-height:2.05;letter-spacing:.015em;white-space:normal;overflow-wrap:anywhere;word-break:normal;color:var(--tx)}
-.book-p .lt{display:inline;min-width:0;padding:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.book-p{display:grid;grid-template-columns:2.35em minmax(0,1fr);gap:0 .85em;align-items:start;margin:0;padding:.12em .45em;text-align:left;line-height:2.05;letter-spacing:.015em;white-space:normal;overflow-wrap:anywhere;word-break:normal;color:var(--tx);border-radius:3px}
+.book-p.row-even{background:color-mix(in srgb,var(--tx) 3.2%,transparent)}
+.book-p.row-odd{background:transparent}
+.book-p .line-no{display:block;text-align:right;color:var(--sub);opacity:.68;font:11px/2.65 ui-monospace,SFMono-Regular,Consolas,monospace;user-select:none;-webkit-user-select:none;white-space:nowrap}
+.book-p .lt{display:block;min-width:0;padding:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.book-p .lt:empty:after{content:"\00a0"}
+.book-p.book-gap{display:block;background:transparent;padding:0;height:.72em;line-height:.72em;border-radius:0}
 .book-p.book-gap{height:.72em;margin:0;text-indent:0;line-height:.72em}
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
-@media(max-width:560px){#nbody{padding:8px 0 28px}.book-page{padding:30px 23px 66px;border-left:0;border-right:0;box-shadow:none}.book-chapter{margin:12px 0 32px}.book-episode{margin:28px 0 14px}.book-p{line-height:2.0;margin-bottom:.68em}}
+@media(max-width:560px){#nbody{padding:8px 0 28px}.book-page{padding:30px 14px 66px;border-left:0;border-right:0;box-shadow:none}.book-chapter{margin:12px 0 32px}.book-episode{margin:28px 0 14px}.book-p{grid-template-columns:2em minmax(0,1fr);gap:0 .55em;line-height:2.0;padding:.12em .25em}.book-p .line-no{font-size:10px;line-height:2.8}}
 body.share #nview{display:none}
 
 /* ===== 블럭 정렬 및 색상 ===== */
@@ -696,7 +701,7 @@ $("dlg").addEventListener("close",()=>{
 });
 $("dlg").addEventListener("cancel",ev=>{if(edDirty()){ev.preventDefault();edConfirmDiscard()}});
 
-const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>닫기</button><button class="btn p" value="ok">저장</button></div>`;
+const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>닫기</button><button type="button" class="btn p" data-save-ed>저장</button></div>`;
 function episodeForm(o,isNew,nb){
  return `<div class="titlefld"><input name="title" value="${esc(o.title)}" placeholder="에피소드 제목"></div>
  <details class="evmeta" id="evmeta" ${isNew?"open":""}><summary id="evsum"></summary><div class="fgrid">
@@ -740,14 +745,13 @@ function openEd(t,id,insertAfterId=null,actIdx=null){
 }
 function toast(msg,ms=1800){
  document.querySelectorAll(".toast").forEach(x=>x.remove());
- const host=[...document.querySelectorAll("dialog[open]")].pop()||document.body;
+ const host=$("dlg").open?$("dlg"):$("ndlg").open?$("ndlg"):document.body;
  const el=document.createElement("div");el.className="toast";el.setAttribute("role","status");el.textContent=msg;host.appendChild(el);
  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add("show")));
  setTimeout(()=>{el.classList.remove("show");setTimeout(()=>el.remove(),300)},ms);
 }
-$("f").addEventListener("submit",ev=>{
- const sv=ev.submitter&&ev.submitter.value;if(sv!="ok")return;
- ev.preventDefault(); // 저장해도 편집창을 닫지 않는다
+function saveEd(ev){
+ if(ev&&ev.preventDefault)ev.preventDefault(); // 저장해도 편집창을 닫지 않는다
  const {t,id}=editing,arr=arrOf(t),d={};
  SCH[t].forEach(([k,,ty])=>{const el=fe(k);d[k]=ty=="cb"?el.checked:ty=="sel"?+el.value:el.value});
  if(t==="e"){
@@ -766,7 +770,8 @@ $("f").addEventListener("submit",ev=>{
  if(t==="e"){refreshPk("chars");refreshPk("items");EDSNAP=edSig()}
  if(nvEditing&&$("ndlg").open){const sc=$("nbody"),st=sc.scrollTop;renderNovel();sc.scrollTop=st;nvUpdate()}
  toast("저장되었습니다.");
-});
+}
+$("f").addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest("[data-save-ed]");if(b)saveEd(ev)});
 
 // 글꼴/글자 크기 (원문 입력칸 · 읽기 공통)
 function applyWrite(){let fam="serif",z=17;try{fam=localStorage.getItem("novel-wf")||"serif";z=+localStorage.getItem("novel-wsz")||17}catch(e){}
@@ -868,14 +873,16 @@ function renderNovel(){
  $("nview").disabled=accessDenied;
  $("ncopy").style.display=asUser?"none":"";$("nedit").style.display=(!asUser&&adminAllowed)?"":"none";$("nbody").classList.toggle("nocopy",asUser);
  if(lines.length){
-  let html='<article class="book-page">',inEpisode=false,pendingBlanks=0;
+  let html='<article class="book-page">',inEpisode=false,pendingBlanks=0,lineNo=0,rowNo=0;
   lines.forEach(l=>{
    if(l.chapter){inEpisode=false;pendingBlanks=0;html+=`<div class="book-chapter">${esc(l.t)}</div>`;return}
-   if(l.h){inEpisode=true;pendingBlanks=0;const label=String(l.t||"").replace(/^\[/,"").replace(/\]$/,"");html+=`<h2 class="nl nh book-episode" data-e="${esc(String(l.id))}"><span class="lt">${esc(label)}</span></h2>`;return}
+   if(l.h){inEpisode=true;pendingBlanks=0;lineNo=0;rowNo=0;const label=String(l.t||"").replace(/^\[/," ").replace(/\]$/," ").trim();html+=`<h2 class="nl nh book-episode" data-e="${esc(String(l.id))}"><span class="lt">${esc(label)}</span></h2>`;return}
    if(!inEpisode)return;
    if(!String(l.t||"").trim()){pendingBlanks++;return}
    while(pendingBlanks>0){html+='<p class="nl book-p book-gap"><span class="lt">&nbsp;</span></p>';pendingBlanks--}
-   html+=`<p class="nl book-p"><span class="lt">${esc(l.t)}</span></p>`;
+   lineNo++;rowNo++;
+   const rowClass=rowNo%2===0?'row-even':'row-odd';
+   html+=`<p class="nl book-p ${rowClass}"><span class="line-no" aria-hidden="true">${lineNo}</span><span class="lt">${esc(l.t)}</span></p>`;
   });
   $("nbody").innerHTML=html+'</article>';
  }else $("nbody").innerHTML='<p class="nv-empty">아직 작성된 내용이 없습니다.</p>';
