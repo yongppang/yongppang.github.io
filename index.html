@@ -56,6 +56,9 @@ body.booting header,body.booting .bar,body.booting main{visibility:hidden}
 .card{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:12px;padding:9px 12px;box-shadow:0 1px 2px #0000000d;overflow-wrap:anywhere;min-width:0}
 .card.fs{border-color:#f5a623}
 .card.s-empty{border-left-color:#b9bdc7}.card.s-text{border-left-color:#55c89a}.card.s-warn{border-left-color:#f09a2b}.card.s-done{border-left-color:#4a86e8}
+/* 사용자 지정 색상: 라이트 모드에서는 부드러운 색조, 다크 모드에서는 더 선명한 색조로 표시 */
+.card[style*="--user-block-color"]{background:color-mix(in srgb,var(--user-block-color) 24%,var(--card))}
+:root[data-theme=dark] .card[style*="--user-block-color"]{background:color-mix(in srgb,var(--user-block-color) 38%,var(--card))}
 /* 타임라인 에피소드 블럭은 외곽선을 한 줄로 통일 */
 .ev>.card{border:1px solid var(--bd)}.ev>.card.fs{border-color:#f5a623}
 .card h3{margin:0;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -360,7 +363,7 @@ $("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand(
 
 let PUBMAP=new Map(),PUBGOT=false,PUBMETAS="";
 const safeColor=o=>/^#[0-9a-fA-F]{6}$/.test(String(o&&o.color||""))?o.color:"#6c5ce7";
-const blockStyle=o=>o&&/^#[0-9a-fA-F]{6}$/.test(String(o.color||""))?` style="background:color-mix(in srgb, ${o.color} 12%, var(--card))"`:"";
+const blockStyle=o=>o&&/^#[0-9a-fA-F]{6}$/.test(String(o.color||""))?` style="--user-block-color:${o.color}"`:"";
 const colorControl=(kind,o)=>isAdminNow()?`<label class="color-control" title="블럭 색상 지정" style="--pick-color:${safeColor(o)}"><svg class="paint-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5.2 10.4 6.9-6.9 8.4 8.4-6.9 6.9z" fill="${safeColor(o)}" fill-opacity=".38"/><path d="m5.2 10.4 6.9-6.9 8.4 8.4-6.9 6.9z" fill="none"/><path d="m8.1 7.5 8.4 8.4M12.1 3.5l2.1-2.1 7 7-2.1 2.1M3.2 21.2l4.2-4.2M4.7 19.7l1.4 1.4"/><path d="M17.4 20.7c0-1 .8-1.8 1.4-2.6.6.8 1.4 1.6 1.4 2.6a1.4 1.4 0 0 1-2.8 0Z" fill="${safeColor(o)}" stroke="${safeColor(o)}"/></svg><input type="color" data-color-kind="${kind}" data-color-id="${o.id}" value="${safeColor(o)}" aria-label="블럭 색상 지정"></label>`:"";
 const entityHandle=(kind,o)=>isAdminNow()?`<button type="button" class="entity-handle" data-entity-drag="${kind}" data-i="${o.id}" title="드래그해서 순서 이동">⠿</button>`:"";
 const stCls=e=>{const t=!!String(e.actual||"").trim();return e.done?(t?"s-done":"s-warn"):t?"s-text":"s-empty"};
