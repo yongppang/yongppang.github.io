@@ -75,7 +75,7 @@ body.booting header,body.booting .bar,body.booting main{visibility:hidden}
 .chk input[type=checkbox]{appearance:none;-webkit-appearance:none;width:20px;height:20px;padding:0;margin:0;border:2px solid var(--sub);border-radius:6px;background:var(--card);display:inline-grid;place-content:center;cursor:pointer;flex:none}
 .chk input[type=checkbox]:checked{background:var(--ac);border-color:var(--ac)}
 .chk input[type=checkbox]:checked::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
-.tags{margin-top:3px}.tags span{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;background:var(--blk);border-radius:6px;padding:0 7px;margin:2px 4px 2px 0;font-size:12px;cursor:pointer}
+.tags{display:flex;flex-wrap:wrap;align-items:flex-start;gap:3px 4px;margin-top:3px;min-width:0}.tags span{display:inline-block;box-sizing:border-box;max-width:100%;overflow:visible;text-overflow:clip;white-space:normal;overflow-wrap:anywhere;word-break:normal;vertical-align:top;background:var(--blk);border-radius:6px;padding:1px 7px;margin:0;font-size:12px;line-height:1.45;cursor:pointer}
 .tags .it{background:none;border:1px dashed var(--blkbd);color:var(--sub)}
 .memo{border-top:1px dashed var(--bd);margin-top:5px;padding-top:3px;color:var(--sub);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nvrow{display:flex;gap:6px;margin-top:6px}
@@ -214,8 +214,8 @@ body.usernovel #nclose{display:none}
 .tree-node .card{padding:6px 8px}
 .tree-node .card h3{font-size:14px}
 .tree-node .card p.onel{font-size:12px;margin:2px 0}
-.tree-node .tags{white-space:nowrap;overflow:hidden;margin-top:1px}
-.tree-node .tags span{font-size:11px;margin:0 3px 0 0;padding:0 5px}
+.tree-node .tags{white-space:normal;overflow:visible;margin-top:2px;gap:2px 3px}
+.tree-node .tags span{font-size:11px;margin:0;padding:1px 5px;line-height:1.4;max-width:100%;white-space:normal;overflow-wrap:anywhere}
 .tree-node .when{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tree-node .btns{margin:-3px 0 0 -4px}
 .tree-node .st{width:24px;height:24px}
