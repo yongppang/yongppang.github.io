@@ -146,6 +146,8 @@ details[open]>summary{border-bottom:1px dashed var(--bd);margin-bottom:4px}
 .nb.cur{border:2px solid var(--ac);background:var(--card);color:var(--tx);padding:8px 10px}
 .nb.cur .nbh{color:var(--ac);font-weight:700}.nb.cur .nbh b{color:var(--tx)}
 .nb.cur .edwrap{margin:6px 0 0}.nb.cur.closed .edwrap{display:none}
+.nb.cur .curp{display:none;cursor:pointer;color:var(--sub);-webkit-mask-image:linear-gradient(to top,transparent,#000 60%);mask-image:linear-gradient(to top,transparent,#000 60%)}
+.nb.cur.closed .curp{display:block}
 .edwrap:focus-within{border-color:var(--ac);box-shadow:0 0 0 3px #6c5ce722}
 .eb textarea.actual-field{display:block;border:0;background:transparent;resize:none;overflow:hidden;min-height:42vh;font-family:var(--wf);font-size:var(--wsz);line-height:1.95;padding:16px 18px;outline:none;color:var(--tx)}
 /* 앞·뒤 에피소드 미리보기 */
@@ -486,7 +488,7 @@ function nbHTML(kind,e){
  const pv=kind==="prev",txt=String(e.actual||"").replace(/\r\n?/g,"\n").split("\n").filter(x=>x.trim());
  const lines=pv?txt.slice(-3):txt.slice(0,3);
  const ps=a=>a.length?a.map(x=>`<p>${esc(x)}</p>`).join(""):'<p>(아직 내용 없음)</p>';
- return `<div class="nb ${kind}"><div class="nbh"><span>${pv?"◀ 앞 에피소드":"뒤 에피소드 ▶"} · <b>${esc(e.title||"제목 없음")}</b></span><button type="button" data-nbx>펼치기</button></div><div class="nbt short" data-nbgo="${e.id}" title="눌러서 이 에피소드로 이동">${ps(lines)}</div><div class="nbt full">${ps(txt)}</div></div>`;
+ return `<div class="nb ${kind}"><div class="nbh"><span>${pv?"◀ 앞 에피소드":"뒤 에피소드 ▶"} · <b>${esc(e.title||"제목 없음")}</b></span></div><div class="nbt short" data-nbgo="${e.id}" title="눌러서 이 에피소드로 이동">${ps(lines)}</div></div>`;
 }
 function pkChips(k,sel){
  const src=k=="chars"?D.chars:D.items,known=new Set(),btn=(n,label,on,isNew,tip)=>`<button type="button" class="chip pk ${on?"on":""}" data-pk="${k}" data-v="${esc(n)}" title="${esc(tip||"")}">${isNew?"＋ ":""}${label}</button>`;
@@ -525,7 +527,12 @@ function updLn(){
  growTa(ta); // 폭이 확정된 뒤 높이를 다시 맞춘다 (끝부분이 잘리지 않게)
 }
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if($("dlg").open)growAll()});
-function setCur(open){const c=$("cur");if(!c)return;c.classList.toggle("closed",!open);$("curx").textContent=open?"접기":"펼치기";if(open)growAll()}
+function updCurPrev(){
+ const ta=fe("actual"),p=$("curp");if(!ta||!p)return;
+ const ls=ta.value.replace(/\r\n?/g,"\n").split("\n").filter(x=>x.trim()).slice(0,3);
+ p.innerHTML=ls.length?ls.map(x=>`<p>${esc(x)}</p>`).join(""):'<p>(아직 내용 없음 · 눌러서 쓰기)</p>';
+}
+function setCur(open){const c=$("cur");if(!c)return;if(!open)updCurPrev();c.classList.toggle("closed",!open);$("curx").textContent=open?"접기":"펼치기";if(open)growAll()}
 function updEvSum(){
  const sm=$("evsum"),a=fe("act");if(!sm||!a)return;
  sm.innerHTML=`📋 정보 <span class="pl">· ${[esc(ACTS[+a.value]||""),esc(fe("when").value.trim()),esc(fe("place").value.trim())].filter(Boolean).join(" · ")}${fe("fs").checked?" · 중요":""}${fe("done").checked?" · 완료":""}</span>`;
@@ -545,8 +552,7 @@ $("f").addEventListener("click",ev=>{
  if(ev.target.closest("#curx")){setCur($("cur").classList.contains("closed"));return}
  const go=ev.target.closest("[data-nbgo]");
  if(go){const id=+go.dataset.nbgo;if(edDirty()&&!confirm("저장하지 않은 변경이 있습니다.\n저장하지 않고 이동할까요?\n(취소 후 저장을 먼저 눌러 주세요)"))return;const wasNv=nvEditing;EDSNAP="";$("dlg").close("cancel");setTimeout(()=>{openEd("e",id);nvEditing=wasNv},50);return}
- const nb=ev.target.closest(".nb");
- if(nb&&(ev.target.closest("[data-nbx]")||ev.target.closest("[data-nbx2]"))){const o=nb.classList.toggle("open");nb.querySelector("[data-nbx]").textContent=o?"접기":"펼치기";return}
+ if(ev.target.closest("#curp")){setCur(true);return}
 });
 addEventListener("resize",()=>{if($("dlg").open)growAll()});
 $("dlg").addEventListener("toggle",ev=>{if(ev.target.id==="evmeta"&&ev.target.open)growAll()},true);
@@ -595,7 +601,7 @@ function episodeForm(o,isNew,nb){
   <label>◇ 아이템</label><input name="items" value="${esc(o.items)}" placeholder="이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(o.items))}</div></div></details>
  ${nbHTML("prev",nb.prev)}
  <div class="nb cur" id="cur"><div class="nbh"><span>✍️ 현재 에피소드 · <b id="curt">${esc(o.title||"제목 없음")}</b></span><button type="button" id="curx">접기</button></div>
- <div class="edwrap"><div class="edln" aria-hidden="true"></div><textarea class="actual-field" name="actual" placeholder="이 에피소드의 내용을 쓰세요.">${esc(o.actual)}</textarea></div></div>
+ <div class="edwrap"><div class="edln" aria-hidden="true"></div><textarea class="actual-field" name="actual" placeholder="이 에피소드의 내용을 쓰세요.">${esc(o.actual)}</textarea></div><div class="nbt short curp" id="curp" title="눌러서 펼치기"></div></div>
  ${nbHTML("next",nb.next)}`;
 }
 function simpleForm(t,o){
