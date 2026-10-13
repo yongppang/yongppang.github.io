@@ -56,6 +56,8 @@ body.booting header,body.booting .bar,body.booting main{visibility:hidden}
 .card{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:12px;padding:9px 12px;box-shadow:0 1px 2px #0000000d;overflow-wrap:anywhere;min-width:0}
 .card.fs{border-color:#f5a623}
 .card.s-empty{border-left-color:#b9bdc7}.card.s-text{border-left-color:#55c89a}.card.s-warn{border-left-color:#f09a2b}.card.s-done{border-left-color:#4a86e8}
+/* 타임라인 에피소드 블럭은 외곽선을 한 줄로 통일 */
+.ev>.card{border:1px solid var(--bd)}.ev>.card.fs{border-color:#f5a623}
 .card h3{margin:0;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .card p{margin:4px 0}.card p.onel{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
 .clk{cursor:pointer}h3.clk:hover{color:var(--ac)}p.clk:hover{background:#6c5ce712;border-radius:6px}
@@ -192,9 +194,9 @@ body.share #nview{display:none}
 
 /* ===== 블럭 정렬 및 색상 ===== */
 .entity-handle{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ac);font-size:17px;line-height:1;padding:1px 4px;border:0;background:transparent}
-.color-control{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;padding:3px;border:1px solid var(--bd);border-radius:50%;cursor:pointer;overflow:hidden;flex:none;background:var(--card);box-shadow:0 1px 3px #00000012;transition:transform .15s,box-shadow .15s}.color-control:hover{transform:scale(1.08);box-shadow:0 2px 8px #0000001c}.color-control:focus-within{outline:2px solid var(--ac);outline-offset:2px}
-.color-control input{width:22px;height:22px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;appearance:none;-webkit-appearance:none}
-.color-control input::-webkit-color-swatch-wrapper{padding:0}.color-control input::-webkit-color-swatch{border:0;border-radius:50%;box-shadow:inset 0 0 0 1px #00000014}.color-control input::-moz-color-swatch{border:0;border-radius:50%;box-shadow:inset 0 0 0 1px #00000014}
+.color-control{position:relative;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid var(--bd);border-radius:9px;cursor:pointer;overflow:hidden;flex:none;background:var(--card);box-shadow:0 1px 3px #00000012;transition:transform .15s,box-shadow .15s,border-color .15s}.color-control:hover{transform:translateY(-1px);border-color:var(--ac);box-shadow:0 3px 8px #0000001c}.color-control:focus-within{outline:2px solid var(--ac);outline-offset:2px}
+.color-control .paint-icon{display:block;width:20px;height:20px;stroke:var(--sub);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.color-control input{position:absolute;inset:0;width:100%;height:100%;padding:0;margin:0;border:0;opacity:0;cursor:pointer;appearance:none;-webkit-appearance:none;background:transparent}
 .entity-dragging{opacity:.35}.entity-ghost{box-shadow:0 10px 30px #0004;transform:rotate(1deg)}
 .entity-card.dbefore{box-shadow:-4px 0 0 var(--ac)}.entity-card.dafter{box-shadow:4px 0 0 var(--ac)}
 body.usernovel #nclose{display:none}
@@ -358,8 +360,8 @@ $("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand(
 
 let PUBMAP=new Map(),PUBGOT=false,PUBMETAS="";
 const safeColor=o=>/^#[0-9a-fA-F]{6}$/.test(String(o&&o.color||""))?o.color:"#6c5ce7";
-const blockStyle=o=>o&&/^#[0-9a-fA-F]{6}$/.test(String(o.color||""))?` style="background:color-mix(in srgb, ${o.color} 12%, var(--card));border-left-color:${o.color}"`:"";
-const colorControl=(kind,o)=>isAdminNow()?`<label class="color-control" title="블럭 색상 지정"><input type="color" data-color-kind="${kind}" data-color-id="${o.id}" value="${safeColor(o)}" aria-label="블럭 색상 지정"></label>`:"";
+const blockStyle=o=>o&&/^#[0-9a-fA-F]{6}$/.test(String(o.color||""))?` style="background:color-mix(in srgb, ${o.color} 12%, var(--card))"`:"";
+const colorControl=(kind,o)=>isAdminNow()?`<label class="color-control" title="블럭 색상 지정" style="--pick-color:${safeColor(o)}"><svg class="paint-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5.2 10.4 6.9-6.9 8.4 8.4-6.9 6.9z" fill="${safeColor(o)}" fill-opacity=".38"/><path d="m5.2 10.4 6.9-6.9 8.4 8.4-6.9 6.9z" fill="none"/><path d="m8.1 7.5 8.4 8.4M12.1 3.5l2.1-2.1 7 7-2.1 2.1M3.2 21.2l4.2-4.2M4.7 19.7l1.4 1.4"/><path d="M17.4 20.7c0-1 .8-1.8 1.4-2.6.6.8 1.4 1.6 1.4 2.6a1.4 1.4 0 0 1-2.8 0Z" fill="${safeColor(o)}" stroke="${safeColor(o)}"/></svg><input type="color" data-color-kind="${kind}" data-color-id="${o.id}" value="${safeColor(o)}" aria-label="블럭 색상 지정"></label>`:"";
 const entityHandle=(kind,o)=>isAdminNow()?`<button type="button" class="entity-handle" data-entity-drag="${kind}" data-i="${o.id}" title="드래그해서 순서 이동">⠿</button>`:"";
 const stCls=e=>{const t=!!String(e.actual||"").trim();return e.done?(t?"s-done":"s-warn"):t?"s-text":"s-empty"};
 const stIcons=e=>`<span class="st star ${e.fs?"on":""}" data-fstog="${e.id}" title="중요"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.9-4.7 4.5 1.2 6.4L12 17.4l-5.7 3.1 1.2-6.4-4.7-4.5 6.4-.9z"/></svg></span><span class="st cbx ${e.done?"on":""}" data-donetog="${e.id}" title="완료"></span>`;
