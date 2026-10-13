@@ -188,6 +188,7 @@ dialog.cfm{max-width:320px;width:calc(100% - 40px);height:fit-content;margin:aut
 .nnav-item.on{background:var(--blk);border-color:var(--blkbd);color:var(--ac);font-weight:700}
 #nmenu{position:absolute;right:8px;top:100%;margin-top:2px;min-width:210px;background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:0 12px 24px #0003;padding:8px;display:flex;flex-direction:column;gap:6px}
 #nmenu button{text-align:left}#nmenu .nmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}#nmenu .nfont{display:flex;gap:6px}
+.nspeech{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.nspeech label{font-size:12px;color:var(--sub)}.nspeech select{min-width:0;flex:1;max-width:130px;padding:6px;border:1px solid var(--bd);border-radius:7px;background:var(--card);color:var(--tx)}.nspeech-actions{display:flex;gap:5px}.nspeech-actions button{flex:1;text-align:center!important;padding:7px 5px;font-size:12px}
 #nbody{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:16px max(0px,calc((100% - 820px)/2)) 48px;background:var(--bg)}
 #nbody.nocopy,#nbody.nocopy *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .nv-empty{color:var(--sub);padding:20px 14px}
@@ -205,8 +206,7 @@ dialog.cfm{max-width:320px;width:calc(100% - 40px);height:fit-content;margin:aut
 .book-p .line-no{display:block;text-align:right;color:var(--sub);opacity:.68;font:11px/2.65 ui-monospace,SFMono-Regular,Consolas,monospace;user-select:none;-webkit-user-select:none;white-space:nowrap}
 .book-p .lt{display:block;min-width:0;padding:0;white-space:pre-wrap;overflow-wrap:anywhere}
 .book-p .lt:empty:after{content:"\00a0"}
-.book-p.book-gap{display:block;background:transparent;padding:0;height:.72em;line-height:.72em;border-radius:0}
-.book-p.book-gap{height:.72em;margin:0;text-indent:0;line-height:.72em}
+.book-p.book-gap{background:transparent}
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
 @media(max-width:560px){#nbody{padding:8px 0 28px}.book-page{padding:30px 14px 66px;border-left:0;border-right:0;box-shadow:none}.book-chapter{margin:12px 0 32px}.book-episode{margin:28px 0 14px}.book-p{grid-template-columns:2em minmax(0,1fr);gap:0 .55em;line-height:2.0;padding:.12em .25em}.book-p .line-no{font-size:10px;line-height:2.8}}
 body.share #nview{display:none}
@@ -276,6 +276,8 @@ body.treeview .tree-node .card > .st.star {
    <button type="button" id="nview"></button>
    <button type="button" id="ncopy">📋 내용 복사</button>
    <button type="button" id="nlink">🔗 링크 복사</button>
+   <div class="nspeech"><label for="nvoiceGender">음성</label><select id="nvoiceGender" aria-label="읽기 음성"><option value="female">여성</option><option value="male">남성</option></select></div>
+   <div class="nspeech-actions"><button type="button" id="nspeak">🔊 음성 재생</button><button type="button" id="npause">⏸ 일시정지</button><button type="button" id="nstop">⏹ 정지</button></div>
    <div class="nfont"><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button><button type="button" id="wfBtn"></button></div>
    <button type="button" id="ntheme"></button>
    <button type="button" id="nlogin" hidden></button>
@@ -799,8 +801,8 @@ function novelLines(){
   if(ai!==lastAct){if(out.length)out.push({t:""});out.push({t:ACTS[ai]||`${ai+1}장`,chapter:true});lastAct=ai}
   if(i)out.push({t:""});
   out.push({t:`[${e.title}]`,h:true,id:e.id});
-  const body=String(e.actual||"").replace(/\r\n?/g,"\n").replace(/\n+$/,"");
-  if(body.trim())body.split("\n").forEach(t=>out.push({t}));else out.push({t:"(아직 작성된 내용이 없습니다)"});
+  const body=String(e.actual||"").replace(/\r\n?/g,"\n");
+  if(body.length)body.split("\n").forEach(t=>out.push({t}));else out.push({t:"(아직 작성된 내용이 없습니다)"});
  });
  return out;
 }
@@ -878,16 +880,57 @@ function renderNovel(){
    if(l.chapter){inEpisode=false;pendingBlanks=0;html+=`<div class="book-chapter">${esc(l.t)}</div>`;return}
    if(l.h){inEpisode=true;pendingBlanks=0;lineNo=0;rowNo=0;const label=String(l.t||"").replace(/^\[/," ").replace(/\]$/," ").trim();html+=`<h2 class="nl nh book-episode" data-e="${esc(String(l.id))}"><span class="lt">${esc(label)}</span></h2>`;return}
    if(!inEpisode)return;
-   if(!String(l.t||"").trim()){pendingBlanks++;return}
-   while(pendingBlanks>0){html+='<p class="nl book-p book-gap"><span class="lt">&nbsp;</span></p>';pendingBlanks--}
    lineNo++;rowNo++;
    const rowClass=rowNo%2===0?'row-even':'row-odd';
-   html+=`<p class="nl book-p ${rowClass}"><span class="line-no" aria-hidden="true">${lineNo}</span><span class="lt">${esc(l.t)}</span></p>`;
+   const lineText=String(l.t??"");
+   html+=`<p class="nl book-p ${rowClass}${lineText===""?' book-gap':''}"><span class="line-no" aria-hidden="true">${lineNo}</span><span class="lt">${lineText===""?'&nbsp;':esc(lineText)}</span></p>`;
   });
   $("nbody").innerHTML=html+'</article>';
  }else $("nbody").innerHTML='<p class="nv-empty">아직 작성된 내용이 없습니다.</p>';
  nvUpdate();
 }
+// ===== 소설 음성 읽기 =====
+let speechQueue=[],speechIndex=0,speechActive=false,speechPaused=false,speechToken=0;
+function koreanVoices(){return (window.speechSynthesis?.getVoices?.()||[]).filter(v=>/^ko([_-]|$)/i.test(v.lang)||/한국|Korean/i.test(v.name))}
+function chooseReadingVoice(){
+ const voices=koreanVoices();if(!voices.length)return null;
+ const gender=$("nvoiceGender")?.value||"female";
+ const femaleWords=/female|woman|여성|여자|유진|서연|선희|혜진|지민/i;
+ const maleWords=/male|man|남성|남자|민수|철수|인준|현우/i;
+ const likely=voices.filter(v=>(gender==="female"?femaleWords:maleWords).test(v.name));
+ return likely[0]||voices.find(v=>/google|microsoft|samsung/i.test(v.name))||voices[0];
+}
+function speechPieces(text){
+ const out=[];
+ String(text||"").replace(/\r\n?/g,"\n").split("\n").forEach(line=>{
+  const t=line.trim();if(!t)return
+  // Keep chunks short enough for browser speech engines; split at sentence punctuation where possible.
+  let rest=t;
+  while(rest.length>180){let cut=Math.max(rest.lastIndexOf(". ",180),rest.lastIndexOf("! ",180),rest.lastIndexOf("? ",180),rest.lastIndexOf("다. ",180),rest.lastIndexOf("요. ",180));if(cut<40)cut=180;else if(rest[cut]===" ")cut++;
+   out.push(rest.slice(0,cut).trim());rest=rest.slice(cut).trim();}
+  if(rest)out.push(rest);
+ });return out;
+}
+function stopSpeech(){speechToken++;speechActive=false;speechPaused=false;speechQueue=[];speechIndex=0;if(window.speechSynthesis)speechSynthesis.cancel();const b=$("nspeak");if(b)b.textContent="🔊 음성 재생";}
+function speakNext(token){
+ if(token!==speechToken||!speechActive||speechPaused)return;
+ if(speechIndex>=speechQueue.length){stopSpeech();return}
+ const part=speechQueue[speechIndex++];
+ if(!part){setTimeout(()=>speakNext(token),350);return}
+ const u=new SpeechSynthesisUtterance(part);u.lang="ko-KR";const v=chooseReadingVoice();if(v)u.voice=v;u.rate=1;u.pitch=1;
+ u.onend=()=>speakNext(token);u.onerror=()=>speakNext(token);speechSynthesis.speak(u);
+}
+function startSpeech(){
+ if(!window.speechSynthesis||!window.SpeechSynthesisUtterance){alert("이 브라우저는 음성 읽기를 지원하지 않습니다.");return}
+ stopSpeech();const token=speechToken;speechQueue=[];
+ novelList().forEach((e,i)=>{if(i)speechQueue.push("");speechQueue.push(String(e.title||"제목 없음"));speechPieces(String(e.actual||"")).forEach(t=>speechQueue.push(t));});
+ speechIndex=0;speechActive=true;speechPaused=false;$("nspeak").textContent="🔊 다시 시작";speechSynthesis.cancel();speakNext(token);
+}
+$("nspeak").addEventListener("click",startSpeech);
+$("npause").addEventListener("click",()=>{if(!speechActive)return;if(speechPaused){speechPaused=false;speechSynthesis.resume();$("npause").textContent="⏸ 일시정지"}else{speechPaused=true;speechSynthesis.pause();$("npause").textContent="▶ 이어 듣기"}});
+$("nstop").addEventListener("click",()=>{stopSpeech();$("npause").textContent="⏸ 일시정지"});
+$("ndlg").addEventListener("close",stopSpeech);
+if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>{};
 $("viewNovel").onclick=()=>openNovel();
 ["copy","cut","contextmenu","dragstart"].forEach(t=>$("nbody").addEventListener(t,ev=>{if(SHARE||NVUSER)ev.preventDefault()}));
 const isAdminNow=()=>!SHARE&&(!FBON||(!!fbUser&&!/권한 없음/.test(fbErr)));
