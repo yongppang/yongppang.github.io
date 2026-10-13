@@ -513,6 +513,7 @@ function updLn(){
  const g=ta.parentElement.querySelector(".edln"),cs=getComputedStyle(ta);
  if(!lnMirror){lnMirror=document.createElement("div");document.body.appendChild(lnMirror)}
  const m=lnMirror;
+ g.style.minWidth=(String(ta.value.split("\n").length).length+1.6)+"ch";g.style.lineHeight=cs.lineHeight;g.style.paddingTop=cs.paddingTop; // 번호 칸 폭을 먼저 확정해야 입력칸 폭이 정해진다
  m.style.cssText=`position:fixed;left:-99999px;top:0;visibility:hidden;white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;box-sizing:border-box;border:0;width:${ta.clientWidth}px;padding:0 ${cs.paddingRight} 0 ${cs.paddingLeft};font:${cs.font};letter-spacing:${cs.letterSpacing};line-height:${cs.lineHeight};tab-size:${cs.tabSize}`;
  const lines=ta.value.split("\n");
  m.innerHTML=lines.map(()=>"<div></div>").join("");
@@ -520,8 +521,9 @@ function updLn(){
  const lh=parseFloat(cs.lineHeight)||parseFloat(cs.fontSize)*1.95;
  let out="";[...m.children].forEach((d,i)=>{const c=Math.max(1,Math.round(d.offsetHeight/lh));out+=(i+1)+"\n".repeat(c)});
  g.textContent=out.replace(/\n$/,"");
- g.style.lineHeight=cs.lineHeight;g.style.paddingTop=cs.paddingTop;g.style.minWidth=(String(lines.length).length+1.6)+"ch";
+ growTa(ta); // 폭이 확정된 뒤 높이를 다시 맞춘다 (끝부분이 잘리지 않게)
 }
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if($("dlg").open)growAll()});
 function setCur(open){const c=$("cur");if(!c)return;c.classList.toggle("closed",!open);$("curx").textContent=open?"접기":"펼치기";if(open)growAll()}
 function updEvSum(){
  const sm=$("evsum"),a=fe("act");if(!sm||!a)return;
