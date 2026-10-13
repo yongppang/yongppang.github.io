@@ -188,11 +188,20 @@ dialog.cfm{max-width:320px;width:calc(100% - 40px);height:fit-content;margin:aut
 .nl.flash{animation:nvflash 1.6s ease-out}@keyframes nvflash{0%,40%{background:#6c5ce740}100%{background:transparent}}
 body.share #nview{display:none}
 
+/* ===== 블럭 정렬 및 색상 ===== */
+.entity-handle{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;color:var(--ac);font-size:17px;line-height:1;padding:1px 4px;border:0;background:transparent}
+.color-control{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;padding:3px;border:1px solid var(--bd);border-radius:50%;cursor:pointer;overflow:hidden;flex:none;background:var(--card);box-shadow:0 1px 3px #00000012;transition:transform .15s,box-shadow .15s}.color-control:hover{transform:scale(1.08);box-shadow:0 2px 8px #0000001c}.color-control:focus-within{outline:2px solid var(--ac);outline-offset:2px}
+.color-control input{width:22px;height:22px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;appearance:none;-webkit-appearance:none}
+.color-control input::-webkit-color-swatch-wrapper{padding:0}.color-control input::-webkit-color-swatch{border:0;border-radius:50%;box-shadow:inset 0 0 0 1px #00000014}.color-control input::-moz-color-swatch{border:0;border-radius:50%;box-shadow:inset 0 0 0 1px #00000014}
+.entity-dragging{opacity:.35}.entity-ghost{box-shadow:0 10px 30px #0004;transform:rotate(1deg)}
+.entity-card.dbefore{box-shadow:-4px 0 0 var(--ac)}.entity-card.dafter{box-shadow:4px 0 0 var(--ac)}
+body.usernovel #nclose{display:none}
+
 /* ===== 추가 수정 ===== */
 .card{position:relative}
 .ico{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;pointer-events:none}
 .btns button .ico{display:block}
-.fsbadge{position:absolute;top:-9px;right:10px;width:20px;height:20px;border-radius:50%;background:#f5a623;display:grid;place-items:center;box-shadow:0 1px 3px #0003;pointer-events:none}
+.fsbadge{display:none}
 .fsbadge svg{width:12px;height:12px;fill:#fff;stroke:#fff;stroke-width:1.5;stroke-linejoin:round}
 .wpl{display:none}
 .tree-node .wpl{display:inline}
@@ -209,6 +218,19 @@ body.share #nview{display:none}
 .tree-insert{margin:0 0 4px}
 .card.flash{animation:cflash .9s ease-in-out 4}
 @keyframes cflash{0%,100%{box-shadow:0 0 0 0 #6c5ce700;background:var(--card)}50%{box-shadow:0 0 0 3px var(--ac),0 0 16px 4px #6c5ce799;background:var(--blk)}}
+
+/* ===== 보드 상태 카드 내 중요표시(별표) 왼쪽 상단 배치 수정 ===== */
+body.treeview .tree-node .card {
+  position: relative;
+  padding-left: 28px;
+}
+body.treeview .tree-node .card > .st.star {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 20px;
+  height: 20px;
+}
 </style>
 </head>
 <body>
@@ -333,13 +355,17 @@ $("ttl").addEventListener("blur",()=>{const v=$("ttl").textContent.replace(/\s+/
 $("ttl").addEventListener("paste",ev=>{ev.preventDefault();document.execCommand("insertText",false,(ev.clipboardData.getData("text/plain")||"").replace(/\s+/g," "))});
 
 let PUBMAP=new Map(),PUBGOT=false,PUBMETAS="";
+const safeColor=o=>/^#[0-9a-fA-F]{6}$/.test(String(o&&o.color||""))?o.color:"#6c5ce7";
+const blockStyle=o=>o&&/^#[0-9a-fA-F]{6}$/.test(String(o.color||""))?` style="background:color-mix(in srgb, ${o.color} 12%, var(--card));border-left-color:${o.color}"`:"";
+const colorControl=(kind,o)=>isAdminNow()?`<label class="color-control" title="블럭 색상 지정"><input type="color" data-color-kind="${kind}" data-color-id="${o.id}" value="${safeColor(o)}" aria-label="블럭 색상 지정"></label>`:"";
+const entityHandle=(kind,o)=>isAdminNow()?`<button type="button" class="entity-handle" data-entity-drag="${kind}" data-i="${o.id}" title="드래그해서 순서 이동">⠿</button>`:"";
 const stCls=e=>{const t=!!String(e.actual||"").trim();return e.done?(t?"s-done":"s-warn"):t?"s-text":"s-empty"};
 const stIcons=e=>`<span class="st star ${e.fs?"on":""}" data-fstog="${e.id}" title="중요"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.9-4.7 4.5 1.2 6.4L12 17.4l-5.7 3.1 1.2-6.4-4.7-4.5 6.4-.9z"/></svg></span><span class="st cbx ${e.done?"on":""}" data-donetog="${e.id}" title="완료"></span>`;
 const nvPrev=e=>{const t=String(e.actual||"").replace(/\s+/g," ").trim();return t?esc(t.length>50?t.slice(0,50)+"...":t):'<span class="pl">✍️ 눌러서 쓰기</span>'};
 function evHTML(e,mini,drag){
  const tg=charList(e).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(charLbl(c))}</span>`).join("")+split(e.items).map(c=>`<span class="it" data-it="${esc(c)}">◇ ${esc(c)}</span>`).join("");
- return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<span class="wpl">${e.place?` · ${esc(e.place)}`:""}</span></div><div class="card ${e.fs?"fs":""} ${stCls(e)}">${e.fs?FSBADGE:""}
- <div class="btns">${drag?`<button type="button" class="dh" data-i="${e.id}" title="드래그해서 이동">⠿</button>`:""}${stIcons(e)}${mini?"":`<span class="sp"></span>${drag?`<button type="button" data-a="wr" data-t="e" data-i="${e.id}" title="이어쓰기">${ICON_PEN}</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}" title="휴지통으로">${ICON_TRASH}</button>`}</div>
+ return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<span class="wpl">${e.place?` · ${esc(e.place)}`:""}</span></div><div class="card ${e.fs?"fs":""} ${stCls(e)}"${blockStyle(e)}>${e.fs?FSBADGE:""}
+ <div class="btns">${drag?`<button type="button" class="dh" data-i="${e.id}" title="드래그해서 이동">⠿</button>`:""}${stIcons(e)}${colorControl("e",e)}${mini?"":`<span class="sp"></span>${drag?`<button type="button" data-a="wr" data-t="e" data-i="${e.id}" title="이어쓰기">${ICON_PEN}</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}" title="휴지통으로">${ICON_TRASH}</button>`}</div>
  <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}">${esc(e.title)||'<span class="pl">제목 없음</span>'}</h3>${e.place?`<div class="pl plc">📍 ${esc(e.place)}</div>`:""}<p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}">${nvPrev(e)}</p>
  ${tg?`<div class="tags">${tg}</div>`:""}${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}
  <div class="nvrow"><button type="button" class="wr" data-a="wr" data-t="e" data-i="${e.id}">✍️ ${e.actual?"이어쓰기":"쓰기"}</button>${e.actual?`<button type="button" data-nv="${e.id}">📖 보기</button>`:""}</div></div></div>`}
@@ -348,14 +374,14 @@ function chHTML(c){
  const kv=(k,l)=>c[k]?`<div class="kv"><b>${l}</b>${esc(c[k])}</div>`:"";
  const one=[c.personality,c.background,c.arc,c.relations,c.look].find(x=>String(x||"").trim());
  const has=["look","personality","background","arc","relations"].some(k=>c[k])||c.memo;
- return `<div class="card cmp"><div class="cmphd"><h3 class="clk" data-a="ed" data-t="c" data-i="${c.id}">${esc(c.name)}${aliasLbl(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3><div class="btns"><button data-a="del" data-t="c" data-i="${c.id}" title="휴지통으로">${ICON_TRASH}</button></div></div>
+ return `<div class="card cmp entity-card" data-entity-kind="c" data-entity-id="${c.id}"${blockStyle(c)}><div class="cmphd">${entityHandle("c",c)}<h3 class="clk" data-a="ed" data-t="c" data-i="${c.id}">${esc(c.name)}${aliasLbl(c.name)} <span class="pl">${esc(c.role)}${c.age?" · "+esc(c.age):""}</span></h3><div class="btns">${colorControl("c",c)}<button data-a="del" data-t="c" data-i="${c.id}" title="휴지통으로">${ICON_TRASH}</button></div></div>
  ${one?`<div class="csum">${esc(String(one).replace(/\s+/g," "))}</div>`:`<div class="csum pl">✍️ 눌러서 적기</div>`}
  <div class="cmpft"><a href="#" data-showch="${esc(c.name)}">타임라인 ${n}건</a></div>
  ${has?`<details class="cdet"><summary>자세히</summary>${kv("look","외모")}${kv("personality","성격")}${kv("background","배경")}${kv("arc","변화")}${kv("relations","관계")}${c.memo?`<div class="memo">📝 ${esc(c.memo)}</div>`:""}</details>`:""}</div>`}
 function itHTML(c){
  const n=D.events.filter(e=>split(e.items).includes(c.name)).length;
  const own=split(c.owner).map(nm=>D.chars.some(x=>x.name===nm)?`<a href="#" data-ch="${esc(nm)}">${esc(nm)}</a>`:esc(nm)).join(", ");
- return `<div class="card cmp"><div class="cmphd"><h3 class="clk" data-a="ed" data-t="i" data-i="${c.id}">◇ ${esc(c.name)}</h3><div class="btns"><button data-a="del" data-t="i" data-i="${c.id}" title="휴지통으로">${ICON_TRASH}</button></div></div>
+ return `<div class="card cmp entity-card" data-entity-kind="i" data-entity-id="${c.id}"${blockStyle(c)}><div class="cmphd">${entityHandle("i",c)}<h3 class="clk" data-a="ed" data-t="i" data-i="${c.id}">◇ ${esc(c.name)}</h3><div class="btns">${colorControl("i",c)}<button data-a="del" data-t="i" data-i="${c.id}" title="휴지통으로">${ICON_TRASH}</button></div></div>
  ${c.desc?`<div class="csum">${esc(String(c.desc).replace(/\s+/g," "))}</div>`:`<div class="csum pl">✍️ 눌러서 적기</div>`}
  <div class="cmpft"><a href="#" data-showit="${esc(c.name)}">타임라인 ${n}건</a>${c.owner?`<span class="pl">👤 ${own}</span>`:""}</div>
  ${c.memo?`<details class="cdet"><summary>메모</summary><div class="memo">📝 ${esc(c.memo)}</div></details>`:""}</div>`}
@@ -363,6 +389,8 @@ function render(){
  const q=$("q").value.toLowerCase(),fa=$("fa").value,v=$("view").value;
  $("filters").hidden=tab!="tl";
  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab==tab));
+ const tabLabels={tl:`타임라인 · ${D.events.length}`,ch:`인물 · ${D.chars.length}`,it:`아이템 · ${D.items.length}`};
+ document.querySelectorAll(".tab[data-tab]").forEach(b=>{if(tabLabels[b.dataset.tab])b.textContent=tabLabels[b.dataset.tab]});
  {const tb=document.querySelector('.tab[data-tab="tr"]');if(tb)tb.textContent=`🗑 휴지통${D.trash&&D.trash.length?" "+D.trash.length:""}`}
  document.body.classList.toggle("treeview",tab=="tl"&&v=="tree");
  applyTitle();
@@ -414,6 +442,25 @@ function render(){
  $("list").innerHTML=h||"<p class='pl'>해당하는 항목이 없습니다.</p>";
  const nw=document.querySelector(".tree-wrap");if(nw){nw.scrollLeft=sl;nw.scrollTop=st}
 }
+
+// ===== 드래그: 인물 / 아이템 블럭 순서 =====
+let entityDrag=null;
+function clearEntityMarks(){document.querySelectorAll(".entity-card.dbefore,.entity-card.dafter").forEach(x=>x.classList.remove("dbefore","dafter"))}
+document.addEventListener("pointerdown",ev=>{
+ const h=ev.target.closest(".entity-handle");if(!h||entityDrag||drag||adrag||!isAdminNow())return;
+ ev.preventDefault();const card=h.closest(".entity-card"),r=card.getBoundingClientRect(),ghost=card.cloneNode(true);
+ ghost.classList.add("entity-ghost");ghost.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;max-height:240px;overflow:hidden;pointer-events:none;opacity:.9;z-index:250`;
+ document.body.appendChild(ghost);card.classList.add("entity-dragging");entityDrag={kind:h.dataset.entityDrag,id:+h.dataset.i,card,ghost,dx:ev.clientX-r.left,dy:ev.clientY-r.top,target:null,pid:ev.pointerId,el:h};try{h.setPointerCapture(ev.pointerId)}catch(e){}
+});
+document.addEventListener("pointermove",ev=>{
+ if(!entityDrag||ev.pointerId!==entityDrag.pid)return;ev.preventDefault();entityDrag.ghost.style.left=(ev.clientX-entityDrag.dx)+"px";entityDrag.ghost.style.top=(ev.clientY-entityDrag.dy)+"px";clearEntityMarks();entityDrag.target=null;
+ const el=document.elementFromPoint(ev.clientX,ev.clientY),card=el&&el.closest(".entity-card");if(!card||card===entityDrag.card||card.dataset.entityKind!==entityDrag.kind)return;
+ const r=card.getBoundingClientRect(),after=ev.clientX>r.left+r.width/2;entityDrag.target={id:+card.dataset.entityId,after};card.classList.add(after?"dafter":"dbefore");
+});
+function endEntityDrag(ev,cancel){if(!entityDrag||(ev&&ev.pointerId!==entityDrag.pid))return;const d=entityDrag;entityDrag=null;d.ghost.remove();d.card.classList.remove("entity-dragging");clearEntityMarks();try{d.el.releasePointerCapture(d.pid)}catch(e){}if(cancel||!d.target)return;
+ const arr=d.kind==="c"?D.chars:D.items,from=arr.findIndex(x=>x.id===d.id),to=arr.findIndex(x=>x.id===d.target.id);if(from<0||to<0||from===to)return;const [item]=arr.splice(from,1);let at=arr.findIndex(x=>x.id===d.target.id);if(at<0)at=arr.length;else if(d.target.after)at++;arr.splice(at,0,item);save();render();
+}
+document.addEventListener("pointerup",ev=>endEntityDrag(ev,false));document.addEventListener("pointercancel",ev=>endEntityDrag(ev,true));
 
 // ===== 드래그: 에피소드 이동 =====
 let drag=null;
@@ -734,7 +781,7 @@ function novelLines(){
 }
 const closeNMenu=()=>{$("nmenu").hidden=true};
 function openNovel(focusId){
- if(!SHARE)NVUSER=false;
+ if(!SHARE&&!PUB)NVUSER=false;
  closeNMenu();renderNovel();
  $("ndlg").showModal();$("nbody").scrollTop=0;nvUpdate();
  if(focusId!=null){const t=$("nbody").querySelector(`.nl[data-e="${focusId}"]`);if(t){t.scrollIntoView({block:"start"});t.classList.add("flash")}}
@@ -790,9 +837,9 @@ const nvSchedule=()=>{if(!nvRaf)nvRaf=requestAnimationFrame(nvUpdate)};
 $("nbody").addEventListener("scroll",nvSchedule,{passive:true});
 addEventListener("resize",nvSchedule);
 function renderNovel(){
- const L=novelList(),lines=novelLines(),asUser=SHARE||NVUSER;let lastAct=-2;
+ const L=novelList(),lines=novelLines(),asUser=SHARE||NVUSER;lastAct=-2;document.body.classList.toggle("usernovel",asUser);
  const dis=L.length?"":"disabled";
- $("neventnav").innerHTML=`<div class="nnav-bar"><button type="button" class="nnav-step" data-nnav="prev" title="이전" ${dis}>‹</button><button type="button" class="nnav-cur" data-nnav="list" aria-expanded="false" ${dis}><span class="nnav-t" id="nnavT"></span><span class="nnav-n" id="nnavN"></span><span class="nnav-c">▾</span></button><button type="button" class="nnav-step" data-nnav="next" title="다음" ${dis}>›</button><button type="button" class="nnav-step" data-nnav="menu" title="메뉴">⋯</button><button id="nclose" class="nnav-step" value="close" formnovalidate title="닫기" aria-label="닫기">×</button></div><div class="nnav-prog"><i id="nnavP"></i></div><div class="nnav-list" id="nnavList" hidden>${L.map(e=>{const h=+e.act!==lastAct?`<div class="nnav-act">${esc(ACTS[+e.act]||"")}</div>`:"";lastAct=+e.act;return h+`<button type="button" class="nnav-item" data-nevent="${esc(String(e.id))}">${asUser?"":(e.done?"☑ ":"☐ ")}${esc(e.title||"제목 없음")}</button>`}).join("")}</div>`;
+ $("neventnav").innerHTML=`<div class="nnav-bar"><button type="button" class="nnav-step" data-nnav="prev" title="이전" ${dis}>‹</button><button type="button" class="nnav-cur" data-nnav="list" aria-expanded="false" ${dis}><span class="nnav-t" id="nnavT"></span><span class="nnav-n" id="nnavN"></span><span class="nnav-c">▾</span></button><button type="button" class="nnav-step" data-nnav="next" title="다음" ${dis}>›</button><button type="button" class="nnav-step" data-nnav="menu" title="메뉴">⋯</button>${asUser?"":`<button id="nclose" class="nnav-step" value="close" formnovalidate title="닫기" aria-label="닫기">×</button>`}</div><div class="nnav-prog"><i id="nnavP"></i></div><div class="nnav-list" id="nnavList" hidden>${L.map(e=>{const h=+e.act!==lastAct?`<div class="nnav-act">${esc(ACTS[+e.act]||"")}</div>`:"";lastAct=+e.act;return h+`<button type="button" class="nnav-item" data-nevent="${esc(String(e.id))}">${asUser?"":(e.done?"☑ ":"☐ ")}${esc(e.title||"제목 없음")}</button>`.trim()}).join("")}</div>`;
  nvCur=-1;
  $("nsum").textContent=asUser?`에피소드 ${L.length}개`:`${L.length}/${D.events.length}개 · 완료 ${D.events.filter(e=>e.done).length}`;
  $("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자":asUser?"👤 사용자 보기":"🛠 관리자";
@@ -911,7 +958,11 @@ document.addEventListener("click",ev=>{
  }
  render();
 });
-$("list").addEventListener("change",ev=>{const inp=ev.target.closest("[data-an]");if(!inp)return;const i=+inp.dataset.an;ACTS[i]=inp.value.trim()||ACTS[i];inp.value=ACTS[i];fillActFilter();save()});
+$("list").addEventListener("change",ev=>{
+ const cp=ev.target.closest("[data-color-kind]");
+ if(cp){if(!isAdminNow())return;const k=cp.dataset.colorKind,arr=k==="e"?D.events:k==="c"?D.chars:D.items,o=arr.find(x=>String(x.id)===cp.dataset.colorId);if(o){o.color=cp.value;save();render()}return}
+ const inp=ev.target.closest("[data-an]");if(!inp)return;const i=+inp.dataset.an;ACTS[i]=inp.value.trim()||ACTS[i];inp.value=ACTS[i];fillActFilter();save()
+});
 
 // ===== 백업 / 복원 =====
 function bkDownload(name,text,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
@@ -947,11 +998,11 @@ $("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);rend
 
 // ===== 로딩 표시 =====
 let ldTimer=null;
-function ldShow(msg){$("ldm").textContent=msg||"불러오는 중…";$("ldb").style.width="0%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
+function ldShow(msg){$("ldm").textContent=msg||"불러오는 중…";$("ldb").style.width="0\%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
 let connOn=false,connTimer=null;
 function connShow(){connOn=true;ldShow("접속 중입니다…");document.body.classList.add("connecting");clearTimeout(connTimer);connTimer=setTimeout(connDone,15000)}
 function connDone(){if(!connOn)return;connOn=false;clearTimeout(connTimer);document.body.classList.remove("connecting");ldHide()}
-function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100%";setTimeout(()=>{$("ld").style.display="none"},delay)}
+function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100\%";setTimeout(()=>{$("ld").style.display="none"},delay)}
 
 // ===== 공유 링크 (읽기 전용) =====
 function shareFail(msg){ldHide();$("nbody").innerHTML='<p class="nv-empty">'+esc(msg)+'</p>';$("ndlg").showModal()}
@@ -1120,11 +1171,16 @@ async function fbStart(){
  window.addEventListener("beforeunload",ev=>{if(fbTimer){ev.preventDefault();ev.returnValue=""}});
  FB.au.onAuthStateChanged(FB.auth,u=>{
   fbUser=u;fbErr="";
-  if(u){fbListen()}
-  else{
+  if(u){
+   PUB=false;NVUSER=false;
+   fbListen();
+  }else{
    connDone();
    fbUnlisten();
-   if(!SHARE){D=makeDummyData();normalizeData();fillActFilter();render();cacheLocal()}
+   if(!SHARE){
+    PUB=true;NVUSER=true;
+    fbShare();
+   }
   }
   fbStatus();
  });
@@ -1146,9 +1202,14 @@ if(SHARE){
  normalizeData();fillActFilter();
  if(FBON)fbShare();else shareLoad();
 }else{
- if(FBON){D=makeDummyData();normalizeData();fillActFilter();connShow()}
- render();
- if(FBON)fbStart();
+ if(FBON){
+  D={title:DEFTITLE,acts:clone(ACTS),events:[],chars:[],items:[]};
+  normalizeData();fillActFilter();connShow();
+  PUB=true;NVUSER=true;
+  fbStart();
+ }else{
+  render();
+ }
 }
 </script>
 </body>
