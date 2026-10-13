@@ -209,19 +209,6 @@ body.share #nview{display:none}
 .tree-insert{margin:0 0 4px}
 .card.flash{animation:cflash .9s ease-in-out 4}
 @keyframes cflash{0%,100%{box-shadow:0 0 0 0 #6c5ce700;background:var(--card)}50%{box-shadow:0 0 0 3px var(--ac),0 0 16px 4px #6c5ce799;background:var(--blk)}}
-
-/* ===== 보드 상태 카드 내 중요표시(별표) 왼쪽 상단 배치 수정 ===== */
-body.treeview .tree-node .card {
-  position: relative;
-  padding-left: 28px;
-}
-body.treeview .tree-node .card > .st.star {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  width: 20px;
-  height: 20px;
-}
 </style>
 </head>
 <body>
@@ -803,9 +790,9 @@ const nvSchedule=()=>{if(!nvRaf)nvRaf=requestAnimationFrame(nvUpdate)};
 $("nbody").addEventListener("scroll",nvSchedule,{passive:true});
 addEventListener("resize",nvSchedule);
 function renderNovel(){
- const L=novelList(),lines=novelLines(),asUser=SHARE||NVUSER;lastAct=-2;
+ const L=novelList(),lines=novelLines(),asUser=SHARE||NVUSER;let lastAct=-2;
  const dis=L.length?"":"disabled";
- $("neventnav").innerHTML=`<div class="nnav-bar"><button type="button" class="nnav-step" data-nnav="prev" title="이전" ${dis}>‹</button><button type="button" class="nnav-cur" data-nnav="list" aria-expanded="false" ${dis}><span class="nnav-t" id="nnavT"></span><span class="nnav-n" id="nnavN"></span><span class="nnav-c">▾</span></button><button type="button" class="nnav-step" data-nnav="next" title="다음" ${dis}>›</button><button type="button" class="nnav-step" data-nnav="menu" title="메뉴">⋯</button><button id="nclose" class="nnav-step" value="close" formnovalidate title="닫기" aria-label="닫기">×</button></div><div class="nnav-prog"><i id="nnavP"></i></div><div class="nnav-list" id="nnavList" hidden>${L.map(e=>{const h=+e.act!==lastAct?`<div class="nnav-act">${esc(ACTS[+e.act]||"")}</div>`:"";lastAct=+e.act;return h+`<button type="button" class="nnav-item" data-nevent="${esc(String(e.id))}">${asUser?"":(e.done?"☑ ":"☐ ")}${esc(e.title||"제목 없음")}</button>`.trim()}).join("")}</div>`;
+ $("neventnav").innerHTML=`<div class="nnav-bar"><button type="button" class="nnav-step" data-nnav="prev" title="이전" ${dis}>‹</button><button type="button" class="nnav-cur" data-nnav="list" aria-expanded="false" ${dis}><span class="nnav-t" id="nnavT"></span><span class="nnav-n" id="nnavN"></span><span class="nnav-c">▾</span></button><button type="button" class="nnav-step" data-nnav="next" title="다음" ${dis}>›</button><button type="button" class="nnav-step" data-nnav="menu" title="메뉴">⋯</button><button id="nclose" class="nnav-step" value="close" formnovalidate title="닫기" aria-label="닫기">×</button></div><div class="nnav-prog"><i id="nnavP"></i></div><div class="nnav-list" id="nnavList" hidden>${L.map(e=>{const h=+e.act!==lastAct?`<div class="nnav-act">${esc(ACTS[+e.act]||"")}</div>`:"";lastAct=+e.act;return h+`<button type="button" class="nnav-item" data-nevent="${esc(String(e.id))}">${asUser?"":(e.done?"☑ ":"☐ ")}${esc(e.title||"제목 없음")}</button>`}).join("")}</div>`;
  nvCur=-1;
  $("nsum").textContent=asUser?`에피소드 ${L.length}개`:`${L.length}/${D.events.length}개 · 완료 ${D.events.filter(e=>e.done).length}`;
  $("nrole").className="rolechip "+(asUser?"usr":"adm");$("nrole").textContent=SHARE?"👤 사용자":asUser?"👤 사용자 보기":"🛠 관리자";
@@ -960,11 +947,11 @@ $("ffs").onclick=()=>{onlyFs=!onlyFs;$("ffs").classList.toggle("on",onlyFs);rend
 
 // ===== 로딩 표시 =====
 let ldTimer=null;
-function ldShow(msg){$("ldm").textContent=msg||"불러오는 중…";$("ldb").style.width="0\%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
+function ldShow(msg){$("ldm").textContent=msg||"불러오는 중…";$("ldb").style.width="0%";$("ld").style.display="block";let p=8;$("ldb").style.width=p+"%";clearInterval(ldTimer);ldTimer=setInterval(()=>{p+=(80-p)*.08;if(+$("ldb").style.width.slice(0,-1)<p)$("ldb").style.width=p+"%"},150)}
 let connOn=false,connTimer=null;
 function connShow(){connOn=true;ldShow("접속 중입니다…");document.body.classList.add("connecting");clearTimeout(connTimer);connTimer=setTimeout(connDone,15000)}
 function connDone(){if(!connOn)return;connOn=false;clearTimeout(connTimer);document.body.classList.remove("connecting");ldHide()}
-function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100\%";setTimeout(()=>{$("ld").style.display="none"},delay)}
+function ldHide(delay=300){clearInterval(ldTimer);$("ldb").style.width="100%";setTimeout(()=>{$("ld").style.display="none"},delay)}
 
 // ===== 공유 링크 (읽기 전용) =====
 function shareFail(msg){ldHide();$("nbody").innerHTML='<p class="nv-empty">'+esc(msg)+'</p>';$("ndlg").showModal()}
