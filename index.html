@@ -41,6 +41,7 @@ header button{font-size:12px;padding:2px 10px;white-space:nowrap}
 .tools{display:flex;gap:6px;align-items:center;margin-top:6px}
 .tools #q{flex:1;min-width:0}
 .tools button{white-space:nowrap}
+.ibtn{flex:none;display:inline-flex;align-items:center;justify-content:center;width:36px;padding:6px 0}.ibtn .ico{width:18px;height:18px}
 .tools select{min-width:0;flex:0 1 auto}
 #ffs{padding:5px 11px}
 main{padding:12px 14px 60px}
@@ -274,7 +275,7 @@ body.treeview .tree-node .card > .st.star {
 <div class="bar">
  <div class="tabs"><button class="tab on" data-tab="tl">타임라인</button><button class="tab" data-tab="ch">인물</button><button class="tab" data-tab="it">아이템</button><button class="tab" data-tab="ac">장</button><button class="tab" data-tab="tr">🗑 휴지통</button><button class="tab" data-tab="st">⚙ 설정</button><button id="toolsToggle" class="bar-toggle" type="button" aria-expanded="true" aria-controls="toolRows" title="검색·보기 메뉴 접기" aria-label="검색·보기 메뉴 접기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button></div>
  <div id="toolRows">
-  <div class="tools"><input id="q" placeholder="⌕  검색"><button id="viewNovel" type="button">📖 소설보기</button><button id="add" type="button" class="p">＋ 추가</button></div>
+  <div class="tools"><input id="q" placeholder="⌕  검색"><button id="viewNovel" type="button">📖 소설보기</button><button id="viewListen" type="button" class="ibtn" title="소설 듣기 (처음부터 읽어 줍니다)" aria-label="소설 듣기"><svg class="ico" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button><button id="add" type="button" class="p">＋ 추가</button></div>
   <div class="tools" id="filters"><select id="view"><option value="tree" selected>보드</option><option value="act">목록</option><option value="char">인물별</option><option value="table">표</option></select><select id="fa"><option value="">전체 장</option></select><button id="ffs" type="button" title="중요 표시한 것만">⭐</button></div>
  </div>
 </div>
@@ -345,6 +346,7 @@ const ICON_TRASH='<svg class="ico" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M
  ICON_PEN='<svg class="ico" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1zM14 7l3 3"/></svg>',
  FSBADGE='<span class="fsbadge" title="중요"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.9-4.7 4.5 1.2 6.4L12 17.4l-5.7 3.1 1.2-6.4-4.7-4.5 6.4-.9z"/></svg></span>';
 // 편집 후 보드에서 반짝여 보여 줄 에피소드
+const ICON_SPK='<svg class="ico" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>';
 const EDITED=new Set();let navHop=false;
 function flashEdited(){
  if(!EDITED.size)return;const ids=[...EDITED];EDITED.clear();
@@ -420,7 +422,7 @@ const nvPrev=e=>{const t=String(e.actual||"").replace(/\s+/g," ").trim();return 
 function evHTML(e,mini,drag){
  const tg=charList(e).map(c=>`<span class="nm" data-ch="${esc(c)}">👤 ${esc(charLbl(c))}</span>`).join("")+split(e.items).map(c=>`<span class="it" data-it="${esc(c)}">◇ ${esc(c)}</span>`).join("");
  return `<div class="ev" data-eid="${e.id}"><div class="when">${esc(e.when)}<span class="wpl">${e.place?` · ${esc(e.place)}`:""}</span></div><div class="card ${e.fs?"fs":""} ${stCls(e)}"${blockStyle(e)}>${e.fs?FSBADGE:""}
- <div class="btns">${drag?`<button type="button" class="dh" data-i="${e.id}" title="꾹 눌렀다가 드래그해서 이동">⠿</button>`:""}${stIcons(e)}${colorControl("e",e)}${mini?"":`<span class="sp"></span>${drag?`<button type="button" data-a="wr" data-t="e" data-i="${e.id}" title="이어쓰기">${ICON_PEN}</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}" title="휴지통으로">${ICON_TRASH}</button>`}</div>
+ <div class="btns">${drag?`<button type="button" class="dh" data-i="${e.id}" title="꾹 눌렀다가 드래그해서 이동">⠿</button>`:""}${stIcons(e)}${colorControl("e",e)}${e.actual?`<button type="button" data-lsn="${e.id}" title="이 에피소드부터 듣기" aria-label="듣기">${ICON_SPK}</button>`:""}${mini?"":`<span class="sp"></span>${drag?`<button type="button" data-a="wr" data-t="e" data-i="${e.id}" title="이어쓰기">${ICON_PEN}</button>`:""}<button data-a="up" data-t="e" data-i="${e.id}">▲</button><button data-a="dn" data-t="e" data-i="${e.id}">▼</button><button data-a="del" data-t="e" data-i="${e.id}" title="휴지통으로">${ICON_TRASH}</button>`}</div>
  <h3 class="clk" data-a="ed" data-t="e" data-i="${e.id}">${esc(e.title)||'<span class="pl">제목 없음</span>'}</h3>${e.place?`<div class="pl plc">📍 ${esc(e.place)}</div>`:""}<p class="clk onel" data-a="ed" data-t="e" data-i="${e.id}">${nvPrev(e)}</p>
  ${tg?`<div class="tags">${tg}</div>`:""}${e.memo?`<div class="memo">📝 ${esc(e.memo)}</div>`:""}
  <div class="nvrow"><button type="button" class="wr" data-a="wr" data-t="e" data-i="${e.id}">✍️ ${e.actual?"이어쓰기":"쓰기"}</button>${e.actual?`<button type="button" data-nv="${e.id}">📖 보기</button>`:""}</div></div></div>`}
@@ -754,7 +756,7 @@ $("dlg").addEventListener("close",()=>{
 });
 $("dlg").addEventListener("cancel",ev=>{if(edDirty()){ev.preventDefault();edConfirmDiscard()}});
 
-const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>닫기</button><button type="button" class="btn p" data-save-ed>저장</button></div>`;
+const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>닫기</button>${isEp?`<button type="button" class="btn" id="edspeak" title="선택한 부분 / 커서부터 듣기 (Alt+R)">▶ 듣기</button>`:""}<button type="button" class="btn p" data-save-ed>저장</button></div>`;
 function episodeForm(o,isNew,nb){
  return `<div class="titlefld"><input name="title" value="${esc(o.title)}" placeholder="에피소드 제목"></div>
  <details class="evmeta" id="evmeta" ${isNew?"open":""}><summary id="evsum"></summary><div class="fgrid">
@@ -1204,10 +1206,67 @@ $("nrateP").addEventListener("click",()=>setRate(sRate+.1));
 $("nrateV").addEventListener("click",()=>setRate(1));
 $("nvoiceGender").addEventListener("change",()=>{try{localStorage.setItem("novel-svoice",$("nvoiceGender").value)}catch(e){}restartHere()});
 $("ndlg").addEventListener("close",stopSpeech);
+// ===== 편집 화면에서 듣기 =====
+// 글자를 선택했으면 그 부분만, 아니면 커서 위치부터 끝까지 읽는다. 읽는 문장은 입력칸의 선택 표시로 따라간다. (단축키 Alt+R)
+let eRun=0,ePlaying=false,eWatch=0,eUt=null,eEnd=0;
+function edUI(){const b=$("edspeak");if(b)b.textContent=ePlaying?"⏸ 중지":"▶ 듣기"}
+function edStop(keepCaret){
+ eRun++;clearTimeout(eWatch);ePlaying=false;
+ if(window.speechSynthesis)speechSynthesis.cancel();
+ const ta=$("f")&&fe("actual");if(ta){ta.readOnly=false;if(keepCaret===true){try{ta.setSelectionRange(eEnd,eEnd)}catch(e){}}}
+ edUI();
+}
+function edScrollTo(ta,idx){
+ const b=$("fbody");if(!b)return;
+ const y=mirrorY(ta,idx),top=ta.getBoundingClientRect().top+y-b.getBoundingClientRect().top;
+ if(top<b.clientHeight*.12||top>b.clientHeight*.72)b.scrollTop+=top-b.clientHeight*.35;
+}
+function edSpeakStart(){
+ if(!speechOK()){speechFallback();return}
+ const ta=fe("actual");if(!ta)return;
+ stopSpeech();setCur(true);
+ const text=ta.value;let from=ta.selectionStart,to=ta.selectionEnd;
+ if(to<=from){from=to;to=text.length}
+ const pieces=[];let pos=0;
+ text.split("\n").forEach(line=>{
+  speechPieces(line,0,0).forEach(pc=>{const a=pos+pc.startOffset,e=a+pc.text.length;if(e>from&&a<to)pieces.push({a:Math.max(a,from),e:Math.min(e,to)})});
+  pos+=line.length+1;
+ });
+ if(!pieces.length){toast("읽을 내용이 없습니다.");return}
+ const run=++eRun;ePlaying=true;ta.readOnly=true;edUI(); // 읽는 동안은 읽기 전용 → 모바일에서 키보드가 올라오지 않는다
+ const next=(i,tries)=>{
+  if(run!==eRun)return;
+  if(i>=pieces.length){eEnd=pieces[pieces.length-1].e;edStop(true);return}
+  const pc=pieces[i],{v,pitch}=chooseReadingVoice(tries||0);
+  const u=new SpeechSynthesisUtterance(text.slice(pc.a,pc.e));
+  if(v){u.voice=v;u.lang=v.lang}else u.lang="ko-KR";
+  u.rate=sRate;u.pitch=pitch;eUt=u;let started=false;
+  u.onstart=()=>{if(run!==eRun)return;started=true;clearTimeout(eWatch);eEnd=pc.a;try{ta.focus({preventScroll:true});ta.setSelectionRange(pc.a,pc.e)}catch(e){}edScrollTo(ta,pc.a)};
+  u.onend=()=>{if(run===eRun)next(i+1,0)};
+  u.onerror=ev=>{if(run!==eRun)return;if(ev&&(ev.error==="interrupted"||ev.error==="canceled"))return;next(i+1,0)};
+  clearTimeout(eWatch);
+  eWatch=setTimeout(()=>{if(run!==eRun||started)return;speechSynthesis.cancel();if((tries||0)<1)setTimeout(()=>next(i,1),120);else{edStop();if(isChrome())toast("음성을 재생하지 못했습니다.",2600);else speechFallback()}},4000);
+  speechSynthesis.speak(u);
+ };
+ speechSynthesis.cancel();
+ setTimeout(()=>{if(run===eRun)next(0,0)},90);
+}
+const edSpeakToggle=()=>{if(ePlaying)edStop(true);else edSpeakStart()};
+$("f").addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest("#edspeak"))edSpeakToggle()});
+$("dlg").addEventListener("keydown",ev=>{
+ if(ev.altKey&&ev.code==="KeyR"){ev.preventDefault();edSpeakToggle();return}
+ if(ePlaying&&ev.target&&ev.target.name==="actual"&&!ev.altKey&&!ev.ctrlKey&&!ev.metaKey&&ev.key!=="Shift"){edStop();} // 글을 고치기 시작하면 멈춘다 (readOnly를 먼저 풀어 첫 글자가 먹히게)
+},true);
+$("f").addEventListener("pointerdown",ev=>{if(ePlaying&&ev.target&&ev.target.name==="actual")edStop()},true);
+$("dlg").addEventListener("close",()=>edStop());
+
 if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>{};
 window.addEventListener("pagehide",()=>{if(window.speechSynthesis)speechSynthesis.cancel()});
 updSpeechUI();
 $("viewNovel").onclick=()=>openNovel();
+// 메인 화면의 🔊 : 소설 보기를 열고 바로 읽기 시작 / 에피소드 카드의 🔊 : 그 에피소드부터 읽기
+$("viewListen").onclick=()=>{openNovel();playSpeech()};
+$("list").addEventListener("click",ev=>{const b=ev.target.closest("[data-lsn]");if(!b)return;ev.stopPropagation();openNovel(+b.dataset.lsn);playSpeech()});
 ["copy","cut","contextmenu","dragstart"].forEach(t=>$("nbody").addEventListener(t,ev=>{if(SHARE||NVUSER)ev.preventDefault()}));
 const isAdminNow=()=>!SHARE&&(!FBON||(!!fbUser&&!/권한 없음/.test(fbErr)));
 function mirrorY(ta,n){
