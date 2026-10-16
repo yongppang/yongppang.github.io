@@ -163,9 +163,11 @@ details[open]>summary{border-bottom:1px dashed var(--bd);margin-bottom:4px}
 .qhead{display:flex;align-items:center;gap:6px;padding:6px 0 0}
 .qtab{border-radius:999px;padding:3px 12px;font-size:12px;font-weight:700;color:var(--sub);white-space:nowrap}.qtab.on{background:var(--blk);color:var(--ac);border-color:var(--blkbd)}
 .qchips{display:flex;gap:6px;overflow-x:auto;padding:6px 0 8px;position:relative;scrollbar-width:none;overscroll-behavior-x:contain}.qchips::-webkit-scrollbar{display:none}
+@media (pointer:fine){.qchips{flex-wrap:wrap;overflow-x:hidden;overflow-y:auto;max-height:142px;scrollbar-width:thin}.qchips::-webkit-scrollbar{display:initial;width:8px}}
 .qchip{flex:none;border-radius:999px;padding:7px 14px;font-size:14px;white-space:nowrap}
 .qchip.in{border-color:var(--ac);color:var(--ac)}.qchip.in:before{content:"✓ "}
 .qchip.hi{background:var(--ac);color:#fff;border-color:var(--ac)}
+.qchip small{font-size:11px;opacity:.7;margin-left:3px}.qchip.hi small{opacity:.85}
 .qchip.new{border-style:dashed;color:var(--ac)}
 .castrow{display:flex;flex-wrap:wrap;gap:4px;align-items:center;width:100%;text-align:left;margin:8px 0;padding:7px 10px;border-radius:12px;border:1px dashed var(--blkbd);background:var(--card)}
 .castrow .nm,.castrow .it{background:var(--blk);border-radius:6px;padding:1px 8px;font-size:12px}.castrow .it{background:none;border:1px dashed var(--blkbd)}.castrow .pl{font-size:12px}.castadd{margin-left:auto}
@@ -689,7 +691,7 @@ function pkChips(k,sel){
  [...new Set([...D.events.flatMap(e=>split(e[k])),...sel])].forEach(n=>{if(!known.has(n)){known.add(n);h+=btn(n,esc(n),sel.includes(n),true,"저장하면 새로 등록됩니다")}});
  return h||'<span class="pl">등록된 항목이 없습니다. 위 칸에 직접 입력하세요.</span>';
 }
-function pkSum(){const el=$("cast");if(!el||!fe("chars"))return;const c=split(fe("chars").value),i=split(fe("items").value);el.innerHTML=(c.length||i.length)?c.map(x=>`<span class="nm">👤 ${esc(x)}</span>`).join("")+i.map(x=>`<span class="it">◇ ${esc(x)}</span>`).join("")+`<span class="pl castadd">＋ 수정</span>`:`<span class="pl">👤 등장인물 · ◇ 아이템 선택하기</span>`}
+function pkSum(){const el=$("cast");if(!el||!fe("chars"))return;const c=[...new Set(split(fe("chars").value).map(canon))],i=split(fe("items").value);el.innerHTML=(c.length||i.length)?c.map(x=>`<span class="nm">👤 ${esc(x)}</span>`).join("")+i.map(x=>`<span class="it">◇ ${esc(x)}</span>`).join("")+`<span class="pl castadd">＋ 수정</span>`:`<span class="pl">👤 등장인물 · ◇ 아이템 선택하기</span>`}
 function refreshPk(k){const box=$("pk-"+k);if(box)box.innerHTML=pkChips(k,split(fe(k).value));pkSum()}
 function pkToggle(k,n){
  let a=split(fe(k).value);const c=k=="chars"?D.chars.find(x=>x.name===n):null,names=c?[c.name,...split(c.aliases)]:[n];
@@ -1257,22 +1259,33 @@ $("f").addEventListener("contextmenu",ev=>{
 // 평소엔 아래에 한 줄 안내만 보이고, 글에 #나 @를 치면(또는 안내줄을 누르면) 목록이 열린다. 이름을 누르면 커서 자리에 들어가고 이 에피소드에도 자동 등록된다.
 let qOpen=false,qTrig=false,qManual=false,qMode="#",qQuery="",qIdx=0,qList=[],qLast="";
 const qKey=()=>qMode==="#"?"chars":"items";
+// 사람마다 칩은 하나만. 입력한 글자가 이명에 맞으면 그 이명으로, 아니면 본명으로 보여 준다.
 function qFilter(){
- const q=qQuery.toLowerCase();
- return (qMode==="#"?D.chars:D.items).filter(x=>x.name&&(!q||x.name.toLowerCase().includes(q)||(qMode==="#"&&split(x.aliases).some(a=>a.toLowerCase().includes(q)))));
+ const q=qQuery.toLowerCase(),chars=qMode==="#",out=[];
+ (chars?D.chars:D.items).forEach(x=>{
+  if(!x.name)return;
+  const al=chars?split(x.aliases):[],nm=x.name.toLowerCase();
+  const all=al.length?`${x.name}(${al.join(", ")})`:x.name; // 홍길동(길동, 의적)
+  if(!q||nm.startsWith(q))return out.push({x,t:x.name,label:all});
+  const a=al.find(v=>v.toLowerCase().startsWith(q))||al.find(v=>v.toLowerCase().includes(q));
+  if(a)return out.push({x,t:a,label:`${x.name}(${a})`}); // 이명으로 찾으면 홍길동(길동) — 글에는 입력한 이명이 들어간다
+  if(nm.includes(q))out.push({x,t:x.name,label:all});
+ });
+ return out;
 }
 function qRender(){
  const bar=$("qbar");if(!bar)return;
  bar.classList.toggle("open",qOpen);if(!qOpen)return;
  qList=qFilter();if(qIdx>=qList.length)qIdx=Math.max(0,qList.length-1);
  const f=fe(qKey()),cur=f?split(f.value):[];
- let h=qList.map((x,i)=>`<button type="button" class="qchip${qTrig&&i===qIdx?" hi":""}${cur.includes(x.name)?" in":""}" data-qi="${i}">${qMode==="#"?"":"◇ "}${esc(x.name)}</button>`).join("");
- if(qQuery&&!qList.some(x=>x.name===qQuery))h+=`<button type="button" class="qchip new" data-qnew="1">＋ 새로 등록 「${esc(qQuery)}」</button>`;
+ let h=qList.map((e,i)=>`<button type="button" class="qchip${qTrig&&i===qIdx?" hi":""}${cur.includes(e.x.name)?" in":""}" data-qi="${i}">${qMode==="#"?"":"◇ "}${esc(e.label||e.t)}</button>`).join("");
+ const exists=(qMode==="#"?D.chars:D.items).some(x=>x.name===qQuery||(qMode==="#"&&split(x.aliases).includes(qQuery)));
+ if(qQuery&&!exists)h+=`<button type="button" class="qchip new" data-qnew="1">＋ 새로 등록 「${esc(qQuery)}」</button>`;
  if(!h)h=`<span class="pl" style="padding:6px 0">등록된 ${qMode==="#"?"인물":"아이템"}이 없습니다. ${qMode}뒤에 이름을 쓰면 새로 등록할 수 있어요.</span>`;
  const box=$("qchips");box.innerHTML=h;
  document.querySelectorAll(".qtab[data-qtab]").forEach(b=>b.classList.toggle("on",b.dataset.qtab===qMode));
  $("qq").textContent=qTrig?`${qMode}${qQuery}`:"";
- const hi=box.querySelector(".hi");if(hi)box.scrollLeft=hi.offsetLeft-box.clientWidth/2+hi.offsetWidth/2;
+ const hi=box.querySelector(".hi");if(hi){if(getComputedStyle(box).flexWrap==="nowrap")box.scrollLeft=hi.offsetLeft-box.clientWidth/2+hi.offsetWidth/2;else box.scrollTop=hi.offsetTop-box.clientHeight/2+hi.offsetHeight/2}
 }
 function qClose(){qOpen=false;qTrig=false;qManual=false;qRender()}
 function qDetect(){
@@ -1301,7 +1314,7 @@ $("f").addEventListener("click",ev=>{
  if(ev.target.closest("#qhint")){qOpen=true;qManual=true;qTrig=false;qMode="#";qQuery="";qIdx=0;qRender();return}
  if(ev.target.closest("#qx")){qClose();return}
  const tab=ev.target.closest("[data-qtab]");if(tab){if(!qTrig){qMode=tab.dataset.qtab;qQuery="";qRender()}return}
- const chip=ev.target.closest("[data-qi]");if(chip){const x=qList[+chip.dataset.qi];if(x)qInsert(x.name);return}
+ const chip=ev.target.closest("[data-qi]");if(chip){const e=qList[+chip.dataset.qi];if(e)qInsert(e.t);return}
  if(ev.target.closest("[data-qnew]"))qInsert(qQuery);
 });
 $("f").addEventListener("input",ev=>{if(ev.target.name==="actual")qDetect()});
@@ -1312,7 +1325,7 @@ $("f").addEventListener("keydown",ev=>{
  if(ev.key==="Escape"){ev.preventDefault();ev.stopPropagation();qClose();return}
  if(!qTrig)return;
  if(ev.key==="ArrowDown"||ev.key==="ArrowUp"){if(!qList.length)return;ev.preventDefault();qIdx=(qIdx+(ev.key==="ArrowDown"?1:-1)+qList.length)%qList.length;qRender();return}
- if((ev.key==="Enter"||ev.key==="Tab")&&!ev.isComposing&&!ev.shiftKey){const x=qList[qIdx];if(x){ev.preventDefault();qInsert(x.name)}else if(qQuery){ev.preventDefault();qInsert(qQuery)}}
+ if((ev.key==="Enter"||ev.key==="Tab")&&!ev.isComposing&&!ev.shiftKey){const x=qList[qIdx];if(x){ev.preventDefault();qInsert(x.t)}else if(qQuery){ev.preventDefault();qInsert(qQuery)}}
 },true);
 $("dlg").addEventListener("close",()=>{qOpen=qTrig=qManual=false;qLast=""});
 if(window.visualViewport){const vv=window.visualViewport,f=()=>{if(vv.scale>1.01)document.documentElement.style.removeProperty("--vvh");else document.documentElement.style.setProperty("--vvh",vv.height+"px")};vv.addEventListener("resize",f);vv.addEventListener("scroll",f);f()}
