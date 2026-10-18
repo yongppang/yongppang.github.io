@@ -131,7 +131,11 @@ body.booting header,body.booting .bar,body.booting main{visibility:hidden}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* ===== 전체 화면 대화창 (편집 / 읽기 공통 뼈대: 위 · 가운데(스크롤) · 아래) ===== */
+<<<<<<< HEAD
 dialog.full{border:0;padding:0;margin:0;width:100vw;max-width:none;height:var(--vvh,100dvh);max-height:none;background:var(--bg);color:var(--tx)}
+=======
+dialog.full{border:0;padding:0;margin:0;width:100vw;max-width:none;height:100dvh;max-height:none;background:var(--bg);color:var(--tx)}
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 dialog.full[open]{display:flex;flex-direction:column}
 dialog.full::backdrop{background:rgba(0,0,0,.5)}
 dialog.full>form{flex:1;min-height:0;display:flex;flex-direction:column;margin:0}
@@ -139,7 +143,11 @@ dialog.full>form{flex:1;min-height:0;display:flex;flex-direction:column;margin:0
 .eh{border-bottom:1px solid var(--bd)}.eh b{font-size:15px;white-space:nowrap}
 .eh button{flex:none;white-space:nowrap;font-size:12px;padding:3px 10px;border-radius:999px;color:var(--sub)}
 .ef{border-top:1px solid var(--bd);padding-bottom:max(8px,env(safe-area-inset-bottom))}
+<<<<<<< HEAD
 .ef .btn{padding:11px 16px;font-weight:700;white-space:nowrap}.ef .btn.p{flex:1}.ef .btn.sm{padding:11px 11px}
+=======
+.ef .btn{padding:11px 16px;font-weight:700;white-space:nowrap}.ef .btn.p{flex:1}
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 .eb{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:12px max(14px,calc((100% - 820px)/2)) 28px}
 .eb label{display:block;font-size:13px;color:var(--sub);margin:10px 0 3px}
 .eb input:not([type=checkbox]),.eb select,.eb textarea{width:100%;padding:9px 11px;font-size:16px}
@@ -157,6 +165,7 @@ details[open]>summary{border-bottom:1px dashed var(--bd);margin-bottom:4px}
 .edwrap{display:flex;align-items:stretch;overflow:hidden;border:1px solid var(--bd);border-radius:14px;background:var(--paper);margin:4px 0 8px}
 .eb .edwrap textarea.actual-field{flex:1 1 0;min-width:0;width:auto}
 .edln{flex:none;text-align:right;white-space:pre;color:var(--sub);background:#6c5ce711;border-right:1px dashed var(--bd);padding:16px 8px 16px 6px;font:12px ui-monospace,Menlo,Consolas,monospace;user-select:none;-webkit-user-select:none;pointer-events:none}
+<<<<<<< HEAD
 .qbar{flex:none;background:var(--card);border-top:1px solid var(--bd);padding:2px max(14px,calc((100% - 820px)/2))}
 .qtop{display:flex;align-items:center;gap:6px}.qtop .qhint{flex:1;min-width:0}
 .qmic{flex:none;width:40px;height:32px;padding:0;border-radius:999px;font-size:16px;line-height:1}.qmic.on{background:#e5484d;color:#fff;border-color:#e5484d;animation:micp 1.2s ease-in-out infinite}
@@ -182,6 +191,8 @@ dialog.pkm[open]{display:flex;flex-direction:column}dialog.pkm::backdrop{backgro
 .pkm .chip{padding:6px 14px;font-size:14px}
 #pksel{margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--blk);border:1px solid var(--blkbd);display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}
 .pkadd{display:flex;gap:6px;margin-top:14px}.pkadd input{flex:1;min-width:0}.pkadd button{white-space:nowrap}
+=======
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 .nb.cur{border:2px solid var(--ac);background:var(--card);color:var(--tx);padding:8px 10px}
 .nb.cur .nbh{color:var(--ac);font-weight:700}.nb.cur .nbh b{color:var(--tx)}
 .nb.cur .edwrap{margin:6px 0 0}.nb.cur.closed .edwrap{display:none}
@@ -222,11 +233,15 @@ dialog.cfm{max-width:320px;width:calc(100% - 40px);height:fit-content;margin:aut
 .nspeech-actions button{width:100%;text-align:center!important;white-space:nowrap;padding:9px 10px;font-weight:700;background:var(--ac);color:#fff;border-color:var(--ac)}
 .nspeech-rate{display:flex;gap:6px;align-items:center}
 .nspeech-rate button{flex:1;min-width:0;text-align:center!important;white-space:nowrap;padding:7px 4px;font-weight:700}
+<<<<<<< HEAD
 #nplayer{position:fixed;right:12px;bottom:calc(max(12px,env(safe-area-inset-bottom)) + 4px);z-index:30;display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;background:color-mix(in srgb,var(--card) 94%,transparent);border:1px solid var(--bd);box-shadow:0 6px 18px #0004;backdrop-filter:blur(6px)}
 #nplayer button{height:40px;min-width:40px;padding:0 6px;border:0;border-radius:999px;background:none;font-weight:700;font-size:16px;line-height:1;white-space:nowrap}
 #nplayer #nrateV{min-width:50px;font-size:14px}
 #nplayer button:hover{background:var(--blk)}
 #nplayer #nplay{width:46px;height:46px;font-size:20px;background:var(--ac);color:#fff;margin-left:2px}
+=======
+#nplay{position:fixed;right:16px;bottom:calc(max(16px,env(safe-area-inset-bottom)) + 4px);z-index:30;width:52px;height:52px;padding:0;border-radius:50%;font-size:20px;line-height:1;background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 6px 18px #0004}
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 #nbody{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:16px max(0px,calc((100% - 820px)/2)) 48px;background:var(--bg)}
 #nbody.nocopy,#nbody.nocopy *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .nv-empty{color:var(--sub);padding:20px 14px}
@@ -310,7 +325,10 @@ body.treeview .tree-node .card > .st.star {
 </div>
 <main id="list"></main>
 <dialog id="dlg" class="full"><form method="dialog" id="f"></form></dialog>
+<<<<<<< HEAD
 <dialog id="pkdlg" class="pkm"><div class="pkh"><b>👤 등장인물 · ◇ 아이템</b><button type="button" id="pkclose" class="p">완료</button></div><div class="pkb"><div id="pksel" hidden></div><div class="pkt">👤 등장인물</div><div class="pkrow" id="pk-chars"></div><div class="pkt">◇ 아이템</div><div class="pkrow" id="pk-items"></div><div class="pkadd"><input id="pknew" placeholder="새 이름 직접 입력"><button type="button" data-pkadd="chars">＋ 인물</button><button type="button" data-pkadd="items">＋ 아이템</button></div></div></dialog>
+=======
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 <dialog id="ndlg" class="full"><form method="dialog" id="nf">
  <div id="nhead"><div id="neventnav"></div>
   <div id="nmenu" hidden>
@@ -319,13 +337,23 @@ body.treeview .tree-node .card > .st.star {
    <button type="button" id="nview"></button>
    <button type="button" id="ncopy">📋 내용 복사</button>
    <button type="button" id="nlink">🔗 링크 복사</button>
+<<<<<<< HEAD
    <div class="nspeech-actions"><button type="button" id="nspeak">▶ 재생</button></div>
+=======
+   <div class="nspeech"><label for="nvoiceGender">음성</label><select id="nvoiceGender" aria-label="읽기 음성"><option value="female">여성</option><option value="male">남성</option></select></div>
+   <div class="nspeech-actions"><button type="button" id="nspeak">▶ 재생</button></div>
+   <div class="nspeech-rate"><span>속도</span><button type="button" id="nrateM" aria-label="느리게">−</button><button type="button" id="nrateV" title="누르면 1.0×로 되돌립니다">1.0×</button><button type="button" id="nrateP" aria-label="빠르게">＋</button></div>
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
    <div class="nfont"><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button><button type="button" id="wfBtn"></button></div>
    <button type="button" id="ntheme"></button>
    <button type="button" id="nlogin" hidden></button>
   </div></div>
  <div id="nbody"></div>
+<<<<<<< HEAD
  <div id="nplayer"><button type="button" id="nrateM" aria-label="느리게">−</button><button type="button" id="nrateV" class="rate-lbl" title="누르면 1.0×로 되돌립니다">1.0×</button><button type="button" id="nrateP" aria-label="빠르게">＋</button><button type="button" id="nplay" aria-label="음성 재생" title="재생 / 중지 (읽을 줄을 먼저 눌러 선택할 수 있어요)">▶</button></div>
+=======
+ <button type="button" id="nplay" aria-label="음성 재생" title="재생 / 중지 (읽을 줄을 먼저 눌러 선택할 수 있어요)">▶</button>
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 </form></dialog>
 
 <script>
@@ -695,7 +723,11 @@ function pkChips(k,sel){
  [...new Set([...D.events.flatMap(e=>split(e[k])),...sel])].forEach(n=>{if(!known.has(n)){known.add(n);h+=btn(n,esc(n),sel.includes(n),true,"저장하면 새로 등록됩니다")}});
  return h||'<span class="pl">등록된 항목이 없습니다. 위 칸에 직접 입력하세요.</span>';
 }
+<<<<<<< HEAD
 function pkSum(){const el=$("cast");if(!el||!fe("chars"))return;const c=[...new Set(split(fe("chars").value).map(canon))],i=split(fe("items").value);el.innerHTML=(c.length||i.length)?c.map(x=>`<span class="nm">👤 ${esc(x)}</span>`).join("")+i.map(x=>`<span class="it">◇ ${esc(x)}</span>`).join("")+`<span class="pl castadd">＋ 수정</span>`:`<span class="pl">👤 등장인물 · ◇ 아이템 선택하기</span>`}
+=======
+function pkSum(){const el=$("pksum");if(!el||!fe("chars"))return;const c=split(fe("chars").value),i=split(fe("items").value);el.textContent=(c.length||i.length)?`· ${c.join(", ")||"-"} / ${i.join(", ")||"-"}`:""}
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 function refreshPk(k){const box=$("pk-"+k);if(box)box.innerHTML=pkChips(k,split(fe(k).value));pkSum()}
 function pkToggle(k,n){
  let a=split(fe(k).value);const c=k=="chars"?D.chars.find(x=>x.name===n):null,names=c?[c.name,...split(c.aliases)]:[n];
@@ -784,7 +816,11 @@ $("dlg").addEventListener("close",()=>{
 });
 $("dlg").addEventListener("cancel",ev=>{if(edDirty()){ev.preventDefault();edConfirmDiscard()}});
 
+<<<<<<< HEAD
 const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div>${isEp?`<div class="qbar" id="qbar"><div class="dstat" id="dstat" hidden></div><div class="qtop"><button type="button" class="qhint" id="qhint">＃ 등장인물 · ＠ 아이템 <span>— 글에서 #/@ 입력 (눌러서 열기)</span></button><button type="button" class="qmic dictbtn" title="말로 쓰기 (받아쓰기)" aria-label="받아쓰기">🎤</button></div><div class="qopen"><div class="qhead"><button type="button" class="qtab" data-qtab="#">＃ 등장인물</button><button type="button" class="qtab" data-qtab="@">＠ 아이템</button><span class="pl" id="qq"></span><span class="sp"></span><button type="button" class="qmic dictbtn" title="말로 쓰기 (받아쓰기)" aria-label="받아쓰기">🎤</button><button type="button" id="qx" class="qtab" aria-label="닫기">✕</button></div><div class="qchips" id="qchips"></div></div></div>`:""}<div class="ef"><button class="btn" value="cancel" formnovalidate>닫기</button>${isEp?`<button type="button" class="btn sm" id="edcast" title="등장인물 · 아이템 선택 (PC: 글 위에서 마우스 오른쪽 버튼)" aria-label="등장인물 · 아이템">👤</button><button type="button" class="btn sm" id="edspeak" title="선택한 부분 / 커서부터 듣기 (Alt+R)">▶ 듣기</button><button type="button" class="btn sm rate-lbl" id="edrate" title="읽기 속도 (누를 때마다 바뀝니다)">${sRate.toFixed(1)}×</button>`:""}<button type="button" class="btn p" data-save-ed>저장</button></div>`;
+=======
+const shell=(title,body,hasNext,isEp)=>`<div class="eh"><b>${title}</b><span class="sp"></span>${isEp?`<button type="button" id="wfBtn"></button><button type="button" id="wsM">A−</button><button type="button" id="wsP">A＋</button>`:""}</div><div class="eb" id="fbody">${body}</div><div class="ef"><button class="btn" value="cancel" formnovalidate>닫기</button>${isEp?`<button type="button" class="btn" id="edspeak" title="선택한 부분 / 커서부터 듣기 (Alt+R)">▶ 듣기</button>`:""}<button type="button" class="btn p" data-save-ed>저장</button></div>`;
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 function episodeForm(o,isNew,nb){
  return `<div class="titlefld"><input name="title" value="${esc(o.title)}" placeholder="에피소드 제목"></div>
  <details class="evmeta" id="evmeta" ${isNew?"open":""}><summary id="evsum"></summary><div class="fgrid">
@@ -793,8 +829,14 @@ function episodeForm(o,isNew,nb){
   <div class="w"><label>장소</label><input name="place" value="${esc(o.place)}"></div>
   <div class="w chk"><label><input type="checkbox" name="fs" ${o.fs?"checked":""}> 중요</label><label title="체크한 에피소드만 공유 링크에 보입니다"><input type="checkbox" name="done" ${o.done?"checked":""}> 완료</label></div>
   <div class="w"><label>메모</label><textarea name="memo" rows="1">${esc(o.memo)}</textarea></div></div></details>
+<<<<<<< HEAD
  <input type="hidden" name="chars" value="${esc(o.chars)}"><input type="hidden" name="items" value="${esc(o.items)}">
  <button type="button" class="castrow" id="cast" title="눌러서 등장인물 · 아이템 선택"></button>
+=======
+ <details class="story-pickers" id="spick"><summary><b>👤 등장인물 · ◇ 아이템</b> <span class="pl" id="pksum"></span></summary><div class="spbody">
+  <label>👤 등장인물</label><input name="chars" value="${esc(o.chars)}" placeholder="이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-chars">${pkChips("chars",split(o.chars))}</div>
+  <label>◇ 아이템</label><input name="items" value="${esc(o.items)}" placeholder="이름 입력 · 쉼표로 구분"><div class="pkrow" id="pk-items">${pkChips("items",split(o.items))}</div></div></details>
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
  ${nbHTML("prev",nb.prev)}
  <div class="nb cur" id="cur"><div class="nbh"><span>✍️ 현재 에피소드 · <b id="curt">${esc(o.title||"제목 없음")}</b></span><button type="button" id="curx">접기</button></div>
  <div class="edwrap"><div class="edln" aria-hidden="true"></div><textarea class="actual-field" name="actual" placeholder="이 에피소드의 내용을 쓰세요.">${esc(o.actual)}</textarea></div><div class="nbt short curp" id="curp" title="눌러서 펼치기"></div></div>
@@ -984,6 +1026,7 @@ const SPEECH_LEAD=1,SPEECH_EST=140; // 밑줄을 앞서 보이는 단어 수 / �
 let sq=[],sIdx=0,sSkip=0,sOff=0,sPlaying=false,sRun=0,sRate=1,sUtter=null,sEst=0,sWatch=0,sResume=null,sMark=null;
 let sRow=null,sRowKey="",sLine=null,currentSpeechWord=null,sMarkWord=null,sMarkRow=null;
 try{const r=parseFloat(localStorage.getItem("novel-srate"));if(r>=.5&&r<=2)sRate=Math.round(r*10)/10}catch(e){}
+<<<<<<< HEAD
 const speechOK=()=>!!(window.speechSynthesis&&window.SpeechSynthesisUtterance);
 function koreanVoices(){return (window.speechSynthesis?.getVoices?.()||[]).filter(v=>/^ko([_-]|$)/i.test(v.lang)||/한국|Korean/i.test(v.name))}
 // 한국어 음성 고르기: 여성(또는 기본) 음성을 우선하고, 이름으로 알 수 있는 남성 음성은 피한다.
@@ -1016,6 +1059,28 @@ function chooseReadingVoice(attempt){
  const nm=voices.filter(v=>!MALE.test(v.name)),pool=nm.length?nm:voices;
  const f=pool.filter(v=>FEM.test(v.name));
  return {v:pref(f.length?f:pool),pitch:1};
+=======
+try{const g=localStorage.getItem("novel-svoice");if(g==="male"||g==="female")$("nvoiceGender").value=g}catch(e){}
+const speechOK=()=>!!(window.speechSynthesis&&window.SpeechSynthesisUtterance);
+function koreanVoices(){return (window.speechSynthesis?.getVoices?.()||[]).filter(v=>/^ko([_-]|$)/i.test(v.lang)||/한국|Korean/i.test(v.name))}
+// 남성/여성 음성 고르기. 크롬에는 한국어 남성 음성이 없는 경우가 많아, 없으면 같은 음성의 높낮이(pitch)를 낮춰 대신한다.
+function chooseReadingVoice(tries){
+ const gender=$("nvoiceGender")?.value||"female";
+ const lowPitch=1; // 남성 음성이 없으면 음성 변조 없이 그냥 여성(기본) 음성으로 읽는다
+ if(tries>0)return {v:null,pitch:gender==="male"?lowPitch:1};
+ const voices=koreanVoices();
+ if(!voices.length)return {v:null,pitch:gender==="male"?lowPitch:1};
+ const F=/female|woman|여성|여자|유진|서연|선희|혜진|지민|heami|sunhi|yuna|google/i;
+ const M=/\bmale\b|\bman\b|남성|남자|injoon|hyunsu|bongjin|gookmin|minsu|민수|철수|인준|현우/i;
+ const pref=a=>a.find(v=>/google|microsoft|samsung/i.test(v.name))||a[0];
+ if(gender==="male"){
+  const m=voices.filter(v=>!/female|woman|여성|여자/i.test(v.name)&&M.test(v.name));
+  if(m.length)return {v:pref(m),pitch:1};
+  return {v:pref(voices),pitch:lowPitch};
+ }
+ const f=voices.filter(v=>F.test(v.name)&&!/\bmale\b/i.test(v.name.replace(/female/ig,"")));
+ return {v:pref(f.length?f:voices),pitch:1};
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 }
 // 한 줄을 문장 단위(최대 약 140자)로 쪼갠다. startOffset은 그 줄 안에서의 위치.
 function speechPieces(text,eventId,lineIndex){
@@ -1124,6 +1189,7 @@ function updSpeechUI(){
  const b=$("nspeak"),p=$("nplay");
  if(b)b.textContent=sPlaying?"⏸ 중지":"▶ 재생";
  if(p){p.textContent=sPlaying?"⏸":"▶";p.setAttribute("aria-label",sPlaying?"음성 중지":"음성 재생")}
+<<<<<<< HEAD
  document.querySelectorAll(".rate-lbl").forEach(x=>{x.textContent=sRate.toFixed(1)+"×"});
 }
 function finishSpeech(){sPlaying=false;sResume=null;sq=[];stopEstimate();clearTimeout(sWatch);clearSpeechHighlight();updSpeechUI()}
@@ -1132,12 +1198,19 @@ function ttsHelp(e){
  const n=koreanVoices().length;
  return `음성 재생 오류${e?` (${e})`:""} · 이 기기에서 인식된 한국어 음성 ${n}개. `+(n?"기기의 음성(TTS) 엔진을 다시 시작하거나 다른 엔진으로 바꿔 보세요.":"설정 > 텍스트 음성 변환(TTS) 출력에서 한국어 음성 데이터를 설치해 주세요.");
 }
+=======
+ const v=$("nrateV");if(v)v.textContent=sRate.toFixed(1)+"×";
+}
+function finishSpeech(){sPlaying=false;sResume=null;sq=[];stopEstimate();clearTimeout(sWatch);clearSpeechHighlight();updSpeechUI()}
+// 조각 i의 skip번째 글자부터 읽는다.
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 function speakFrom(i,skip,tries){
  const run=++sRun;stopEstimate();clearTimeout(sWatch);
  const c=sq[i];if(!c){finishSpeech();return}
  sIdx=i;sSkip=skip;sOff=0;
  const text=c.text.slice(skip);
  if(!text.trim()){speakFrom(i+1,0,0);return}
+<<<<<<< HEAD
  const base=c.startOffset+skip,{v,pitch,lang}=chooseReadingVoice(tries);
  const u=new SpeechSynthesisUtterance(text);
  if(v){u.voice=v;u.lang=v.lang}else u.lang=lang||"ko-KR";
@@ -1145,6 +1218,15 @@ function speakFrom(i,skip,tries){
  let gotB=false,started=false;
  u.onstart=()=>{
   if(run!==sRun)return;started=true;clearTimeout(sWatch);ttsRemember(tries);sOff=0;highlightAt(c,base);
+=======
+ const base=c.startOffset+skip,{v,pitch}=chooseReadingVoice(tries);
+ const u=new SpeechSynthesisUtterance(text);
+ if(v){u.voice=v;u.lang=v.lang}else u.lang="ko-KR";
+ u.rate=sRate;u.pitch=pitch;sUtter=u; // 참조를 붙들어 두지 않으면 크롬이 끝 이벤트를 놓친다
+ let gotB=false,started=false;
+ u.onstart=()=>{
+  if(run!==sRun)return;started=true;clearTimeout(sWatch);sOff=0;highlightAt(c,base);
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
   clearTimeout(sEst);sEst=setTimeout(()=>{if(run===sRun&&!gotB)startEstimate(run,c,base)},200);
  };
  u.onboundary=ev=>{
@@ -1153,6 +1235,7 @@ function speakFrom(i,skip,tries){
   sOff=ev.charIndex;highlightAt(c,base+ev.charIndex,SPEECH_LEAD);
  };
  u.onend=()=>{if(run!==sRun)return;stopEstimate();speakFrom(i+1,0,0)};
+<<<<<<< HEAD
  u.onerror=ev=>{
   if(run!==sRun)return;stopEstimate();const e=ev&&ev.error;
   if(e==="interrupted"||e==="canceled")return;
@@ -1160,13 +1243,22 @@ function speakFrom(i,skip,tries){
   clearTimeout(sWatch);sRun++;sPlaying=false;sResume={i,skip};updSpeechUI();
   toast(ttsHelp(e),7000);
  };
+=======
+ u.onerror=ev=>{if(run!==sRun)return;stopEstimate();if(ev&&(ev.error==="interrupted"||ev.error==="canceled"))return;speakFrom(i+1,0,0)};
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
  // 4초 안에 시작하지 않으면 한 번 다시 시도(기본 음성), 그래도 안 되면 멈추고 안내
  sWatch=setTimeout(()=>{
   if(run!==sRun||started)return;
   speechSynthesis.cancel();
+<<<<<<< HEAD
   if(tries<(MOBILE?2:1))setTimeout(()=>{if(run===sRun&&sPlaying)speakFrom(i,skip,tries+1)},120);
   else{sRun++;sPlaying=false;sResume={i,skip};updSpeechUI();speechProblem(false)}
  },6000);
+=======
+  if(tries<1)setTimeout(()=>{if(run===sRun&&sPlaying)speakFrom(i,skip,1)},120);
+  else{sRun++;sPlaying=false;sResume={i,skip};updSpeechUI();speechProblem(false)}
+ },4000);
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
  speechSynthesis.speak(u);
 }
 // 음성이 안 되는 브라우저(카카오톡·네이버 등 앱 내 브라우저, 삼성 인터넷 등)에서는 크롬으로 열도록 안내한다.
@@ -1185,6 +1277,7 @@ function speechProblem(unsupported){
  if(unsupported)alert("이 브라우저는 음성 읽기를 지원하지 않습니다.");
  else toast("음성을 재생하지 못했습니다. 다른 음성(여성/남성)을 선택해 보세요.",3200);
 }
+<<<<<<< HEAD
 // 읽던 게 없으면 바로, 읽는 중이면 취소 후 잠깐 뒤에 시작한다.
 function speakSoon(i,skip){
  sRun++;const run=sRun;stopEstimate();clearTimeout(sWatch);
@@ -1193,6 +1286,8 @@ function speakSoon(i,skip){
  try{speechSynthesis.resume()}catch(e){}
  if(busy)setTimeout(()=>{if(run===sRun&&sPlaying)speakFrom(i,skip,0)},90);else speakFrom(i,skip,0);
 }
+=======
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 function playSpeech(){
  if(!speechOK()){speechProblem(true);return}
  let at=null;
@@ -1201,7 +1296,13 @@ function playSpeech(){
  else{sq=buildSpeechQueue();const v=visibleStart();at=v?findChunk(v.e,v.line,v.off):null;if(!at&&sq.length)at={i:0,skip:0}}
  if(!at){toast("읽을 내용이 없습니다.");return}
  sResume=null;sPlaying=true;updSpeechUI();
+<<<<<<< HEAD
  speakSoon(at.i,at.skip);
+=======
+ sRun++;stopEstimate();clearTimeout(sWatch);speechSynthesis.cancel();
+ const run=sRun,{i,skip}=at;
+ setTimeout(()=>{if(run===sRun&&sPlaying)speakFrom(i,skip,0)},90);
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 }
 // 중지: 읽던 위치를 기억해 두었다가 재생하면 거기서부터 이어서 읽는다.
 function pauseSpeech(){
@@ -1220,12 +1321,22 @@ function speakEvent(id){
  sq=buildSpeechQueue();const at=findChunk(id,-1,0);if(!at)return;
  clearMark();
  if(!sPlaying){sResume={i:at.i,skip:0};return}
+<<<<<<< HEAD
  speakSoon(at.i,at.skip);
+=======
+ sRun++;stopEstimate();clearTimeout(sWatch);speechSynthesis.cancel();
+ const run=sRun;setTimeout(()=>{if(run===sRun&&sPlaying)speakFrom(at.i,at.skip,0)},90);
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 }
 // 같은 위치에서 설정(속도·음성)만 바꿔 다시 읽기
 function restartHere(){
  if(!sPlaying)return;
+<<<<<<< HEAD
  speakSoon(sIdx,sSkip+sOff);
+=======
+ const i=sIdx,skip=sSkip+sOff;sRun++;stopEstimate();clearTimeout(sWatch);speechSynthesis.cancel();
+ const run=sRun;setTimeout(()=>{if(run===sRun&&sPlaying)speakFrom(i,skip,0)},90);
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 }
 function speechAfterRender(){sRow=null;sRowKey="";sLine=null;currentSpeechWord=null;sMarkRow=null;sMarkWord=null;if(sMark)sMark=null}
 // 읽을 위치 표시
@@ -1255,6 +1366,7 @@ function setRate(r){
  updSpeechUI();restartHere();
 }
 $("nrateM").addEventListener("click",()=>setRate(sRate-.1));
+<<<<<<< HEAD
 $("f").addEventListener("click",ev=>{if(!ev.target.closest("#edrate"))return;const L=[.8,1,1.2,1.5,1.8,2];setRate(L.find(x=>x>sRate+.05)||L[0])});
 $("nrateP").addEventListener("click",()=>setRate(sRate+.1));
 $("nrateV").addEventListener("click",()=>setRate(1));
@@ -1442,6 +1554,12 @@ $("f").addEventListener("click",ev=>{if(ev.target.closest(".dictbtn"))dictToggle
 $("f").addEventListener("focusout",ev=>{if(ev.target.name==="actual")dPos=ev.target.selectionStart});
 $("dlg").addEventListener("close",dictStop);
 
+=======
+$("nrateP").addEventListener("click",()=>setRate(sRate+.1));
+$("nrateV").addEventListener("click",()=>setRate(1));
+$("nvoiceGender").addEventListener("change",()=>{try{localStorage.setItem("novel-svoice",$("nvoiceGender").value)}catch(e){}restartHere()});
+$("ndlg").addEventListener("close",stopSpeech);
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 // ===== 편집 화면에서 듣기 =====
 // 글자를 선택했으면 그 부분만, 아니면 커서 위치부터 끝까지 읽는다. 읽는 문장은 입력칸의 선택 표시로 따라간다. (단축키 Alt+R)
 let eRun=0,ePlaying=false,eWatch=0,eUt=null,eEnd=0;
@@ -1460,7 +1578,11 @@ function edScrollTo(ta,idx){
 function edSpeakStart(){
  if(!speechOK()){speechFallback();return}
  const ta=fe("actual");if(!ta)return;
+<<<<<<< HEAD
  dictStop();stopSpeech();setCur(true);
+=======
+ stopSpeech();setCur(true);
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
  const text=ta.value;let from=ta.selectionStart,to=ta.selectionEnd;
  if(to<=from){from=to;to=text.length}
  const pieces=[];let pos=0;
@@ -1473,6 +1595,7 @@ function edSpeakStart(){
  const next=(i,tries)=>{
   if(run!==eRun)return;
   if(i>=pieces.length){eEnd=pieces[pieces.length-1].e;edStop(true);return}
+<<<<<<< HEAD
   const pc=pieces[i],{v,pitch,lang}=chooseReadingVoice(tries||0);
   const u=new SpeechSynthesisUtterance(text.slice(pc.a,pc.e));
   if(v){u.voice=v;u.lang=v.lang}else u.lang=lang||"ko-KR";
@@ -1484,12 +1607,26 @@ function edSpeakStart(){
    if((tries||0)<(MOBILE?2:1)){next(i,(tries||0)+1);return}
    edStop();toast(ttsHelp(e),7000);
   };
+=======
+  const pc=pieces[i],{v,pitch}=chooseReadingVoice(tries||0);
+  const u=new SpeechSynthesisUtterance(text.slice(pc.a,pc.e));
+  if(v){u.voice=v;u.lang=v.lang}else u.lang="ko-KR";
+  u.rate=sRate;u.pitch=pitch;eUt=u;let started=false;
+  u.onstart=()=>{if(run!==eRun)return;started=true;clearTimeout(eWatch);eEnd=pc.a;try{ta.focus({preventScroll:true});ta.setSelectionRange(pc.a,pc.e)}catch(e){}edScrollTo(ta,pc.a)};
+  u.onend=()=>{if(run===eRun)next(i+1,0)};
+  u.onerror=ev=>{if(run!==eRun)return;if(ev&&(ev.error==="interrupted"||ev.error==="canceled"))return;next(i+1,0)};
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
   clearTimeout(eWatch);
   eWatch=setTimeout(()=>{if(run!==eRun||started)return;speechSynthesis.cancel();if((tries||0)<1)setTimeout(()=>next(i,1),120);else{edStop();if(isChrome())toast("음성을 재생하지 못했습니다.",2600);else speechFallback()}},4000);
   speechSynthesis.speak(u);
  };
+<<<<<<< HEAD
  const busy=speechSynthesis.speaking||speechSynthesis.pending;
  if(busy){speechSynthesis.cancel();setTimeout(()=>{if(run===eRun)next(0,0)},90)}else{try{speechSynthesis.resume()}catch(e){}next(0,0)}
+=======
+ speechSynthesis.cancel();
+ setTimeout(()=>{if(run===eRun)next(0,0)},90);
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
 }
 const edSpeakToggle=()=>{if(ePlaying)edStop(true);else edSpeakStart()};
 $("f").addEventListener("click",ev=>{if(ev.target.closest&&ev.target.closest("#edspeak"))edSpeakToggle()});
@@ -1902,4 +2039,8 @@ if(SHARE){
 }
 </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 8201d007bf104b840ffc006d76f1cf82ae6c0257
